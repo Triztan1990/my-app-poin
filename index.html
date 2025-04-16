@@ -30,7 +30,7 @@
       transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;  
       line-height: 1.6;  
     }  
-    .container { max-width: 830px; margin: 0 auto; }  
+    .container { max-width: 720px; margin: 0 auto; }  
     * { box-sizing: border-box; }  
     /* --- Header --- */  
     .app-header {  
@@ -44,7 +44,7 @@
     .status-indikator { padding: 5px 14px; border-radius: 20px; font-weight: 500; font-size: 0.9em; display: flex; align-items: center; gap: 5px; transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease; }  
     .status-indikator .spinner { display: none; width: 1em; height: 1em; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 5px; }  
     .status-indikator.loading .spinner { display: inline-block; }  
-    .status-indikator.loading .status-text { display: none; } /* Sembunyikan teks saat loading */  
+    .status-indikator.loading .status-text { display: none; }  
     .online { background: var(--success); color: white; }  
     .offline { background: var(--offline); color: white; }  
     #darkModeToggle { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.3em; padding: 5px; transition: color var(--transition-speed) ease; }  
@@ -87,6 +87,8 @@
     .btn-warning:hover { background-color: #d88010; box-shadow: 0 2px 8px rgba(248, 150, 30, 0.3); }  
     .btn-success { background-color: var(--success); color: white; }  
     .btn-success:hover { background-color: #2b8000; box-shadow: 0 2px 8px rgba(56, 176, 0, 0.3); }  
+    .btn-info { background-color: #0dcaf0; color: white; } /* Tambahkan style untuk btn-info */  
+    .btn-info:hover { background-color: #0aa3c2; box-shadow: 0 2px 8px rgba(13, 202, 240, 0.3); }  
     .btn-feedback { background-color: var(--success) !important; cursor: default !important; transform: none !important; box-shadow: none !important; }  
     input, select { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; font-family: 'Poppins'; background-color: var(--card-bg); color: var(--text-color); transition: border-color var(--transition-speed) ease, background-color var(--transition-speed) ease, color var(--transition-speed) ease; }  
     input:focus, select:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2); }  
@@ -106,28 +108,29 @@
     .progress-text { font-size: 0.95em; text-align: center; }  
     /* --- Responsif (Mobile) --- */  
     @media (max-width: 600px) {  
-      body { padding: 10px; }  
+      body { padding: 8px; }  
       .container { padding: 0px; }  
-      .card, .tabcontent { padding: 15px; border-radius: 0; border-left: none; border-right: none; margin-bottom: 10px; box-shadow: none; }  
+      .card, .tabcontent { padding: 12px; border-radius: 0; border-left: none; border-right: none; margin-bottom: 8px; box-shadow: none; }  
       .card:first-child { border-top-left-radius: var(--border-radius); border-top-right-radius: var(--border-radius); border-top: 1px solid var(--border-color);}  
       .card:last-child { border-bottom-left-radius: var(--border-radius); border-bottom-right-radius: var(--border-radius); border-bottom: 1px solid var(--border-color);}  
-      .tabcontent { border-radius: 0 0 var(--border-radius) var(--border-radius); box-shadow: 0 4px 15px var(--shadow-color); }  
+      .tabcontent { border-radius: 0 0 var(--border-radius) var(--border-radius); box-shadow: 0 4px 15px var(--shadow-color); margin-bottom: 15px; }  
       table, th, td { font-size: 13px; }  
-      th, td { padding: 10px 8px; white-space: normal; }  
-      th:nth-child(1), td:nth-child(1) { width: 30%; }  
-      th:nth-child(2), td:nth-child(2) { width: 45%; }  
-      th:nth-child(3), td:nth-child(3) { width: 25%; }  
-      h1, h2, h3, h4 { font-size: 1.1em; }  
-      .app-header h1 { font-size: 1.2em; }  
-      .btn { padding: 8px 14px; font-size: 0.9em; }  
-      input, select { padding: 10px; font-size: 0.9em;}  
-      .history-header { flex-direction: column; align-items: flex-start; gap: 10px; }  
-      .history-header > div { margin-left: 0; width: 100%; display: flex; gap: 8px; justify-content: flex-start; }  
-      #layananChart { height: 200px !important; max-height: 200px; }  
-      .progress-card { border-radius: var(--border-radius); }  
+      th, td { padding: 9px 7px; white-space: normal; }  
+      th:nth-child(1), td:nth-child(1) { width: 28%; }  
+      th:nth-child(2), td:nth-child(2) { width: 50%; }  
+      th:nth-child(3), td:nth-child(3) { width: 22%; }  
+      h1, h2, h3, h4 { font-size: 1.05em; }  
+      .app-header h1 { font-size: 1.15em; }  
+      .progress-card #totalPoin { font-size: 1.8em; margin-bottom: 15px; }  
+      .btn { padding: 8px 12px; font-size: 0.85em; }  
+      input, select { padding: 9px; font-size: 0.85em;}  
+      .history-header { flex-direction: column; align-items: flex-start; gap: 8px; }  
+      .history-header > div { margin-left: 0; width: 100%; display: flex; gap: 6px; justify-content: flex-start; flex-wrap: wrap; }  
+      #layananChart { height: 180px !important; max-height: 180px; }  
+      .progress-card { border-radius: var(--border-radius); padding: 18px; }  
     }  
     /* --- Splash Screen --- */  
-    .splash-screen { /* ... (splash screen style tidak berubah) ... */  
+    .splash-screen {  
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;  
       background-color: var(--primary); display: flex; flex-direction: column;  
       justify-content: center; align-items: center; z-index: 9999;  
@@ -144,10 +147,10 @@
         if (mainApp) mainApp.style.display = 'block';  
         console.log("Splash screen dihapus oleh failsafe timer");  
       }  
-    }, 3500); // Timeout 3.5 detik  
+    }, 3500);  
   </script>  
 </head>  
-<body class=""> <!-- Class 'dark-mode' akan ditambahkan oleh JS -->  
+<body class="">  
   <!-- Splash Screen -->  
   <div id="splashScreen" class="splash-screen">  
     <i class="fas fa-crown crown-icon" style="font-size: 50px; color: gold;"></i>  
@@ -161,7 +164,6 @@
       <i class="fas fa-crown crown-icon"></i>  
       <h1 style="font-weight:600; margin: 0;">HomeSol Points</h1>  
       <div class="status-container">  
-         <!-- ID elemen ini HARUS cocok dengan selector JS -->  
          <span id="statusOnline" class="status-indikator offline">  
              <div class="spinner"></div>  
              <span class="status-text">Offline</span>  
@@ -219,7 +221,9 @@
             <button class="btn btn-primary btn-sm" onclick="backupData()" title="Download data kerjaan Anda"><i class="fas fa-download"></i> Backup</button>  
             <button class="btn btn-warning btn-sm" onclick="document.getElementById('importFileInput').click()" title="Restore data dari file backup"><i class="fas fa-upload"></i> Restore</button>  
             <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="restoreData(event)">  
-            <button id="btnToggleHistory" class="btn btn-sm" style="margin-left: 8px;" title="Tampilkan/Sembunyikan tabel kerjaan"><i class="fas fa-eye"></i> Sembunyikan</button>  
+            <button id="btnToggleHistory" class="btn btn-sm btn-info" style="min-width: 40px;" title="Tampilkan/Sembunyikan Daftar">  
+              <i class="fas fa-eye"></i>  
+            </button>  
           </div>  
         </div>  
         <!-- Tabel Kerjaan -->  
@@ -273,9 +277,8 @@
     // --- DOM SELECTORS ---  
     const splashScreen = document.getElementById('splashScreen');  
     const mainApp = document.getElementById('mainApp');  
-    // PERBAIKAN: Pastikan nama variabel ini cocok dengan ID di HTML  
     const statusOnline = document.getElementById('statusOnline');  
-    const statusText = statusOnline.querySelector('.status-text'); // Gunakan variabel yg sudah diperbaiki  
+    const statusText = statusOnline.querySelector('.status-text');  
     const darkModeToggle = document.getElementById('darkModeToggle');  
     const bodyEl = document.body;  
     const tanggalEl = document.getElementById('tanggal');  
@@ -300,26 +303,22 @@
 
 
     // --- FUNGSI UTAMA & INISIALISASI ---  
-
     function initializeApp() {  
       console.log("Inisialisasi Aplikasi Modern...");  
       loadThemePreference();  
-      // Tunda sedikit remove splash agar tema sempat diterapkan  
-      setTimeout(removeSplashShowApp, 50); // Penundaan kecil saja  
+      setTimeout(removeSplashShowApp, 50);  
       try {  
         tanggalEl.valueAsDate = new Date();  
         loadTarget();  
         loadFromLocalStorage();  
         updateToggleButtonStyle();  
         renderTabel();  
-        updateTotalPoin();  
-        updateStatistikPoin(); // Ini akan memanggil updateProgressBar juga  
+        updateStatistikDanChart(); // Panggil setelah data dimuat  
         setupEventListeners();  
         cekOnlineGoogleSheet();  
       } catch(err) {  
         console.error("Error saat inisialisasi:", err);  
         alert("Gagal memuat aplikasi sepenuhnya. Cek konsol untuk detail.");  
-        // Pastikan splash screen hilang meskipun ada error  
         removeSplashShowApp();  
       }  
     }  
@@ -327,11 +326,10 @@
     function removeSplashShowApp() {  
         if (splashScreen && splashScreen.style.display !== 'none') {  
             splashScreen.style.display = 'none';  
-            if (mainApp) mainApp.style.display = 'block'; // Pastikan main app tampil  
+            if (mainApp) mainApp.style.display = 'block';  
             console.log("Splash screen dihapus, aplikasi ditampilkan.");  
         }  
     }  
-
 
      function setupEventListeners() {  
       layananEl.addEventListener('change', populatePaket);  
@@ -341,11 +339,10 @@
       btnToggleHistory.addEventListener('click', toggleHistory);  
       darkModeToggle.addEventListener('click', toggleDarkMode);  
       weeklyTargetInput.addEventListener('change', handleTargetChange);  
-      setInterval(cekOnlineGoogleSheet, 300000); // 5 menit  
+      setInterval(cekOnlineGoogleSheet, 300000);  
     }  
 
     function cekOnlineGoogleSheet() {  
-        // PERBAIKAN: Gunakan variabel statusOnline yg sudah benar  
         statusOnline.classList.add('loading');  
         statusOnline.classList.remove('online', 'offline');  
         statusText.textContent = "Memeriksa...";  
@@ -369,12 +366,10 @@
             .catch(err => {  
                 handleFetchError(err.message);  
             });  
-            // Tidak perlu finally untuk hapus loading, krn handleFetchError/success sudah atur kelasnya  
     }  
 
      function handleFetchError(errorMessage) {  
         online = false;  
-        // PERBAIKAN: Gunakan variabel statusOnline yg sudah benar  
         statusOnline.classList.remove('loading', 'online');  
         statusOnline.classList.add('offline');  
         statusText.textContent = "Offline";  
@@ -400,24 +395,28 @@
           }  
         });  
         populateLayanan();  
-        populatePaket();  
-        updatePoinDisplay();  
+        // Tidak perlu panggil populatePaket/updatePoinDisplay di sini,  
+        // populateLayanan akan memicu change event jika nilainya berubah,  
+        // atau nilai paket akan otomatis terisi jika layanan tidak berubah.  
     }  
 
 
     function populateLayanan() {  
       const currentLayanan = layananEl.value;  
+      let layananDitemukan = false;  
       layananEl.innerHTML = '<option value="">-- Pilih Layanan --</option>';  
       Object.keys(layananData).sort().forEach(layanan => {  
         const opt = document.createElement('option');  
         opt.value = layanan; opt.textContent = layanan;  
+        if (layanan === currentLayanan) {  
+            opt.selected = true;  
+            layananDitemukan = true;  
+        }  
         layananEl.appendChild(opt);  
       });  
-      if (layananData[currentLayanan]) layananEl.value = currentLayanan;  
-      // Jika layanan sebelumnya tidak valid setelah refresh, reset paket  
-      if (!layananData[currentLayanan]) {  
-          populatePaket(); // Ini akan mereset paket  
-      }  
+
+      // Panggil populatePaket secara eksplisit setelah loop selesai  
+      populatePaket();  
     }  
 
     function populatePaket() {  
@@ -431,6 +430,7 @@
           paketEl.appendChild(opt);  
         });  
       }  
+      // Panggil updatePoinDisplay setelah opsi paket diisi  
       updatePoinDisplay();  
     }  
 
@@ -443,8 +443,8 @@
         poinPerItem = item ? item.poin : 0;  
       }  
       const jumlah = parseInt(jumlahEl.value) || 0;  
-      if (jumlah < 0) jumlahEl.value = 0; // Pastikan jumlah tidak negatif  
-      poinSatuanEl.textContent = poinPerItem;  
+      if (jumlah < 0) jumlahEl.value = 0;  
+      poinSatuanEl.textContent = poinPerItem.toFixed(2); // Tampilkan 2 desimal  
       displayJumlahEl.textContent = Math.max(0, jumlah);  
       poinEl.textContent = (poinPerItem * Math.max(0, jumlah)).toFixed(2);  
     }  
@@ -463,8 +463,8 @@
       const poinSatuan = parseFloat(poinSatuanEl.textContent);  
       const poinTotal = parseFloat(poinEl.textContent);  
 
-      if (!tanggal || !layanan || !paket || isNaN(jumlah) || jumlah <= 0 || isNaN(poinTotal)) {  
-        alert('Harap lengkapi semua field dengan benar (Jumlah harus > 0)!');  
+      if (!tanggal || !layanan || !paket || isNaN(jumlah) || jumlah <= 0 || isNaN(poinTotal) || poinTotal <= 0) { // Tambah cek poinTotal > 0  
+        alert('Harap lengkapi semua field dengan benar (Jumlah & Poin harus > 0)!');  
         return;  
       }  
 
@@ -476,11 +476,7 @@
 
       saveToLocalStorage();  
       renderSingleRow(newItem, true);  
-      updateTotalPoin();  
-      updateStatistikPoin(); // Ini akan update progress bar juga  
-      if (chartInstance && document.getElementById('chartTab').classList.contains('active-content')) {  
-        renderLayananChart();  
-      }  
+      updateStatistikDanChart(); // Panggil update gabungan  
 
       // Feedback visual tombol Tambah  
       const originalBtnHtml = btnTambah.innerHTML;  
@@ -507,7 +503,7 @@
                 renderSingleRow(item, false);  
             });  
         }  
-        updateToggleButtonStyle(); // Pindahkan ini agar selalu update setelah render  
+        updateToggleButtonStyle();  
     }  
 
 
@@ -516,7 +512,7 @@
         tr.dataset.id = k.id;  
         tr.innerHTML = `  
             <td>${formatTanggal(k.tanggal)}</td>  
-            <td title="${k.layanan} - ${k.paket} (${k.jumlah}x)">${k.layanan} - ${k.paket}</td>  
+            <td title="${k.layanan} - ${k.paket} (${k.jumlah || 1}x)">${k.layanan} - ${k.paket}</td>  
             <td>  
               <div class="poin-column">  
                 <span>${k.poin.toFixed(2)}</span>  
@@ -533,8 +529,8 @@
         if (animate) {  
             tr.classList.add('row-fade-in');  
             tr.addEventListener('animationend', () => {  
-                 if(tr) tr.classList.remove('row-fade-in'); // Hapus kelas setelah selesai  
-            }, { once: true }); // Hanya jalankan sekali  
+                 if(tr) tr.classList.remove('row-fade-in');  
+            }, { once: true });  
         }  
     }  
 
@@ -545,102 +541,349 @@
 
         if (confirm(`Yakin hapus "${item.layanan} - ${item.paket}" (${formatTanggal(item.tanggal)})?`)) {  
             const rowElement = tabelBody.querySelector(`tr[data-id="${id}"]`);  
-            daftarKerjaan.splice(itemIndex, 1); // Hapus dari array dulu  
+            daftarKerjaan.splice(itemIndex, 1);  
 
             if (rowElement) {  
                 rowElement.classList.add('row-fade-out');  
                 rowElement.addEventListener('animationend', () => {  
                     if(rowElement) rowElement.remove();  
-                    if (daftarKerjaan.length === 0) { // Cek SETELAH data dihapus  
-                         tabelBody.innerHTML = '<tr><td colspan="3" style="text-align:center; font-style: italic; padding: 25px; color: var(--text-muted);">Belum ada data kerjaan</td></tr>';  
-                    }  
+                    checkEmptyTable(); // Cek setelah animasi selesai  
                 }, { once: true });  
             } else {  
-                 // Jika elemen tidak ditemukan (jarang terjadi), render ulang saja  
-                 renderTabel();  
+                 renderTabel(); // Fallback  
+                 checkEmptyTable(); // Cek setelah render ulang  
             }  
 
             saveToLocalStorage();  
-            updateTotalPoin();  
-            updateStatistikPoin(); // Ini akan update progress bar juga  
-            if (chartInstance && document.getElementById('chartTab').classList.contains('active-content')) {  
-                renderLayananChart();  
-            }  
-             // Jika elemen tidak ada saat klik (misal render belum selesai), pastikan cek kekosongan  
-             if (daftarKerjaan.length === 0 && !tabelBody.querySelector('tr')) {  
-                tabelBody.innerHTML = '<tr><td colspan="3" style="text-align:center; font-style: italic; padding: 25px; color: var(--text-muted);">Belum ada data kerjaan</td></tr>';  
-             }  
+            updateStatistikDanChart(); // Panggil update gabungan  
         }  
     }  
-    window.hapusKerjaan = hapusKerjaan; // Expose to global scope  
+    window.hapusKerjaan = hapusKerjaan;  
 
+    function checkEmptyTable() {  
+         if (daftarKerjaan.length === 0 && !tabelBody.querySelector('tr')) {  
+             tabelBody.innerHTML = '<tr><td colspan="3" style="text-align:center; font-style: italic; padding: 25px; color: var(--text-muted);">Belum ada data kerjaan</td></tr>';  
+         }  
+    }  
 
     function toggleHistory() {  
       isHistoryVisible = !isHistoryVisible;  
       localStorage.setItem(HISTORY_VISIBLE_KEY, isHistoryVisible);  
-      updateToggleButtonStyle(); // Cukup update tombol & visibility  
+      updateToggleButtonStyle();  
     }  
 
     function updateToggleButtonStyle() {  
         const iconClass = isHistoryVisible ? 'fa-eye-slash' : 'fa-eye';  
-        const text = isHistoryVisible ? ' Sembunyikan' : ' Tampilkan';  
-        btnToggleHistory.innerHTML = `<i class="fas ${iconClass}"></i>${text}`;  
+        const titleText = isHistoryVisible ? 'Sembunyikan Daftar' : 'Tampilkan Daftar';  
+        btnToggleHistory.innerHTML = `<i class="fas ${iconClass}"></i>`;  
+        btnToggleHistory.title = titleText;  
         btnToggleHistory.classList.toggle('btn-warning', isHistoryVisible);  
-        btnToggleHistory.classList.toggle('btn-success', !isHistoryVisible);  
-        // Langsung atur display container  
+        btnToggleHistory.classList.toggle('btn-info', !isHistoryVisible);  
         historyTableContainer.style.display = isHistoryVisible ? 'block' : 'none';  
     }  
 
 
     function updateTotalPoin() {  
-      const total = daftarKerjaan.reduce((sum, item) => sum + item.poin, 0);  
+      const total = daftarKerjaan.reduce((sum, item) => sum + (item.poin || 0), 0); // Pastikan poin ada  
       totalPoinEl.textContent = total.toFixed(2);  
     }  
 
      function formatTanggal(tanggalString){  
-      // Pastikan tanggal valid sebelum format  
       if (!tanggalString || isNaN(new Date(tanggalString).getTime())) return "Tgl Invalid";  
       try {  
-        // Menggunakan UTC agar tidak terpengaruh timezone browser saat konversi  
-        const t = new Date(tanggalString + 'T00:00:00Z'); // Anggap input sbg UTC midnight  
-        return t.toLocaleDateString('id-ID', { year:'numeric', month:'2-digit', day:'2-digit', timeZone: 'UTC' }); // Tampilkan sbg UTC  
+        const t = new Date(tanggalString + 'T00:00:00'); // Coba tanpa Z untuk fleksibilitas input  
+        // Jika invalid, coba dengan Z  
+        if (isNaN(t.getTime())) {  
+            const tUtc = new Date(tanggalString + 'T00:00:00Z');  
+             return tUtc.toLocaleDateString('id-ID', { year:'numeric', month:'2-digit', day:'2-digit', timeZone: 'UTC' });  
+        }  
+        return t.toLocaleDateString('id-ID', { year:'numeric', month:'2-digit', day:'2-digit' }); // Gunakan timezone lokal jika valid tanpa Z  
       } catch (e) { return "Error Tgl"; }  
     }  
 
     // --- LOCAL STORAGE ---  
-    function saveToLocalStorage() { /* ... (sama) ... */ }  
-    function loadFromLocalStorage() { /* ... (sama, pastikan sort) ... */ }  
+    function saveToLocalStorage() {  
+      try {  
+        localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(daftarKerjaan));  
+        localStorage.setItem(HISTORY_VISIBLE_KEY, String(isHistoryVisible)); // Simpan sbg string  
+      } catch (e) { console.error("Gagal menyimpan ke localStorage:", e); }  
+    }  
+
+    function loadFromLocalStorage() {  
+      try {  
+        const storedData = localStorage.getItem(LOCALSTORAGE_KEY);  
+        const storedVisibility = localStorage.getItem(HISTORY_VISIBLE_KEY);  
+        daftarKerjaan = storedData ? JSON.parse(storedData) : [];  
+        if (!Array.isArray(daftarKerjaan)) daftarKerjaan = [];  
+        // Pastikan semua item punya ID unik dan poin numerik  
+        daftarKerjaan = daftarKerjaan.map((item, index) => ({  
+            ...item,  
+            id: item.id || Date.now() + index,  
+            poin: !isNaN(Number(item.poin)) ? Number(item.poin) : 0,  
+            jumlah: !isNaN(Number(item.jumlah)) ? Number(item.jumlah) : 1,  
+        })).sort((a, b) => b.id - a.id); // Urutkan terbaru di atas  
+        isHistoryVisible = storedVisibility === null ? true : (storedVisibility === 'true');  
+      } catch (e) {  
+        console.error("Gagal memuat dari localStorage:", e);  
+        daftarKerjaan = []; isHistoryVisible = true;  
+      }  
+    }  
 
     // --- DARK MODE ---  
-    function loadThemePreference() { /* ... (sama) ... */ }  
-    function toggleDarkMode() { /* ... (sama, pastikan render chart jika aktif) ... */ }  
+    function loadThemePreference() {  
+        const savedTheme = localStorage.getItem(THEME_KEY);  
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;  
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {  
+            bodyEl.classList.add('dark-mode');  
+            darkModeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';  
+        } else {  
+            bodyEl.classList.remove('dark-mode');  
+            darkModeToggle.innerHTML = '<i class="fa-solid fa-moon"></i>';  
+        }  
+    }  
+    function toggleDarkMode() {  
+        bodyEl.classList.toggle('dark-mode');  
+        const isDark = bodyEl.classList.contains('dark-mode');  
+        localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');  
+        darkModeToggle.innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';  
+        updateStatistikDanChart(); // Update chart saat tema berubah  
+    }  
 
     // --- PROGRESS BAR ---  
-    function loadTarget() { /* ... (sama) ... */ }  
-    function saveTarget() { /* ... (sama) ... */ }  
-    function handleTargetChange() { /* ... (sama) ... */ }  
-    function updateProgressBar() { /* ... (sama) ... */ }  
+    function loadTarget() {  
+        const savedTarget = localStorage.getItem(TARGET_KEY);  
+        weeklyTarget = savedTarget ? parseInt(savedTarget) : 0;  
+        weeklyTargetInput.value = weeklyTarget;  
+    }  
+    function saveTarget() {  
+        localStorage.setItem(TARGET_KEY, weeklyTarget);  
+    }  
+    function handleTargetChange() {  
+        const newTarget = parseInt(weeklyTargetInput.value);  
+        if (!isNaN(newTarget) && newTarget >= 0) {  
+            weeklyTarget = newTarget;  
+            saveTarget();  
+            updateProgressBar();  
+        } else {  
+            weeklyTargetInput.value = weeklyTarget;  
+        }  
+    }  
+    function updateProgressBar() {  
+        if (!progressBar || !progressText) return;  
+        const currentPoints = weeklyPoints;  
+        const target = weeklyTarget;  
+        let percentage = 0;  
+        if (target > 0) { percentage = Math.min(100, (currentPoints / target) * 100); }  
+        else if (currentPoints > 0) { percentage = 100; }  
+
+        progressBar.style.width = `${percentage}%`;  
+        progressText.textContent = `${currentPoints.toFixed(2)} / ${target} Poin (${percentage.toFixed(0)}%)`;  
+        progressBar.style.backgroundColor = percentage >= 100 ? 'var(--warning)' : 'var(--success)';  
+    }  
 
     // --- TAB & CHART/STATS ---  
-    function showTab(tabId, buttonElement){ /* ... (sama, panggil render/update saat tab aktif) ... */ }  
-    function renderLayananChart() { /* ... (sama, termasuk deteksi tema) ... */ }  
-    function updateStatistikPoin() { /* ... (sama, panggil updateProgressBar di akhir) ... */ }  
+    function showTab(tabId, buttonElement){  
+      document.querySelectorAll('.tabcontent').forEach(tc => tc.classList.remove('active-content'));  
+      document.querySelectorAll('.tablink').forEach(tl => tl.classList.remove('active'));  
+      const tabToShow = document.getElementById(tabId);  
+      tabToShow.classList.add('active-content');  
+      buttonElement.classList.add('active');  
+      if (tabId === 'chartTab' || tabId === 'statTab') {  
+          updateStatistikDanChart();  
+      }  
+    }  
 
+    function updateStatistikDanChart() {  
+        updateTotalPoin();  
+        updateStatistikPoin();  
+        updateProgressBar();  
+        if (document.getElementById('chartTab').classList.contains('active-content')) {  
+            renderLayananChart();  
+        }  
+    }  
+
+    function renderLayananChart() {  
+        if (!layananChartCanvas) return;  
+        const ctx = layananChartCanvas.getContext('2d');  
+        if (!ctx) { console.error("Gagal mendapatkan context canvas"); return; }  
+
+        const countPerLayanan = daftarKerjaan.reduce((acc, item) => {  
+            if (item && item.layanan) { // Pastikan item dan layanan valid  
+                 acc[item.layanan] = (acc[item.layanan] || 0) + (item.jumlah || 1);  
+            }  
+            return acc;  
+        }, {});  
+        const labels = Object.keys(countPerLayanan).sort();  
+        const dataValues = labels.map(label => countPerLayanan[label]);  
+
+        if (chartInstance) { chartInstance.destroy(); chartInstance = null; }  
+
+        if (labels.length === 0) {  
+            ctx.clearRect(0, 0, layananChartCanvas.width, layananChartCanvas.height);  
+            ctx.fillStyle = getComputedStyle(bodyEl).getPropertyValue('--text-muted');  
+            ctx.font = '16px Poppins'; ctx.textAlign = 'center';  
+            ctx.fillText('Belum ada data untuk grafik.', layananChartCanvas.width / 2, layananChartCanvas.height / 2);  
+            return;  
+        }  
+
+        const isDarkMode = bodyEl.classList.contains('dark-mode');  
+        const chartTextColor = getComputedStyle(bodyEl).getPropertyValue('--text-color');  
+        const chartBorderColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';  
+
+        try {  
+            chartInstance = new Chart(ctx, {  
+                type: 'doughnut',  
+                data: {  
+                    labels: labels,  
+                    datasets: [{  
+                        label: 'Jumlah Item', data: dataValues,  
+                        borderColor: chartBorderColor, borderWidth: 1, hoverOffset: 6  
+                        // Warna akan otomatis dari Chart.js, atau bisa definisikan palet di sini  
+                    }]  
+                },  
+                options: {  
+                    responsive: true, maintainAspectRatio: false,  
+                    plugins: {  
+                        legend: { position: 'top', display: true, labels: { color: chartTextColor, padding: 15 } },  
+                        tooltip: {  
+                             bodyColor: chartTextColor, titleColor: chartTextColor,  
+                             backgroundColor: getComputedStyle(bodyEl).getPropertyValue('--card-bg'),  
+                             borderColor: chartBorderColor, borderWidth: 1,  
+                             callbacks: {  
+                                label: function(context) {  
+                                    let label = context.dataset.label || '';  
+                                    if (label) { label += ': '; }  
+                                    if (context.parsed !== null) {  
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);  
+                                        const percentage = total > 0 ? ((context.parsed / total) * 100).toFixed(1) : 0;  
+                                        label += `${context.label}: ${context.parsed} (${percentage}%)`;  
+                                    }  
+                                    return label;  
+                                }  
+                             }  
+                        }  
+                    }  
+                }  
+            });  
+        } catch (err) {  
+            console.error("Gagal membuat doughnut chart:", err);  
+            ctx.clearRect(0, 0, layananChartCanvas.width, layananChartCanvas.height);  
+            ctx.fillStyle = 'red'; ctx.font = '16px Poppins'; ctx.textAlign = 'center';  
+            ctx.fillText('Gagal memuat grafik.', layananChartCanvas.width / 2, layananChartCanvas.height / 2);  
+        }  
+    }  
+
+    function updateStatistikPoin() {  
+        const now = new Date();  
+        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());  
+        const todayEnd = new Date(todayStart); todayEnd.setDate(todayStart.getDate() + 1);  
+        const dayOfWeek = now.getDay(); // 0 = Minggu, 1 = Senin, ... 6 = Sabtu  
+        const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Hitung mundur ke Senin  
+        const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diffToMonday); weekStart.setHours(0,0,0,0);  
+        const weekEnd = new Date(weekStart); weekEnd.setDate(weekStart.getDate() + 7);  
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);  
+        const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1);  
+
+        let totalHarian = 0, totalMingguan = 0, totalBulanan = 0;  
+        daftarKerjaan.forEach(item => {  
+            try {  
+                if (!item.tanggal || isNaN(new Date(item.tanggal).getTime())) return; // Skip jika tanggal invalid  
+                const itemDate = new Date(item.tanggal + 'T00:00:00'); // Anggap input tanpa timezone  
+                 // Jika invalid, coba interpretasi sebagai UTC  
+                 if (isNaN(itemDate.getTime())) {  
+                     const itemUtcDate = new Date(item.tanggal + 'T00:00:00Z');  
+                     if (isNaN(itemUtcDate.getTime())) return; // Skip jika tetap invalid  
+
+                     if (itemUtcDate >= todayStart && itemUtcDate < todayEnd) totalHarian += item.poin;  
+                     if (itemUtcDate >= weekStart && itemUtcDate < weekEnd) totalMingguan += item.poin;  
+                     if (itemUtcDate >= monthStart && itemUtcDate < monthEnd) totalBulanan += item.poin;  
+                 } else {  
+                    // Gunakan tanggal lokal jika valid  
+                     if (itemDate >= todayStart && itemDate < todayEnd) totalHarian += item.poin;  
+                     if (itemDate >= weekStart && itemDate < weekEnd) totalMingguan += item.poin;  
+                     if (itemDate >= monthStart && itemDate < monthEnd) totalBulanan += item.poin;  
+                 }  
+            } catch (e) { console.error("Error processing date for stats:", item.tanggal, e); }  
+        });  
+
+        statHarianEl.textContent = totalHarian.toFixed(2);  
+        statMingguanEl.textContent = totalMingguan.toFixed(2);  
+        statBulananEl.textContent = totalBulanan.toFixed(2);  
+        weeklyPoints = totalMingguan;  
+    }  
 
     // --- Backup & Restore ---  
-    function backupData() { /* ... (sama) ... */ }  
-    function restoreData(event) { /* ... (sama, pastikan panggil semua fungsi update yg relevan) ... */ }  
+    function backupData() {  
+        if(daftarKerjaan.length === 0) { alert("Tidak ada data untuk di-backup."); return; }  
+        try {  
+            const dataStr = JSON.stringify(daftarKerjaan, null, 2); // Pretty print JSON  
+            const dataBlob = new Blob([dataStr], {type: "application/json"});  
+            const url = URL.createObjectURL(dataBlob);  
+            const link = document.createElement('a');  
+            const tgl = new Date().toISOString().slice(0,10); // YYYY-MM-DD  
+            link.download = `homesol_poin_backup_${tgl}.json`;  
+            link.href = url;  
+            link.click();  
+            URL.revokeObjectURL(url); // Bebaskan memori  
+        } catch (e) {  
+            console.error("Gagal membuat file backup:", e);  
+            alert("Gagal membuat file backup.");  
+        }  
+    }  
+
+    function restoreData(event) {  
+        const input = event.target;  
+        const file = input.files[0];  
+        if (!file) return;  
+        if (!file.type.match('application/json')) { alert('File harus berupa .json!'); input.value = ""; return; }  
+
+        const reader = new FileReader();  
+        reader.onload = function(e) {  
+            try {  
+                const importedData = JSON.parse(e.target.result);  
+                if (Array.isArray(importedData)) {  
+                    if (confirm(`Anda akan mengganti data saat ini (${daftarKerjaan.length} item) dengan data dari file (${importedData.length} item).\n\nPERINGATAN: Tindakan ini tidak bisa dibatalkan. Yakin ingin melanjutkan?`)) {  
+                         // Validasi sederhana data yang diimpor  
+                        const validatedData = importedData.map((item, index) => ({  
+                            id: item.id || Date.now() + index,  
+                            tanggal: item.tanggal || new Date().toISOString().slice(0,10),  
+                            layanan: item.layanan || "Unknown",  
+                            paket: item.paket || "Unknown",  
+                            jumlah: !isNaN(Number(item.jumlah)) ? Number(item.jumlah) : 1,  
+                            poinSatuan: !isNaN(Number(item.poinSatuan)) ? Number(item.poinSatuan) : 0,  
+                            poin: !isNaN(Number(item.poin)) ? Number(item.poin) : 0,  
+                        })).filter(item => !isNaN(new Date(item.tanggal).getTime())); // Hanya ambil yg tanggalnya valid  
+
+                        // Hapus data lama, ganti dengan yang baru  
+                        daftarKerjaan = validatedData.sort((a, b) => b.id - a.id);  
+                        saveToLocalStorage(); // Simpan data baru  
+
+                        // Muat ulang semua UI  
+                        loadFromLocalStorage(); // Muat ulang dari LS (memastikan konsisten)  
+                        renderTabel();  
+                        updateStatistikDanChart();  
+                        alert(`Data berhasil di-restore dari file! (${daftarKerjaan.length} item dimuat).`);  
+                    }  
+                } else { throw new Error('Format data dalam file tidak valid (bukan array).'); }  
+            } catch(err) {  
+                 console.error("Gagal restore data:", err);  
+                 alert("Gagal memproses file restore: " + err.message);  
+            } finally { input.value = ""; } // Reset input file  
+        };  
+        reader.onerror = function() {  
+            alert("Gagal membaca file.");  
+            input.value = "";  
+        };  
+        reader.readAsText(file);  
+    }  
 
 
     // --- Jalankan Aplikasi Saat DOM Siap ---  
-    // Pastikan initializeApp dipanggil setelah DOM siap  
     if (document.readyState === 'loading') {  
         document.addEventListener('DOMContentLoaded', initializeApp);  
     } else {  
-        // DOM sudah siap  
         initializeApp();  
     }  
-
   </script>  
 </body>  
 </html>
