@@ -3,10 +3,11 @@
 <head>  
   <meta charset="UTF-8">  
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">  
-  <title>Aplikasi penghitung poin pinhome</title>  
+  <title>Hitung Poin HomeSol</title>  
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">  
   <style>  
+    /* --- Variabel Warna & Style Dasar --- */  
     :root {  
       --primary: #4361ee;  
       --primary-light: #4895ef;  
@@ -19,18 +20,19 @@
       --success: #38b000;  
       --offline: #f72585;  
     }  
+    /* --- Body & Container --- */  
     body {  
       font-family: 'Poppins', sans-serif;  
       background-color: #f5f7ff;  
       margin: 0;  
       padding: 20px;  
       color: var(--dark);  
-      overscroll-behavior: contain;  
     }  
     .container {  
       max-width: 830px;  
       margin: 0 auto;  
     }  
+    /* --- Header Aplikasi --- */  
     .app-header {  
       display: flex;  
       align-items: center;  
@@ -49,217 +51,126 @@
       font-weight: 500;  
       font-size: .98em;  
     }  
-    .online {  
-      background: var(--primary-light);  
-      color: #fff;  
-    }  
-    .offline {  
-      background: var(--offline);  
-      color: #fff;  
-    }  
-    .tabs {  
-      display: flex;  
-      margin-bottom: 20px;  
-      gap: 7px;  
-    }  
+    .online { background: var(--primary-light); color: #fff; }  
+    .offline { background: var(--offline); color: #fff; }  
+    /* --- Tabs --- */  
+    .tabs { display: flex; margin-bottom: 20px; gap: 7px; flex-wrap: wrap; /* Tambah wrap untuk mobile */}  
     .tablink {  
-      padding: 10px 15px;  
-      cursor: pointer;  
-      background-color: var(--light);  
-      border-radius: 5px 5px 0 0;  
-      border: none;  
-      font-family: 'Poppins';  
-      font-weight: 500;  
-      color: var(--dark);  
-      transition: 0.2s;  
+      padding: 10px 15px; cursor: pointer; background-color: var(--light);  
+      border-radius: 5px 5px 0 0; border: none; font-family: 'Poppins';  
+      font-weight: 500; color: var(--dark); transition: 0.2s; margin-bottom: 5px; /* Jarak antar baris tab */  
     }  
-    .tablink.active, .tablink:hover {  
-      background-color: var(--primary);  
-      color: white;  
-    }  
+    .tablink.active, .tablink:hover { background-color: var(--primary); color: white; }  
     .tabcontent {  
-      display: none;  
-      background: white;  
-      padding: 22px 18px;  
-      border-radius: 0 0 10px 10px;  
-      box-shadow: var(--box-shadow);  
+      display: none; background: white; padding: 22px 18px;  
+      border-radius: 0 0 10px 10px; box-shadow: var(--box-shadow);  
       margin-bottom: 28px;  
     }  
-    .tabcontent.active-content {  
-      display: block;  
-    }  
+    .tabcontent.active-content { display: block; }  
+    /* --- Card --- */  
     .card {  
-      background: white;  
-      border-radius: var(--border-radius);  
-      box-shadow: var(--box-shadow);  
-      padding: 20px;  
-      margin-bottom: 20px;  
+      background: white; border-radius: var(--border-radius);  
+      box-shadow: var(--box-shadow); padding: 20px; margin-bottom: 20px;  
     }  
-    table {  
-      width: 100%;  
-      border-collapse: collapse;  
-      margin-top: 12px;  
-    }  
+    /* --- Tabel --- */  
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; table-layout: fixed; }  
     th, td {  
-      padding: 12px 10px;  
-      border-bottom: 1px solid #f0f0f0;  
-      text-align: left;  
+      padding: 12px 10px; border-bottom: 1px solid #f0f0f0; text-align: left;  
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;  
     }  
-    th {  
-      background-color: var(--primary);  
-      color: white;  
-    }  
-    .point-action {  
-      display: flex;  
-      align-items: center;  
-      justify-content: space-between;  
-    }  
-    .btn-icon {  
-      background: none;  
-      border: none;  
-      color: var(--danger);  
-      cursor: pointer;  
-      font-size: 16px;  
-      margin-left: 8px;  
-    }  
-    .btn {  
-      padding: 8px 15px;  
-      border: none;  
-      border-radius: 5px;  
-      cursor: pointer;  
-      font-family: 'Poppins';  
-      font-weight: 500;  
-    }  
-    .btn-primary {  
-      background-color: var(--primary);  
-      color: white;  
-    }  
-    .btn-danger {  
-      background-color: var(--danger);  
-      color: white;  
-    }  
-    .btn-warning {  
-      background-color: var(--warning);  
-      color: white;  
-    }  
-    input, select {  
-      width: 100%;  
-      padding: 10px;  
-      border: 1px solid #ddd;  
-      border-radius: 5px;  
-      font-family: 'Poppins';  
-    }  
-    input[type="number"] {  
-      text-align: center;  
-    }  
-    canvas {  
-      max-width: 100%!important;  
-      background: #fbfcff;  
-      border-radius: 6px;  
-      margin-top: 16px;  
-    }  
-    .stat-label {  
-      font-weight: 500;  
-      color: var(--primary);  
-    }  
-
-    /* --------- RESPONSIVE/MOBILE STYLE --------- */  
+    th { background-color: var(--primary); color: white; }  
+    .poin-column { display: flex; align-items: center; justify-content: space-between; }  
+    /* --- Tombol & Input --- */  
+    .point-action { display: flex; align-items: center; justify-content: space-between; }  
+    .btn-icon { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 16px; margin-left: 8px; }  
+    .btn { padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; font-family: 'Poppins'; font-weight: 500; }  
+    .btn-primary { background-color: var(--primary); color: white; }  
+    .btn-danger { background-color: var(--danger); color: white; }  
+    .btn-warning { background-color: var(--warning); color: white; }  
+    input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-family: 'Poppins'; box-sizing: border-box;}  
+    input[type="number"] { text-align: center; }  
+    /* --- Chart & Statistik --- */  
+    canvas { max-width: 100%!important; background: #fbfcff; border-radius: 6px; margin-top: 16px; }  
+    .stat-label { font-weight: 500; color: var(--primary); }  
+    /* --- Responsif (Mobile) --- */  
     @media (max-width: 600px) {  
-      .container {padding:6px;}  
-      .card {padding:10px;}  
-      .tabcontent {padding:10px 4px;}  
-      .tabs {flex-direction: column;}  
-      table, th, td {font-size: 15px;}  
-      th, td {padding: 7px 5px;}  
-      h1, h2, h3, h4 {font-size:1.15em;}  
-    }  
-    
-    /* PENYESUAIAN UNTUK APK */  
-    @media (display-mode: standalone) {  
-      body {   
-        padding-top: env(safe-area-inset-top, 20px);  
-        padding-bottom: env(safe-area-inset-bottom, 20px);   
+      body { padding: 10px; }  
+      .container { padding: 6px; }  
+      .card { padding: 10px; }  
+      .tabcontent { padding: 10px 4px; }  
+      /* .tabs { flex-direction: column; } *//* Biarkan wrap */  
+      table, th, td { font-size: 14px; } /* Sedikit lebih kecil */  
+      th, td { padding: 7px 5px; }  
+      h1, h2, h3, h4 { font-size: 1.15em; }  
+      .app-header h1 { font-size: 1.1em; } /* Kecilkan judul di mobile */  
+      .btn { padding: 7px 12px; font-size: 0.9em; } /* Kecilkan tombol */  
+      input, select { padding: 8px; font-size: 0.9em;} /* Kecilkan input */  
+      .history-header > div { /* Agar tombol backup/restore tidak terlalu mepet di mobile */  
+        margin-top: 8px;  
+        margin-left: auto; /* Tetap di kanan */  
       }  
+      .history-header { flex-wrap: wrap; /* Wrap tombol di mobile */}  
     }  
+    /* --- Splash Screen --- */  
     .splash-screen {  
-      position: fixed;  
-      top: 0;  
-      left: 0;  
-      width: 100%;  
-      height: 100%;  
-      background-color: var(--primary);  
-      display: flex;  
-      flex-direction: column;  
-      justify-content: center;  
-      align-items: center;  
-      z-index: 9999;  
-      transition: opacity 0.5s;  
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;  
+      background-color: var(--primary); display: flex; flex-direction: column;  
+      justify-content: center; align-items: center; z-index: 9999;  
     }  
-    .splash-screen h1 {  
-      color: white;  
-      font-size: 24px;  
-      margin-top: 20px;  
-    }  
+    .splash-screen h1 { color: white; font-size: 24px; margin-top: 20px; text-align: center; padding: 0 15px; }  
   </style>  
+  <!-- Script Failsafe Splash Screen -->  
+  <script>  
+    window.setTimeout(function() {  
+      var splash = document.getElementById('splashScreen');  
+      var mainApp = document.getElementById('mainApp');  
+      if (splash && splash.style.display !== 'none') { // Hanya jika masih tampil  
+        splash.style.display = 'none';  
+        if (mainApp) mainApp.style.display = 'block';  
+        console.log("Splash screen dihapus oleh failsafe timer");  
+      }  
+    }, 3500); // Timeout 3.5 detik  
+  </script>  
 </head>  
 <body>  
   <!-- Splash Screen -->  
-  <div class="splash-screen" id="splashScreen">  
+  <div id="splashScreen" class="splash-screen">  
     <i class="fas fa-crown crown-icon" style="font-size: 50px; color: gold;"></i>  
-    <h1>hitung poin homesol</h1>  
+    <h1>Hitung Poin HomeSol</h1>  
   </div>  
 
-  <div class="container">  
+  <!-- Konten Aplikasi Utama (Awalnya Tersembunyi) -->  
+  <div id="mainApp" class="container" style="display:none;">  
+    <!-- Header -->  
     <div class="app-header">  
       <i class="fas fa-crown crown-icon"></i>  
-      <h1 style="font-weight:600">hitung poin homesol</h1>  
+      <h1 style="font-weight:600; margin: 0;">Hitung Poin HomeSol</h1>  
       <span id="statusOnline" class="status-indikator offline">Offline</span>  
     </div>  
+
+    <!-- Navigasi Tab -->  
     <div class="tabs">  
       <button class="tablink active" onclick="showTab('formTab', this)">Form Kerjaan</button>  
       <button class="tablink" onclick="showTab('chartTab', this)">Grafik Layanan</button>  
       <button class="tablink" onclick="showTab('statTab', this)">Statistik Poin</button>  
     </div>  
+
+    <!-- Konten Tab: Form -->  
     <div id="formTab" class="tabcontent active-content">  
       <div class="card">  
         <table>  
-          <tr>  
-            <td>Tanggal</td>  
-            <td><input type="date" id="tanggal"></td>  
-          </tr>  
-          <tr>  
-            <td>Layanan</td>  
-            <td>  
-              <select id="layanan" required>  
-                <option value="">Memuat...</option>  
-              </select>  
-            </td>  
-          </tr>  
-          <tr>  
-            <td>Paket</td>  
-            <td>  
-              <select id="paket" required>  
-                <option value="">Pilih Layanan Dulu</option>  
-              </select>  
-            </td>  
-          </tr>  
-          <tr>  
-            <td>Jumlah</td>  
-            <td>  
-              <input type="number" id="jumlah" min="1" value="1" onchange="updatePointByJumlah()">  
-            </td>  
-          </tr>  
-          <tr>  
-            <td>Point</td>  
-            <td>  
-              <div class="point-action">  
-                <div>  
-                  <span id="poinSatuan">0</span> × <span id="displayJumlah">1</span> = <span id="poin">0</span>  
-                </div>  
-                <button id="btnTambah" class="btn btn-primary">Tambah</button>  
+          <tr><td>Tanggal</td><td><input type="date" id="tanggal"></td></tr>  
+          <tr><td>Layanan</td><td><select id="layanan" required><option value="">Memuat...</option></select></td></tr>  
+          <tr><td>Paket</td><td><select id="paket" required><option value="">Pilih Layanan Dulu</option></select></td></tr>  
+          <tr><td>Jumlah</td><td><input type="number" id="jumlah" min="1" value="1" oninput="updatePointByJumlah()"></td></tr>  
+          <tr><td>Point</td><td>  
+            <div class="point-action">  
+              <div>  
+                <span id="poinSatuan">0</span> × <span id="displayJumlah">1</span> = <strong id="poin">0</strong>  
               </div>  
-            </td>  
-          </tr>  
+              <button id="btnTambah" class="btn btn-primary">Tambah</button>  
+            </div>  
+          </td></tr>  
         </table>  
       </div>  
       <div class="card" style="text-align:center;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:white;">  
@@ -267,50 +178,62 @@
         <div style="font-size:24px;font-weight:bold;" id="totalPoin">0</div>  
       </div>  
       <div class="card">  
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">  
-          <h3>Daftar Kerjaan</h3>  
-          <button id="btnToggleHistory" class="btn btn-warning">Sembunyikan</button>  
+        <!-- === MODIFIKASI DI SINI: Header Tabel Kerjaan === -->  
+        <div class="history-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">  
+          <h3 style="margin: 0;">Daftar Kerjaan</h3>  
+          <div>  
+            <button class="btn btn-primary" style="margin-right: 8px;" onclick="backupData()" title="Download data kerjaan Anda"><i class="fas fa-download"></i> Backup</button>  
+            <button class="btn btn-warning" onclick="document.getElementById('importFileInput').click()" title="Restore data dari file backup"><i class="fas fa-upload"></i> Restore</button>  
+            <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="restoreData(event)">  
+            <button id="btnToggleHistory" class="btn" style="margin-left: 8px;" title="Tampilkan/Sembunyikan tabel kerjaan"><i class="fas fa-eye"></i> Sembunyikan</button> <!-- Tambah tombol toggle history -->  
+          </div>  
         </div>  
-        <table id="tabelKerjaan">  
-          <thead>  
-            <tr>  
-              <th style="width:25%">Tanggal</th>  
-              <th style="width:20%">Layanan</th>  
-              <th style="width:20%">Paket</th>  
-              <th style="width:10%">Jumlah</th>  
-              <th style="width:15%">Point</th>  
-            </tr>  
-          </thead>  
-          <tbody></tbody>  
-        </table>  
+        <!-- === AKHIR MODIFIKASI === -->  
+
+        <div id="historyTableContainer" style="overflow-x: auto;"> <!-- Wrapper untuk scroll horizontal jika perlu -->  
+          <table id="tabelKerjaan">  
+            <thead><tr><th style="width:35%">Tanggal</th><th style="width:40%">Paket</th><th style="width:25%">Poin</th></tr></thead>  
+            <tbody><!-- Data Kerjaan Dimasukkan di Sini --></tbody>  
+          </table>  
+        </div>  
       </div>  
     </div>  
+
+    <!-- Konten Tab: Grafik -->  
     <div id="chartTab" class="tabcontent">  
       <h3>Grafik Layanan Paling Banyak Dipilih</h3>  
       <canvas id="layananChart" height="220"></canvas>  
     </div>  
+
+    <!-- Konten Tab: Statistik -->  
     <div id="statTab" class="tabcontent">  
       <h3>Statistik Poin Anda</h3>  
-      <div style="font-size:17px;padding:14px 0;">  
-        <div><span class="stat-label">Harian: </span><span id="statHarian">0</span></div>  
-        <div><span class="stat-label">Mingguan: </span><span id="statMingguan">0</span></div>  
-        <div><span class="stat-label">Bulanan: </span><span id="statBulanan">0</span></div>  
+      <div style="font-size:17px;padding:14px 0; line-height: 1.8;">  
+        <div><span class="stat-label">Poin Hari Ini: </span><span id="statHarian">0</span></div>  
+        <div><span class="stat-label">Poin Minggu Ini: </span><span id="statMingguan">0</span></div>  
+        <div><span class="stat-label">Poin Bulan Ini: </span><span id="statBulanan">0</span></div>  
       </div>  
     </div>  
-  </div>  
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  
-  <script>  
-    // ======================= KONFIGURASI URL GOOGLE SCRIPT =======================  
-    const API_URL = 'https://script.google.com/macros/s/AKfycbyuSjt7dlJLXB_283b7dQNpEWm3LAjcPEwnO8ho0nF6OH82x9jKqXuRjB6pKp_-OcfLBg/exec';  
-    // ============================================================================  
+  </div> <!-- Akhir .container #mainApp -->  
 
-    let layananData = {};     // {layanan: [{paket, poin}] }  
+  <!-- Library Chart.js -->  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  
+
+  <!-- Script Aplikasi Utama -->  
+  <script>  
+    // --- KONFIGURASI ---  
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyuSjt7dlJLXB_283b7dQNpEWm3LAjcPEwnO8ho0nF6OH82x9jKqXuRjB6pKp_-OcfLBg/exec'; // Ganti dengan URL Anda jika perlu  
+
+    // --- VARIABEL GLOBAL ---  
+    let layananData = {};  
     let daftarKerjaan = [];  
     let isHistoryVisible = true;  
     let online = false;  
-    let backButtonPressedOnce = false;  
+    let chartInstance = null;  
 
-    // --- DOM SELECTORS  
+    // --- DOM SELECTORS ---  
+    const splashScreen = document.getElementById('splashScreen');  
+    const mainApp = document.getElementById('mainApp');  
     const statusOnline = document.getElementById('statusOnline');  
     const tanggalEl = document.getElementById('tanggal');  
     const layananEl = document.getElementById('layanan');  
@@ -323,333 +246,437 @@
     const totalPoinEl = document.getElementById('totalPoin');  
     const tabelBody = document.querySelector('#tabelKerjaan tbody');  
     const btnToggleHistory = document.getElementById('btnToggleHistory');  
-    const splashScreen = document.getElementById('splashScreen');  
+    const historyTableContainer = document.getElementById('historyTableContainer'); // Container tabel  
+    const layananChartCanvas = document.getElementById('layananChart');  
+    const statHarianEl = document.getElementById('statHarian');  
+    const statMingguanEl = document.getElementById('statMingguan');  
+    const statBulananEl = document.getElementById('statBulanan');  
 
-    // --- SPLASH SCREEN ---  
-    setTimeout(() => {  
-      if (splashScreen) {  
-        splashScreen.style.opacity = '0';  
-        setTimeout(() => {  
+    // --- FUNGSI UTAMA ---  
+
+    function removeSplashShowApp() {  
+      if (splashScreen && splashScreen.style.display !== 'none') {  
           splashScreen.style.display = 'none';  
-        }, 500);  
+          if (mainApp) mainApp.style.display = 'block';  
+          console.log("Splash screen dihapus");  
       }  
-    }, 1500);  
+    }  
 
-    // --- INISIALISASI APP ---  
-    document.addEventListener('DOMContentLoaded', () => {  
-      tanggalEl.valueAsDate = new Date();  
-      cekOnlineGoogleSheet();  
-      loadFromLocalStorage();  
-      renderTabel();  
-      updateTotalPoin();  
-      setupEvents();  
-    });  
+    function initializeApp() {  
+      console.log("Inisialisasi Aplikasi");  
+      setTimeout(removeSplashShowApp, 1500);  
+      try {  
+        tanggalEl.valueAsDate = new Date();  
+        loadFromLocalStorage(); // Muat data dulu  
+        updateToggleButtonStyle(); // Update tampilan tombol toggle  
+        renderTabel(); // Render tabel berdasarkan state isHistoryVisible yg dimuat  
+        updateTotalPoin();  
+        setupEvents();  
+        cekOnlineGoogleSheet();  
+      } catch(err) {  
+        console.error("Error init:", err);  
+        alert("Gagal memuat aplikasi.");  
+        removeSplashShowApp();  
+      }  
+    }  
 
-    // --- PENANGANAN ERROR ---  
     window.onerror = function(message, source, lineno, colno, error) {  
-      console.error('Error:', message, error);  
-      // Hanya tampilkan alert jika error signifikan  
-      if (message.indexOf('Script error') === -1 &&   
-          message.indexOf('ChartJS') === -1) {  
-        alert('Terjadi kesalahan: ' + message);  
-      }  
+      console.error("Global Error:", message, "at", source, ":", lineno);  
+      removeSplashShowApp();  
       return true;  
     };  
 
-    // --- PENANGANAN BACK BUTTON (UNTUK APK) ---  
-    document.addEventListener('backbutton', function(e) {  
-      e.preventDefault();  
-      if (!backButtonPressedOnce) {  
-        backButtonPressedOnce = true;  
-        alert('Tekan kembali sekali lagi untuk keluar aplikasi');  
-        setTimeout(() => {  
-          backButtonPressedOnce = false;  
-        }, 2000);  
-      } else {  
-        navigator.app && navigator.app.exitApp(); // Untuk Cordova  
-      }  
-    }, false);  
-
-    // CEK KONEKSI & FETCH DATA LAYANAN  
     function cekOnlineGoogleSheet() {  
-      statusOnline.textContent = "Cek koneksi...";  
+      statusOnline.textContent = "Memuat...";  
       statusOnline.className = "status-indikator";  
-      fetch(API_URL, {  
-        cache: "no-store",  
-        mode: 'cors',  
-        credentials: 'omit',  
-        headers: {  
-          'Accept': 'application/json'  
-        }  
-      })  
-        .then(res => {  
-          if (!res.ok) {  
-            throw new Error('Network response error: ' + res.status);  
-          }  
-          return res.json();  
+      fetch(API_URL + '?cache_bust=' + Date.now(), { cache: "no-store" })  
+        .then(response => {  
+          if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); }  
+          return response.json();  
         })  
         .then(data => {  
           online = true;  
           statusOnline.textContent = "Online";  
           statusOnline.className = "status-indikator online";  
-          if(data && data.data) {  
-            layananData = {};  
-            data.data.forEach(row => {  
-              if (!row.layanan) return;  
-              if (!layananData[row.layanan]) layananData[row.layanan]=[];  
-              layananData[row.layanan].push({  
-                paket: row.paket,  
-                poin: Number(row.poin)  
-              });  
-            });  
-            populateLayanan();  
-            populatePaket();  
-            updatePoinDisplay();  
-          }else{  
-            layananData = {};  
-            layananEl.innerHTML = '<option value="">(Tidak ada data)</option>';  
-            paketEl.innerHTML = '<option value="">Pilih Layanan</option>';  
-            updatePoinDisplay();  
+          if (data && Array.isArray(data.data)) {  
+            processLayananData(data.data);  
+          } else {  
+            handleFetchError("Data tidak valid");  
           }  
         })  
-        .catch(err => {  
-          console.error('Fetch error:', err);  
-          online = false;  
-          statusOnline.textContent = "Offline";  
-          statusOnline.className = "status-indikator offline";  
-          layananEl.innerHTML = '<option value="">(Offline)</option>';  
-          paketEl.innerHTML = '<option value="">Pilih Layanan</option>';  
+        .catch(err => handleFetchError(err.message));  
+    }  
+
+    function processLayananData(apiData) {  
+        layananData = {};  
+        apiData.forEach(row => {  
+          if (row && typeof row.layanan === 'string' && row.layanan.trim() !== '' &&  
+              typeof row.paket === 'string' && row.paket.trim() !== '' && !isNaN(Number(row.poin))) {  
+            const layanan = row.layanan.trim();  
+            if (!layananData[layanan]) layananData[layanan] = [];  
+            layananData[layanan].push({ paket: row.paket.trim(), poin: Number(row.poin) });  
+          } else {  
+            console.warn("Skipping invalid row:", row);  
+          }  
         });  
+        populateLayanan();  
+        populatePaket();  
+        updatePoinDisplay();  
+    }  
+
+    function handleFetchError(errorMessage) {  
+        online = false;  
+        statusOnline.textContent = "Offline";  
+        statusOnline.className = "status-indikator offline";  
+        layananData = {};  
+        layananEl.innerHTML = '<option value="">Gagal Memuat (Offline)</option>';  
+        paketEl.innerHTML = '<option value="">Pilih Layanan Dulu</option>';  
+        updatePoinDisplay();  
+        console.error("Fetch error:", errorMessage);  
     }  
 
     function populateLayanan() {  
-      layananEl.innerHTML = '<option value="">Pilih Layanan</option>';  
-      Object.keys(layananData).forEach(layanan => {  
+      const currentLayanan = layananEl.value;  
+      layananEl.innerHTML = '<option value="">-- Pilih Layanan --</option>';  
+      Object.keys(layananData).sort().forEach(layanan => {  
         const opt = document.createElement('option');  
-        opt.value = layanan;  
-        opt.textContent = layanan;  
+        opt.value = layanan; opt.textContent = layanan;  
         layananEl.appendChild(opt);  
       });  
+      if (layananData[currentLayanan]) layananEl.value = currentLayanan;  
     }  
+
     function populatePaket() {  
-      paketEl.innerHTML = '<option value="">Pilih Paket</option>';  
-      if (!layananEl.value) return;  
-      (layananData[layananEl.value]||[]).forEach(obj => {  
-        const opt = document.createElement('option');  
-        opt.value = obj.paket;  
-        opt.textContent = `${obj.paket} (${obj.poin} poin)`;  
-        paketEl.appendChild(opt);  
-      });  
-    }  
-    function updatePoinDisplay() {  
-      if(layananEl.value && paketEl.value){  
-        const item = (layananData[layananEl.value]||[]).find(p=>p.paket===paketEl.value);  
-        const poinPerItem = item ? item.poin : 0;  
-        const jumlah = parseInt(jumlahEl.value) || 1;  
-        poinSatuanEl.textContent = poinPerItem;  
-        displayJumlahEl.textContent = jumlah;  
-        poinEl.textContent = (poinPerItem * jumlah).toFixed(2);  
-      } else {  
-        poinSatuanEl.textContent = '0';  
-        displayJumlahEl.textContent = jumlahEl.value || 1;  
-        poinEl.textContent = '0';  
+      const selectedLayanan = layananEl.value;  
+      paketEl.innerHTML = '<option value="">-- Pilih Paket --</option>';  
+      if (selectedLayanan && layananData[selectedLayanan]) {  
+        layananData[selectedLayanan].sort((a, b) => a.paket.localeCompare(b.paket)).forEach(obj => {  
+          const opt = document.createElement('option');  
+          opt.value = obj.paket;  
+          opt.textContent = `${obj.paket} (${obj.poin} poin)`;  
+          paketEl.appendChild(opt);  
+        });  
       }  
-    }  
-    
-    function updatePointByJumlah() {  
-      displayJumlahEl.textContent = jumlahEl.value || 1;  
       updatePoinDisplay();  
     }  
-    
+
+    function updatePoinDisplay() {  
+      const selectedLayanan = layananEl.value;  
+      const selectedPaket = paketEl.value;  
+      let poinPerItem = 0;  
+      if (selectedLayanan && selectedPaket && layananData[selectedLayanan]) {  
+        const item = layananData[selectedLayanan].find(p => p.paket === selectedPaket);  
+        poinPerItem = item ? item.poin : 0;  
+      }  
+      const jumlah = parseInt(jumlahEl.value) || 0;  
+      if (jumlah < 0) jumlahEl.value = 0;  
+      poinSatuanEl.textContent = poinPerItem;  
+      displayJumlahEl.textContent = Math.max(0, jumlah); // Tampilkan 0 jika negatif  
+      poinEl.textContent = (poinPerItem * Math.max(0, jumlah)).toFixed(2);  
+    }  
+
+    function updatePointByJumlah() {  
+        if (parseInt(jumlahEl.value) < 0) jumlahEl.value = 0;  
+        updatePoinDisplay();  
+    }  
+
     function setupEvents() {  
-      layananEl.addEventListener('change', () => { populatePaket(); updatePoinDisplay(); });  
+      layananEl.addEventListener('change', populatePaket);  
       paketEl.addEventListener('change', updatePoinDisplay);  
-      jumlahEl.addEventListener('change', updatePointByJumlah);  
       jumlahEl.addEventListener('input', updatePointByJumlah);  
       btnTambah.addEventListener('click', tambahKerjaan);  
       btnToggleHistory.addEventListener('click', toggleHistory);  
-
-      // Double-click prevention  
-      btnTambah.addEventListener('click', function(e) {  
-        this.disabled = true;  
-        setTimeout(() => { this.disabled = false; }, 1000);  
-      });  
-
-      // Refresh manual online status dan data layanan setiap 2 menit  
-      setInterval(cekOnlineGoogleSheet, 120000);  
+      setInterval(cekOnlineGoogleSheet, 300000); // 5 menit refresh  
     }  
+
     function tambahKerjaan() {  
-      if(!layananEl.value || !paketEl.value) {  
-        alert('Harap pilih layanan dan paket!');  
+      const tanggal = tanggalEl.value;  
+      const layanan = layananEl.value;  
+      const paket = paketEl.value;  
+      const jumlah = parseInt(jumlahEl.value);  
+      const poinSatuan = parseFloat(poinSatuanEl.textContent);  
+      const poinTotal = parseFloat(poinEl.textContent);  
+
+      if (!tanggal || !layanan || !paket || isNaN(jumlah) || jumlah <= 0 || isNaN(poinTotal)) {  
+        alert('Harap lengkapi semua field dengan benar (Jumlah harus > 0)!');  
         return;  
       }  
-      
-      try {  
-        daftarKerjaan.push({  
-          tanggal: tanggalEl.value,  
-          layanan: layananEl.value,  
-          paket: paketEl.value,  
-          jumlah: parseInt(jumlahEl.value) || 1,  
-          poinSatuan: parseFloat(poinSatuanEl.textContent),  
-          poin: parseFloat(poinEl.textContent)  
-        });  
-        saveToLocalStorage();  
-        renderTabel();  
-        updateTotalPoin();  
-        // Reset paket & poin  
-        paketEl.value = '';  
-        jumlahEl.value = '1';  
-        poinSatuanEl.textContent = '0';  
-        displayJumlahEl.textContent = '1';  
-        poinEl.textContent = '0';  
-      } catch (err) {  
-        console.error('Error saat tambah kerjaan:', err);  
-        alert('Gagal menambah kerjaan: ' + err.message);  
-      }  
+
+      daftarKerjaan.push({  
+        id: Date.now(), tanggal: tanggal, layanan: layanan, paket: paket,  
+        jumlah: jumlah, poinSatuan: poinSatuan, poin: poinTotal  
+      });  
+      daftarKerjaan.sort((a, b) => b.id - a.id);  
+
+      saveToLocalStorage();  
+      renderTabel();  
+      updateTotalPoin();  
+      updateStatistikPoin();  
+      if (chartInstance && document.getElementById('chartTab').classList.contains('active-content')) renderLayananChart(); // Update chart jika aktif  
+
+      paketEl.value = '';  
+      jumlahEl.value = '1';  
+      updatePoinDisplay();  
+      layananEl.focus();  
     }  
+
     function renderTabel() {  
       tabelBody.innerHTML = '';  
-      daftarKerjaan.forEach((k, i) => {  
-        const tr = document.createElement('tr');  
-        tr.innerHTML = `  
-          <td>${formatTanggal(k.tanggal)}</td>  
-          <td>${k.layanan}</td>  
-          <td>${k.paket}</td>  
-          <td>${k.jumlah || 1}</td>  
-          <td>  
-            ${k.poin}  
-            <button class="btn-icon" onclick="hapusKerjaan(${i})" title="Hapus"><i class="fas fa-trash-alt"></i></button>  
-          </td>  
-        `;  
-        tabelBody.appendChild(tr);  
-      });  
+      if (daftarKerjaan.length === 0) {  
+        tabelBody.innerHTML = '<tr><td colspan="3" style="text-align:center; font-style: italic; padding: 20px;">Belum ada data kerjaan</td></tr>';  
+      } else {  
+        daftarKerjaan.forEach((k) => {  
+          const tr = document.createElement('tr');  
+          tr.innerHTML = `  
+            <td>${formatTanggal(k.tanggal)}</td>  
+            <td title="${k.layanan} - ${k.paket} (${k.jumlah}x)">${k.layanan} - ${k.paket}</td>  
+            <td>  
+              <div class="poin-column">  
+                <span>${k.poin.toFixed(2)}</span>  
+                <button class="btn-icon" onclick="hapusKerjaan(${k.id})" title="Hapus"><i class="fas fa-trash-alt"></i></button>  
+              </div>  
+            </td>  
+          `;  
+          tabelBody.appendChild(tr);  
+        });  
+      }  
+       // Terapkan visibilitas tabel  
+      historyTableContainer.style.display = isHistoryVisible ? '' : 'none';  
+      updateToggleButtonStyle(); // Pastikan tombol sesuai state  
     }  
+
     function toggleHistory() {  
       isHistoryVisible = !isHistoryVisible;  
-      tabelBody.parentElement.style.display = isHistoryVisible ? '' : 'none';  
-      btnToggleHistory.textContent = isHistoryVisible ? 'Sembunyikan' : 'Tampilkan';  
+      localStorage.setItem('historyVisible', isHistoryVisible); // Simpan state visibilitas  
+      renderTabel(); // Panggil renderTabel untuk update tampilan & tombol  
     }  
+
+     // Fungsi untuk update tampilan tombol toggle history  
+    function updateToggleButtonStyle() {  
+      if (isHistoryVisible) {  
+        btnToggleHistory.innerHTML = '<i class="fas fa-eye-slash"></i> Sembunyikan';  
+        btnToggleHistory.classList.remove('btn-success'); // Atau warna lain jika perlu  
+        btnToggleHistory.classList.add('btn-warning'); // Warna default saat terlihat  
+      } else {  
+        btnToggleHistory.innerHTML = '<i class="fas fa-eye"></i> Tampilkan';  
+        btnToggleHistory.classList.remove('btn-warning');  
+        btnToggleHistory.classList.add('btn-success'); // Warna berbeda saat tersembunyi  
+      }  
+    }  
+
+
     function updateTotalPoin() {  
-      const total = daftarKerjaan.reduce((a,b)=>a+b.poin,0);  
+      const total = daftarKerjaan.reduce((sum, item) => sum + item.poin, 0);  
       totalPoinEl.textContent = total.toFixed(2);  
     }  
+
     function saveToLocalStorage() {  
       try {  
-        localStorage.setItem('daftarKerjaan', JSON.stringify(daftarKerjaan));  
-      } catch (err) {  
-        console.error('Error menyimpan ke localStorage:', err);  
-        alert('Penyimpanan data gagal: ' + err.message);  
+        localStorage.setItem('daftarKerjaanHomeSol', JSON.stringify(daftarKerjaan));  
+        localStorage.setItem('historyVisible', isHistoryVisible); // Simpan juga state visibilitas  
+      } catch (e) {  
+        console.error("Gagal menyimpan ke localStorage:", e);  
+        alert("Peringatan: Gagal menyimpan data.");  
       }  
     }  
+
     function loadFromLocalStorage() {  
       try {  
-        const s = localStorage.getItem('daftarKerjaan');  
-        if(s) daftarKerjaan = JSON.parse(s);  
-      } catch (err) {  
-        console.error('Error memuat dari localStorage:', err);  
-        daftarKerjaan = [];  
-      }  
-    }  
-    function formatTanggal(x){  
-      try {  
-        const t = new Date(x);  
-        return t.toLocaleDateString('id-ID', { year:'numeric', month:'2-digit', day:'2-digit' });  
+        const storedData = localStorage.getItem('daftarKerjaanHomeSol');  
+        const storedVisibility = localStorage.getItem('historyVisible');  
+
+        if (storedData) {  
+          daftarKerjaan = JSON.parse(storedData);  
+          if (!Array.isArray(daftarKerjaan)) daftarKerjaan = [];  
+          else daftarKerjaan = daftarKerjaan.map((item, index) => ({ ...item, id: item.id || Date.now() + index }));  
+          daftarKerjaan.sort((a, b) => b.id - a.id);  
+        } else {  
+          daftarKerjaan = [];  
+        }  
+
+        // Muat state visibilitas, default true jika tidak ada  
+        isHistoryVisible = storedVisibility === null ? true : (storedVisibility === 'true');  
+
       } catch (e) {  
-        return x;  
+        console.error("Gagal memuat dari localStorage:", e);  
+        daftarKerjaan = [];  
+        isHistoryVisible = true; // Reset ke default jika error  
       }  
     }  
-    function hapusKerjaan(index) {  
-      if(confirm('Yakin hapus?')) {  
-        daftarKerjaan.splice(index,1);  
-        saveToLocalStorage();  
-        renderTabel();  
-        updateTotalPoin();  
-      }  
+
+    function formatTanggal(tanggalString){  
+      try {  
+        const t = new Date(tanggalString);  
+        if (isNaN(t.getTime())) return "Tgl Invalid";  
+        const userTimezoneOffset = t.getTimezoneOffset() * 60000;  
+        const localDate = new Date(t.getTime() + userTimezoneOffset);  
+        return localDate.toLocaleDateString('id-ID', { year:'numeric', month:'2-digit', day:'2-digit' });  
+      } catch (e) { return "Error Tgl"; }  
+    }  
+
+    function hapusKerjaan(id) {  
+        const itemIndex = daftarKerjaan.findIndex(item => item.id === id);  
+        if (itemIndex === -1) return;  
+        const item = daftarKerjaan[itemIndex];  
+        if (confirm(`Yakin hapus "${item.layanan} - ${item.paket}" (${formatTanggal(item.tanggal)})?`)) {  
+            daftarKerjaan.splice(itemIndex, 1);  
+            saveToLocalStorage();  
+            renderTabel();  
+            updateTotalPoin();  
+            updateStatistikPoin();  
+            if (chartInstance && document.getElementById('chartTab').classList.contains('active-content')) renderLayananChart();  
+        }  
     }  
     window.hapusKerjaan = hapusKerjaan;  
 
-    // TAB NAVIGATION  
-    function showTab(tab, btn){  
-      document.querySelectorAll('.tablink').forEach(x=>x.classList.remove('active'));  
-      btn.classList.add('active');  
-      document.querySelectorAll('.tabcontent').forEach(x=>x.classList.remove('active-content'));  
-      document.getElementById(tab).classList.add('active-content');  
-      if(tab==='chartTab') renderLayananChart();  
-      if(tab==='statTab') updateStatistikPoin();  
+    function showTab(tabId, buttonElement){  
+      document.querySelectorAll('.tabcontent').forEach(tc => tc.classList.remove('active-content'));  
+      document.querySelectorAll('.tablink').forEach(tl => tl.classList.remove('active'));  
+      document.getElementById(tabId).classList.add('active-content');  
+      buttonElement.classList.add('active');  
+      if (tabId === 'chartTab') renderLayananChart();  
+      if (tabId === 'statTab') updateStatistikPoin();  
     }  
 
-    // GRAFIK LAYANAN DIPILIH  
-    let chartInstance = null;  
     function renderLayananChart() {  
+      if (!layananChartCanvas) return;  
+      const ctx = layananChartCanvas.getContext('2d');  
+      if (!ctx) return;  
+      const countPerLayanan = daftarKerjaan.reduce((acc, item) => {  
+        acc[item.layanan] = (acc[item.layanan] || 0) + (item.jumlah || 0);  
+        return acc;  
+      }, {});  
+      const labels = Object.keys(countPerLayanan).sort();  
+      const dataValues = labels.map(label => countPerLayanan[label]);  
+      if (chartInstance) chartInstance.destroy();  
       try {  
-        const count = {};  
-        daftarKerjaan.forEach(item => {  
-          const qty = item.jumlah || 1;  
-          count[item.layanan] = (count[item.layanan]||0) + qty;  
-        });  
-        const labels = Object.keys(count);  
-        const data = Object.values(count);  
-
-        const ctx = document.getElementById('layananChart').getContext('2d');  
-        if (chartInstance) chartInstance.destroy();  
-        chartInstance = new Chart(ctx, {  
-          type: 'bar',  
-          data: {  
-            labels: labels,  
-            datasets: [{  
-              label: 'Jumlah Item',  
-              data: data,  
-              backgroundColor: 'rgba(54,162,235,0.6)',  
-              borderColor: 'rgba(54,162,235,1)',  
-              borderWidth: 1  
-            }]  
-          },  
-          options: {  
-            scales: { y: { beginAtZero:true, ticks:{precision:0} } },  
-            responsive: true,  
-            maintainAspectRatio: false  
-          }  
-        });  
+          chartInstance = new Chart(ctx, {  
+            type: 'bar',  
+            data: { labels: labels, datasets: [{ label: 'Jumlah Item', data: dataValues, backgroundColor: 'rgba(67, 97, 238, 0.6)', borderColor: 'rgba(67, 97, 238, 1)', borderWidth: 1 }] },  
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }, plugins: { legend: { display: false } } }  
+          });  
       } catch (err) {  
-        console.error('Error rendering chart:', err);  
+          console.error("Gagal membuat chart:", err);  
+          ctx.clearRect(0, 0, layananChartCanvas.width, layananChartCanvas.height);  
+          ctx.fillStyle = 'red'; ctx.font = '16px Poppins'; ctx.textAlign = 'center';  
+          ctx.fillText('Gagal memuat grafik.', layananChartCanvas.width / 2, layananChartCanvas.height / 2);  
       }  
     }  
 
-    // STATISTIK POIN HARIAN, MINGGUAN, BULANAN  
     function updateStatistikPoin() {  
-      try {  
         const now = new Date();  
-        // Harian  
-        const hariIni = now.toISOString().slice(0,10);  
-        const totalHarian = daftarKerjaan  
-          .filter(item => item.tanggal===hariIni)  
-          .reduce((a,b)=>a+b.poin,0);  
-        // Mingguan (mulai Senin)  
-        const startOfWeek = new Date(now);  
-        startOfWeek.setDate(now.getDate() - (now.getDay()||7) + 1);  
-        startOfWeek.setHours(0,0,0,0);  
-        const totalMingguan = daftarKerjaan  
-          .filter(item =>{  
-            const tgl=new Date(item.tanggal);  
-            return tgl >= startOfWeek && tgl <= now;  
-          })  
-          .reduce((a,b)=>a+b.poin,0);  
-        // Bulanan  
-        const bulan = now.getMonth(), tahun = now.getFullYear();  
-        const totalBulanan = daftarKerjaan  
-          .filter(item => {  
-            const tgl=new Date(item.tanggal);  
-            return tgl.getMonth()===bulan && tgl.getFullYear()===tahun;  
-          })  
-          .reduce((a,b)=>a+b.poin,0);  
+        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());  
+        const todayEnd = new Date(todayStart); todayEnd.setDate(todayStart.getDate() + 1);  
+        const dayOfWeek = now.getDay(); // 0=Sun, 1=Mon  
+        const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;  
+        const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diffToMonday); weekStart.setHours(0,0,0,0);  
+        const weekEnd = new Date(weekStart); weekEnd.setDate(weekStart.getDate() + 7);  
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);  
+        const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1);  
+        let totalHarian = 0, totalMingguan = 0, totalBulanan = 0;  
 
-        document.getElementById("statHarian").textContent   = totalHarian.toFixed(2);  
-        document.getElementById("statMingguan").textContent = totalMingguan.toFixed(2);  
-        document.getElementById("statBulanan").textContent  = totalBulanan.toFixed(2);  
-      } catch (err) {  
-        console.error('Error update statistik:', err);  
-      }  
+        daftarKerjaan.forEach(item => {  
+            try {  
+                const itemDate = new Date(item.tanggal);  
+                if (isNaN(itemDate.getTime())) return;  
+                const userTimezoneOffset = itemDate.getTimezoneOffset() * 60000;  
+                const itemUtcDate = new Date(itemDate.getTime() + userTimezoneOffset); // Use UTC adjusted date for comparisons  
+                if (itemUtcDate >= todayStart && itemUtcDate < todayEnd) totalHarian += item.poin;  
+                if (itemUtcDate >= weekStart && itemUtcDate < weekEnd) totalMingguan += item.poin;  
+                if (itemUtcDate >= monthStart && itemUtcDate < monthEnd) totalBulanan += item.poin;  
+            } catch (e) { console.error("Error processing date for stats:", item.tanggal, e); }  
+        });  
+
+        statHarianEl.textContent = totalHarian.toFixed(2);  
+        statMingguanEl.textContent = totalMingguan.toFixed(2);  
+        statBulananEl.textContent = totalBulanan.toFixed(2);  
     }  
+
+    // === FUNGSI BARU: Backup & Restore ===  
+    function backupData() {  
+        const data = localStorage.getItem('daftarKerjaanHomeSol');  
+        if (!data || data === '[]') { // Cek jika data kosong atau hanya array kosong  
+            alert("Belum ada data kerjaan untuk dibackup!");  
+            return;  
+        }  
+        try {  
+            const blob = new Blob([data], { type: 'application/json;charset=utf-8' }); // Specify charset  
+            const a = document.createElement('a');  
+            a.href = URL.createObjectURL(blob);  
+            const today = new Date().toISOString().slice(0, 10); // Format YYYY-MM-DD  
+            a.download = `HomeSol_backup_${today}.json`;  
+            a.style.display = 'none'; // Hide the link  
+            document.body.appendChild(a); // Append to body to ensure it works on Firefox  
+            a.click();  
+            document.body.removeChild(a); // Clean up the link  
+            URL.revokeObjectURL(a.href); // Free up memory  
+            alert('Backup berhasil diunduh sebagai ' + a.download);  
+        } catch(e) {  
+            console.error("Error saat backup:", e);  
+            alert('Gagal membuat file backup.');  
+        }  
+    }  
+
+    function restoreData(event) {  
+        const input = event.target;  
+        if (!input.files || !input.files[0]) return;  
+        const file = input.files[0];  
+
+        // Validasi tipe file (opsional tapi bagus)  
+        if (file.type !== 'application/json') {  
+            alert('File tidak valid! Harap pilih file backup .json yang benar.');  
+            input.value = ""; // Reset input  
+            return;  
+        }  
+
+        const reader = new FileReader();  
+        reader.onload = function(e) {  
+            try {  
+                const importedData = JSON.parse(e.target.result);  
+                // Validasi isi file (harus array)  
+                if (Array.isArray(importedData)) {  
+                    if (confirm("PERINGATAN: Semua data kerjaan saat ini akan diganti dengan data dari file backup. Yakin ingin melanjutkan?")) {  
+                        // Validasi lebih lanjut setiap item (opsional)  
+                        const validatedData = importedData.map((item, index) => ({  
+                          id: item.id || Date.now() + index, // Pastikan ada ID  
+                          tanggal: item.tanggal || new Date().toISOString().slice(0,10), // Default tanggal jika kosong  
+                          layanan: item.layanan || 'Unknown',  
+                          paket: item.paket || 'Unknown',  
+                          jumlah: !isNaN(Number(item.jumlah)) ? Number(item.jumlah) : 1,  
+                          poinSatuan: !isNaN(Number(item.poinSatuan)) ? Number(item.poinSatuan) : 0,  
+                          poin: !isNaN(Number(item.poin)) ? Number(item.poin) : 0  
+                        })).sort((a, b) => b.id - a.id); // Urutkan lagi  
+
+                        localStorage.setItem('daftarKerjaanHomeSol', JSON.stringify(validatedData));  
+                        loadFromLocalStorage(); // Muat ulang data yang baru disimpan  
+                        renderTabel(); // Tampilkan tabel baru  
+                        updateTotalPoin(); // Hitung ulang total poin  
+                        updateStatistikPoin(); // Hitung ulang statistik  
+                        if (chartInstance && document.getElementById('chartTab').classList.contains('active-content')) renderLayananChart(); // Update chart jika aktif  
+                        alert('Data berhasil di-restore dari file!');  
+                    }  
+                } else {  
+                    throw new Error('Format data dalam file tidak valid (bukan array).'); // Lempar error jika bukan array  
+                }  
+            } catch(err) {  
+                console.error("Error saat restore:", err);  
+                alert(`Gagal memproses file backup: ${err.message}. Pastikan file tidak rusak dan formatnya benar.`);  
+            } finally {  
+                // Reset input file agar bisa memilih file yang sama lagi jika perlu  
+                input.value = "";  
+            }  
+        };  
+        reader.onerror = function() {  
+            alert('Gagal membaca file.');  
+            input.value = "";  
+        };  
+        reader.readAsText(file);  
+    }  
+    // === AKHIR FUNGSI BARU ===  
+
+    // --- Jalankan Aplikasi Saat DOM Siap ---  
+    document.addEventListener('DOMContentLoaded', initializeApp);  
+
   </script>  
 </body>  
 </html>
