@@ -1,0 +1,171 @@
+:root {  
+  --primary: #4361ee;  
+  --primary-light: #4895ef;  
+  --danger: #f72585;  
+  --warning: #f8961e;  
+  --light: #f8f9fa;  
+  --dark: #212529;  
+  --border-radius: 10px;  
+  --box-shadow: 0 4px 15px rgba(0,0,0,0.08);  
+  --success: #38b000;  
+  --offline: #f72585;  
+}  
+body {  
+  font-family: 'Poppins', sans-serif;  
+  background-color: #f5f7ff;  
+  margin: 0;  
+  padding: 20px;  
+  color: var(--dark);  
+}  
+.container {  
+  max-width: 830px;  
+  margin: 0 auto;  
+}  
+.app-header {  
+  display: flex;  
+  align-items: center;  
+  gap: 10px;  
+  margin-bottom: 20px;  
+}  
+.crown-icon {  
+  color: gold;  
+  font-size: 24px;  
+  text-shadow: 0 0 3px rgba(0,0,0,0.3);  
+}  
+.status-indikator {  
+  margin-left: auto;  
+  padding: 5px 12px;  
+  border-radius: 20px;  
+  font-weight: 500;  
+  font-size: .98em;  
+}  
+.online {  
+  background: var(--primary-light);  
+  color: #fff;  
+}  
+.offline {  
+  background: var(--offline);  
+  color: #fff;  
+}  
+.tabs {  
+  display: flex;  
+  margin-bottom: 20px;  
+  gap: 7px;  
+}  
+.tablink {  
+  padding: 10px 15px;  
+  cursor: pointer;  
+  background-color: var(--light);  
+  border-radius: 5px 5px 0 0;  
+  border: none;  
+  font-family: 'Poppins';  
+  font-weight: 500;  
+  color: var(--dark);  
+  transition: 0.2s;  
+}  
+.tablink.active, .tablink:hover {  
+  background-color: var(--primary);  
+  color: white;  
+}  
+.tabcontent {  
+  display: none;  
+  background: white;  
+  padding: 22px 18px;  
+  border-radius: 0 0 10px 10px;  
+  box-shadow: var(--box-shadow);  
+  margin-bottom: 28px;  
+}  
+.tabcontent.active-content {  
+  display: block;  
+}  
+.card {  
+  background: white;  
+  border-radius: var(--border-radius);  
+  box-shadow: var(--box-shadow);  
+  padding: 20px;  
+  margin-bottom: 20px;  
+}  
+table {  
+  width: 100%;  
+  border-collapse: collapse;  
+  margin-top: 12px;  
+}  
+th, td {  
+  padding: 12px 10px;  
+  border-bottom: 1px solid #f0f0f0;  
+  text-align: left;  
+}  
+th {  
+  background-color: var(--primary);  
+  color: white;  
+}  
+.point-action {  
+  display: flex;  
+  align-items: center;  
+  justify-content: space-between;  
+}  
+.btn-icon {  
+  background: none;  
+  border: none;  
+  color: var(--danger);  
+  cursor: pointer;  
+  font-size: 16px;  
+  margin-left: 8px;  
+}  
+.btn {  
+  padding: 8px 15px;  
+  border: none;  
+  border-radius: 5px;  
+  cursor: pointer;  
+  font-family: 'Poppins';  
+  font-weight: 500;  
+}  
+.btn-primary {  
+  background-color: var(--primary);  
+  color: white;  
+}  
+.btn-danger {  
+  background-color: var(--danger);  
+  color: white;  
+}  
+.btn-warning {  
+  background-color: var(--warning);  
+  color: white;  
+}  
+input, select {  
+  width: 100%;  
+  padding: 10px;  
+  border: 1px solid #ddd;  
+  border-radius: 5px;  
+  font-family: 'Poppins';  
+}  
+canvas {  
+  max-width: 100%!important;  
+  background: #fbfcff;  
+  border-radius: 6px;  
+  margin-top: 16px;  
+}  
+.stat-label {  
+  font-weight: 500;  
+  color: var(--primary);  
+}  
+
+/* Tabel banyaknya layanan */  
+#tabelHitungLayanan table {  
+  margin-top:0;  
+  font-size:16px;  
+}  
+#tabelHitungLayanan th,#tabelHitungLayanan td {  
+  text-align:center;  
+}  
+
+/* --------- RESPONSIVE/MOBILE STYLE --------- */  
+@media (max-width: 600px) {  
+  .container {padding:6px;}  
+  .card {padding:10px;}  
+  .tabcontent {padding:10px 4px;}  
+  .tabs {flex-direction: column;}  
+  table, th, td {font-size: 15px;}  
+  th, td {padding: 7px 5px;}  
+  h1, h2, h3, h4 {font-size:1.15em;}  
+}

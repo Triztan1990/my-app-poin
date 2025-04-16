@@ -1,0 +1,655 @@
+<!DOCTYPE html>  
+<html lang="id">  
+<head>  
+  <meta charset="UTF-8">  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">  
+  <title>Aplikasi Pain</title>  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">  
+  <style>  
+    :root {  
+      --primary: #4361ee;  
+      --primary-light: #4895ef;  
+      --danger: #f72585;  
+      --warning: #f8961e;  
+      --light: #f8f9fa;  
+      --dark: #212529;  
+      --border-radius: 10px;  
+      --box-shadow: 0 4px 15px rgba(0,0,0,0.08);  
+      --success: #38b000;  
+      --offline: #f72585;  
+    }  
+    body {  
+      font-family: 'Poppins', sans-serif;  
+      background-color: #f5f7ff;  
+      margin: 0;  
+      padding: 20px;  
+      color: var(--dark);  
+      overscroll-behavior: contain;  
+    }  
+    .container {  
+      max-width: 830px;  
+      margin: 0 auto;  
+    }  
+    .app-header {  
+      display: flex;  
+      align-items: center;  
+      gap: 10px;  
+      margin-bottom: 20px;  
+    }  
+    .crown-icon {  
+      color: gold;  
+      font-size: 24px;  
+      text-shadow: 0 0 3px rgba(0,0,0,0.3);  
+    }  
+    .status-indikator {  
+      margin-left: auto;  
+      padding: 5px 12px;  
+      border-radius: 20px;  
+      font-weight: 500;  
+      font-size: .98em;  
+    }  
+    .online {  
+      background: var(--primary-light);  
+      color: #fff;  
+    }  
+    .offline {  
+      background: var(--offline);  
+      color: #fff;  
+    }  
+    .tabs {  
+      display: flex;  
+      margin-bottom: 20px;  
+      gap: 7px;  
+    }  
+    .tablink {  
+      padding: 10px 15px;  
+      cursor: pointer;  
+      background-color: var(--light);  
+      border-radius: 5px 5px 0 0;  
+      border: none;  
+      font-family: 'Poppins';  
+      font-weight: 500;  
+      color: var(--dark);  
+      transition: 0.2s;  
+    }  
+    .tablink.active, .tablink:hover {  
+      background-color: var(--primary);  
+      color: white;  
+    }  
+    .tabcontent {  
+      display: none;  
+      background: white;  
+      padding: 22px 18px;  
+      border-radius: 0 0 10px 10px;  
+      box-shadow: var(--box-shadow);  
+      margin-bottom: 28px;  
+    }  
+    .tabcontent.active-content {  
+      display: block;  
+    }  
+    .card {  
+      background: white;  
+      border-radius: var(--border-radius);  
+      box-shadow: var(--box-shadow);  
+      padding: 20px;  
+      margin-bottom: 20px;  
+    }  
+    table {  
+      width: 100%;  
+      border-collapse: collapse;  
+      margin-top: 12px;  
+    }  
+    th, td {  
+      padding: 12px 10px;  
+      border-bottom: 1px solid #f0f0f0;  
+      text-align: left;  
+    }  
+    th {  
+      background-color: var(--primary);  
+      color: white;  
+    }  
+    .point-action {  
+      display: flex;  
+      align-items: center;  
+      justify-content: space-between;  
+    }  
+    .btn-icon {  
+      background: none;  
+      border: none;  
+      color: var(--danger);  
+      cursor: pointer;  
+      font-size: 16px;  
+      margin-left: 8px;  
+    }  
+    .btn {  
+      padding: 8px 15px;  
+      border: none;  
+      border-radius: 5px;  
+      cursor: pointer;  
+      font-family: 'Poppins';  
+      font-weight: 500;  
+    }  
+    .btn-primary {  
+      background-color: var(--primary);  
+      color: white;  
+    }  
+    .btn-danger {  
+      background-color: var(--danger);  
+      color: white;  
+    }  
+    .btn-warning {  
+      background-color: var(--warning);  
+      color: white;  
+    }  
+    input, select {  
+      width: 100%;  
+      padding: 10px;  
+      border: 1px solid #ddd;  
+      border-radius: 5px;  
+      font-family: 'Poppins';  
+    }  
+    input[type="number"] {  
+      text-align: center;  
+    }  
+    canvas {  
+      max-width: 100%!important;  
+      background: #fbfcff;  
+      border-radius: 6px;  
+      margin-top: 16px;  
+    }  
+    .stat-label {  
+      font-weight: 500;  
+      color: var(--primary);  
+    }  
+
+    /* --------- RESPONSIVE/MOBILE STYLE --------- */  
+    @media (max-width: 600px) {  
+      .container {padding:6px;}  
+      .card {padding:10px;}  
+      .tabcontent {padding:10px 4px;}  
+      .tabs {flex-direction: column;}  
+      table, th, td {font-size: 15px;}  
+      th, td {padding: 7px 5px;}  
+      h1, h2, h3, h4 {font-size:1.15em;}  
+    }  
+    
+    /* PENYESUAIAN UNTUK APK */  
+    @media (display-mode: standalone) {  
+      body {   
+        padding-top: env(safe-area-inset-top, 20px);  
+        padding-bottom: env(safe-area-inset-bottom, 20px);   
+      }  
+    }  
+    .splash-screen {  
+      position: fixed;  
+      top: 0;  
+      left: 0;  
+      width: 100%;  
+      height: 100%;  
+      background-color: var(--primary);  
+      display: flex;  
+      flex-direction: column;  
+      justify-content: center;  
+      align-items: center;  
+      z-index: 9999;  
+      transition: opacity 0.5s;  
+    }  
+    .splash-screen h1 {  
+      color: white;  
+      font-size: 24px;  
+      margin-top: 20px;  
+    }  
+  </style>  
+</head>  
+<body>  
+  <!-- Splash Screen -->  
+  <div class="splash-screen" id="splashScreen">  
+    <i class="fas fa-crown crown-icon" style="font-size: 50px; color: gold;"></i>  
+    <h1>Aplikasi Pain</h1>  
+  </div>  
+
+  <div class="container">  
+    <div class="app-header">  
+      <i class="fas fa-crown crown-icon"></i>  
+      <h1 style="font-weight:600">Aplikasi Pain</h1>  
+      <span id="statusOnline" class="status-indikator offline">Offline</span>  
+    </div>  
+    <div class="tabs">  
+      <button class="tablink active" onclick="showTab('formTab', this)">Form Kerjaan</button>  
+      <button class="tablink" onclick="showTab('chartTab', this)">Grafik Layanan</button>  
+      <button class="tablink" onclick="showTab('statTab', this)">Statistik Poin</button>  
+    </div>  
+    <div id="formTab" class="tabcontent active-content">  
+      <div class="card">  
+        <table>  
+          <tr>  
+            <td>Tanggal</td>  
+            <td><input type="date" id="tanggal"></td>  
+          </tr>  
+          <tr>  
+            <td>Layanan</td>  
+            <td>  
+              <select id="layanan" required>  
+                <option value="">Memuat...</option>  
+              </select>  
+            </td>  
+          </tr>  
+          <tr>  
+            <td>Paket</td>  
+            <td>  
+              <select id="paket" required>  
+                <option value="">Pilih Layanan Dulu</option>  
+              </select>  
+            </td>  
+          </tr>  
+          <tr>  
+            <td>Jumlah</td>  
+            <td>  
+              <input type="number" id="jumlah" min="1" value="1" onchange="updatePointByJumlah()">  
+            </td>  
+          </tr>  
+          <tr>  
+            <td>Point</td>  
+            <td>  
+              <div class="point-action">  
+                <div>  
+                  <span id="poinSatuan">0</span> × <span id="displayJumlah">1</span> = <span id="poin">0</span>  
+                </div>  
+                <button id="btnTambah" class="btn btn-primary">Tambah</button>  
+              </div>  
+            </td>  
+          </tr>  
+        </table>  
+      </div>  
+      <div class="card" style="text-align:center;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:white;">  
+        <h3>Total Point Anda</h3>  
+        <div style="font-size:24px;font-weight:bold;" id="totalPoin">0</div>  
+      </div>  
+      <div class="card">  
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">  
+          <h3>Daftar Kerjaan</h3>  
+          <button id="btnToggleHistory" class="btn btn-warning">Sembunyikan</button>  
+        </div>  
+        <table id="tabelKerjaan">  
+          <thead>  
+            <tr>  
+              <th style="width:25%">Tanggal</th>  
+              <th style="width:20%">Layanan</th>  
+              <th style="width:20%">Paket</th>  
+              <th style="width:10%">Jumlah</th>  
+              <th style="width:15%">Point</th>  
+            </tr>  
+          </thead>  
+          <tbody></tbody>  
+        </table>  
+      </div>  
+    </div>  
+    <div id="chartTab" class="tabcontent">  
+      <h3>Grafik Layanan Paling Banyak Dipilih</h3>  
+      <canvas id="layananChart" height="220"></canvas>  
+    </div>  
+    <div id="statTab" class="tabcontent">  
+      <h3>Statistik Poin Anda</h3>  
+      <div style="font-size:17px;padding:14px 0;">  
+        <div><span class="stat-label">Harian: </span><span id="statHarian">0</span></div>  
+        <div><span class="stat-label">Mingguan: </span><span id="statMingguan">0</span></div>  
+        <div><span class="stat-label">Bulanan: </span><span id="statBulanan">0</span></div>  
+      </div>  
+    </div>  
+  </div>  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  
+  <script>  
+    // ======================= KONFIGURASI URL GOOGLE SCRIPT =======================  
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyuSjt7dlJLXB_283b7dQNpEWm3LAjcPEwnO8ho0nF6OH82x9jKqXuRjB6pKp_-OcfLBg/exec';  
+    // ============================================================================  
+
+    let layananData = {};     // {layanan: [{paket, poin}] }  
+    let daftarKerjaan = [];  
+    let isHistoryVisible = true;  
+    let online = false;  
+    let backButtonPressedOnce = false;  
+
+    // --- DOM SELECTORS  
+    const statusOnline = document.getElementById('statusOnline');  
+    const tanggalEl = document.getElementById('tanggal');  
+    const layananEl = document.getElementById('layanan');  
+    const paketEl = document.getElementById('paket');  
+    const jumlahEl = document.getElementById('jumlah');  
+    const poinSatuanEl = document.getElementById('poinSatuan');  
+    const displayJumlahEl = document.getElementById('displayJumlah');  
+    const poinEl = document.getElementById('poin');  
+    const btnTambah = document.getElementById('btnTambah');  
+    const totalPoinEl = document.getElementById('totalPoin');  
+    const tabelBody = document.querySelector('#tabelKerjaan tbody');  
+    const btnToggleHistory = document.getElementById('btnToggleHistory');  
+    const splashScreen = document.getElementById('splashScreen');  
+
+    // --- SPLASH SCREEN ---  
+    setTimeout(() => {  
+      if (splashScreen) {  
+        splashScreen.style.opacity = '0';  
+        setTimeout(() => {  
+          splashScreen.style.display = 'none';  
+        }, 500);  
+      }  
+    }, 1500);  
+
+    // --- INISIALISASI APP ---  
+    document.addEventListener('DOMContentLoaded', () => {  
+      tanggalEl.valueAsDate = new Date();  
+      cekOnlineGoogleSheet();  
+      loadFromLocalStorage();  
+      renderTabel();  
+      updateTotalPoin();  
+      setupEvents();  
+    });  
+
+    // --- PENANGANAN ERROR ---  
+    window.onerror = function(message, source, lineno, colno, error) {  
+      console.error('Error:', message, error);  
+      // Hanya tampilkan alert jika error signifikan  
+      if (message.indexOf('Script error') === -1 &&   
+          message.indexOf('ChartJS') === -1) {  
+        alert('Terjadi kesalahan: ' + message);  
+      }  
+      return true;  
+    };  
+
+    // --- PENANGANAN BACK BUTTON (UNTUK APK) ---  
+    document.addEventListener('backbutton', function(e) {  
+      e.preventDefault();  
+      if (!backButtonPressedOnce) {  
+        backButtonPressedOnce = true;  
+        alert('Tekan kembali sekali lagi untuk keluar aplikasi');  
+        setTimeout(() => {  
+          backButtonPressedOnce = false;  
+        }, 2000);  
+      } else {  
+        navigator.app && navigator.app.exitApp(); // Untuk Cordova  
+      }  
+    }, false);  
+
+    // CEK KONEKSI & FETCH DATA LAYANAN  
+    function cekOnlineGoogleSheet() {  
+      statusOnline.textContent = "Cek koneksi...";  
+      statusOnline.className = "status-indikator";  
+      fetch(API_URL, {  
+        cache: "no-store",  
+        mode: 'cors',  
+        credentials: 'omit',  
+        headers: {  
+          'Accept': 'application/json'  
+        }  
+      })  
+        .then(res => {  
+          if (!res.ok) {  
+            throw new Error('Network response error: ' + res.status);  
+          }  
+          return res.json();  
+        })  
+        .then(data => {  
+          online = true;  
+          statusOnline.textContent = "Online";  
+          statusOnline.className = "status-indikator online";  
+          if(data && data.data) {  
+            layananData = {};  
+            data.data.forEach(row => {  
+              if (!row.layanan) return;  
+              if (!layananData[row.layanan]) layananData[row.layanan]=[];  
+              layananData[row.layanan].push({  
+                paket: row.paket,  
+                poin: Number(row.poin)  
+              });  
+            });  
+            populateLayanan();  
+            populatePaket();  
+            updatePoinDisplay();  
+          }else{  
+            layananData = {};  
+            layananEl.innerHTML = '<option value="">(Tidak ada data)</option>';  
+            paketEl.innerHTML = '<option value="">Pilih Layanan</option>';  
+            updatePoinDisplay();  
+          }  
+        })  
+        .catch(err => {  
+          console.error('Fetch error:', err);  
+          online = false;  
+          statusOnline.textContent = "Offline";  
+          statusOnline.className = "status-indikator offline";  
+          layananEl.innerHTML = '<option value="">(Offline)</option>';  
+          paketEl.innerHTML = '<option value="">Pilih Layanan</option>';  
+        });  
+    }  
+
+    function populateLayanan() {  
+      layananEl.innerHTML = '<option value="">Pilih Layanan</option>';  
+      Object.keys(layananData).forEach(layanan => {  
+        const opt = document.createElement('option');  
+        opt.value = layanan;  
+        opt.textContent = layanan;  
+        layananEl.appendChild(opt);  
+      });  
+    }  
+    function populatePaket() {  
+      paketEl.innerHTML = '<option value="">Pilih Paket</option>';  
+      if (!layananEl.value) return;  
+      (layananData[layananEl.value]||[]).forEach(obj => {  
+        const opt = document.createElement('option');  
+        opt.value = obj.paket;  
+        opt.textContent = `${obj.paket} (${obj.poin} poin)`;  
+        paketEl.appendChild(opt);  
+      });  
+    }  
+    function updatePoinDisplay() {  
+      if(layananEl.value && paketEl.value){  
+        const item = (layananData[layananEl.value]||[]).find(p=>p.paket===paketEl.value);  
+        const poinPerItem = item ? item.poin : 0;  
+        const jumlah = parseInt(jumlahEl.value) || 1;  
+        poinSatuanEl.textContent = poinPerItem;  
+        displayJumlahEl.textContent = jumlah;  
+        poinEl.textContent = (poinPerItem * jumlah).toFixed(2);  
+      } else {  
+        poinSatuanEl.textContent = '0';  
+        displayJumlahEl.textContent = jumlahEl.value || 1;  
+        poinEl.textContent = '0';  
+      }  
+    }  
+    
+    function updatePointByJumlah() {  
+      displayJumlahEl.textContent = jumlahEl.value || 1;  
+      updatePoinDisplay();  
+    }  
+    
+    function setupEvents() {  
+      layananEl.addEventListener('change', () => { populatePaket(); updatePoinDisplay(); });  
+      paketEl.addEventListener('change', updatePoinDisplay);  
+      jumlahEl.addEventListener('change', updatePointByJumlah);  
+      jumlahEl.addEventListener('input', updatePointByJumlah);  
+      btnTambah.addEventListener('click', tambahKerjaan);  
+      btnToggleHistory.addEventListener('click', toggleHistory);  
+
+      // Double-click prevention  
+      btnTambah.addEventListener('click', function(e) {  
+        this.disabled = true;  
+        setTimeout(() => { this.disabled = false; }, 1000);  
+      });  
+
+      // Refresh manual online status dan data layanan setiap 2 menit  
+      setInterval(cekOnlineGoogleSheet, 120000);  
+    }  
+    function tambahKerjaan() {  
+      if(!layananEl.value || !paketEl.value) {  
+        alert('Harap pilih layanan dan paket!');  
+        return;  
+      }  
+      
+      try {  
+        daftarKerjaan.push({  
+          tanggal: tanggalEl.value,  
+          layanan: layananEl.value,  
+          paket: paketEl.value,  
+          jumlah: parseInt(jumlahEl.value) || 1,  
+          poinSatuan: parseFloat(poinSatuanEl.textContent),  
+          poin: parseFloat(poinEl.textContent)  
+        });  
+        saveToLocalStorage();  
+        renderTabel();  
+        updateTotalPoin();  
+        // Reset paket & poin  
+        paketEl.value = '';  
+        jumlahEl.value = '1';  
+        poinSatuanEl.textContent = '0';  
+        displayJumlahEl.textContent = '1';  
+        poinEl.textContent = '0';  
+      } catch (err) {  
+        console.error('Error saat tambah kerjaan:', err);  
+        alert('Gagal menambah kerjaan: ' + err.message);  
+      }  
+    }  
+    function renderTabel() {  
+      tabelBody.innerHTML = '';  
+      daftarKerjaan.forEach((k, i) => {  
+        const tr = document.createElement('tr');  
+        tr.innerHTML = `  
+          <td>${formatTanggal(k.tanggal)}</td>  
+          <td>${k.layanan}</td>  
+          <td>${k.paket}</td>  
+          <td>${k.jumlah || 1}</td>  
+          <td>  
+            ${k.poin}  
+            <button class="btn-icon" onclick="hapusKerjaan(${i})" title="Hapus"><i class="fas fa-trash-alt"></i></button>  
+          </td>  
+        `;  
+        tabelBody.appendChild(tr);  
+      });  
+    }  
+    function toggleHistory() {  
+      isHistoryVisible = !isHistoryVisible;  
+      tabelBody.parentElement.style.display = isHistoryVisible ? '' : 'none';  
+      btnToggleHistory.textContent = isHistoryVisible ? 'Sembunyikan' : 'Tampilkan';  
+    }  
+    function updateTotalPoin() {  
+      const total = daftarKerjaan.reduce((a,b)=>a+b.poin,0);  
+      totalPoinEl.textContent = total.toFixed(2);  
+    }  
+    function saveToLocalStorage() {  
+      try {  
+        localStorage.setItem('daftarKerjaan', JSON.stringify(daftarKerjaan));  
+      } catch (err) {  
+        console.error('Error menyimpan ke localStorage:', err);  
+        alert('Penyimpanan data gagal: ' + err.message);  
+      }  
+    }  
+    function loadFromLocalStorage() {  
+      try {  
+        const s = localStorage.getItem('daftarKerjaan');  
+        if(s) daftarKerjaan = JSON.parse(s);  
+      } catch (err) {  
+        console.error('Error memuat dari localStorage:', err);  
+        daftarKerjaan = [];  
+      }  
+    }  
+    function formatTanggal(x){  
+      try {  
+        const t = new Date(x);  
+        return t.toLocaleDateString('id-ID', { year:'numeric', month:'2-digit', day:'2-digit' });  
+      } catch (e) {  
+        return x;  
+      }  
+    }  
+    function hapusKerjaan(index) {  
+      if(confirm('Yakin hapus?')) {  
+        daftarKerjaan.splice(index,1);  
+        saveToLocalStorage();  
+        renderTabel();  
+        updateTotalPoin();  
+      }  
+    }  
+    window.hapusKerjaan = hapusKerjaan;  
+
+    // TAB NAVIGATION  
+    function showTab(tab, btn){  
+      document.querySelectorAll('.tablink').forEach(x=>x.classList.remove('active'));  
+      btn.classList.add('active');  
+      document.querySelectorAll('.tabcontent').forEach(x=>x.classList.remove('active-content'));  
+      document.getElementById(tab).classList.add('active-content');  
+      if(tab==='chartTab') renderLayananChart();  
+      if(tab==='statTab') updateStatistikPoin();  
+    }  
+
+    // GRAFIK LAYANAN DIPILIH  
+    let chartInstance = null;  
+    function renderLayananChart() {  
+      try {  
+        const count = {};  
+        daftarKerjaan.forEach(item => {  
+          const qty = item.jumlah || 1;  
+          count[item.layanan] = (count[item.layanan]||0) + qty;  
+        });  
+        const labels = Object.keys(count);  
+        const data = Object.values(count);  
+
+        const ctx = document.getElementById('layananChart').getContext('2d');  
+        if (chartInstance) chartInstance.destroy();  
+        chartInstance = new Chart(ctx, {  
+          type: 'bar',  
+          data: {  
+            labels: labels,  
+            datasets: [{  
+              label: 'Jumlah Item',  
+              data: data,  
+              backgroundColor: 'rgba(54,162,235,0.6)',  
+              borderColor: 'rgba(54,162,235,1)',  
+              borderWidth: 1  
+            }]  
+          },  
+          options: {  
+            scales: { y: { beginAtZero:true, ticks:{precision:0} } },  
+            responsive: true,  
+            maintainAspectRatio: false  
+          }  
+        });  
+      } catch (err) {  
+        console.error('Error rendering chart:', err);  
+      }  
+    }  
+
+    // STATISTIK POIN HARIAN, MINGGUAN, BULANAN  
+    function updateStatistikPoin() {  
+      try {  
+        const now = new Date();  
+        // Harian  
+        const hariIni = now.toISOString().slice(0,10);  
+        const totalHarian = daftarKerjaan  
+          .filter(item => item.tanggal===hariIni)  
+          .reduce((a,b)=>a+b.poin,0);  
+        // Mingguan (mulai Senin)  
+        const startOfWeek = new Date(now);  
+        startOfWeek.setDate(now.getDate() - (now.getDay()||7) + 1);  
+        startOfWeek.setHours(0,0,0,0);  
+        const totalMingguan = daftarKerjaan  
+          .filter(item =>{  
+            const tgl=new Date(item.tanggal);  
+            return tgl >= startOfWeek && tgl <= now;  
+          })  
+          .reduce((a,b)=>a+b.poin,0);  
+        // Bulanan  
+        const bulan = now.getMonth(), tahun = now.getFullYear();  
+        const totalBulanan = daftarKerjaan  
+          .filter(item => {  
+            const tgl=new Date(item.tanggal);  
+            return tgl.getMonth()===bulan && tgl.getFullYear()===tahun;  
+          })  
+          .reduce((a,b)=>a+b.poin,0);  
+
+        document.getElementById("statHarian").textContent   = totalHarian.toFixed(2);  
+        document.getElementById("statMingguan").textContent = totalMingguan.toFixed(2);  
+        document.getElementById("statBulanan").textContent  = totalBulanan.toFixed(2);  
+      } catch (err) {  
+        console.error('Error update statistik:', err);  
+      }  
+    }  
+  </script>  
+</body>  
+</html>
