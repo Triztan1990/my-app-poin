@@ -160,12 +160,38 @@ canvas {
 }  
 
 /* --------- RESPONSIVE/MOBILE STYLE --------- */  
-@media (max-width: 600px) {  
-  .container {padding:6px;}  
-  .card {padding:10px;}  
-  .tabcontent {padding:10px 4px;}  
-  .tabs {flex-direction: column;}  
-  table, th, td {font-size: 15px;}  
-  th, td {padding: 7px 5px;}  
-  h1, h2, h3, h4 {font-size:1.15em;}  
+@media (max-width: 600px) {
+  /* ... kode existing lainnya ... */
+  
+  /* Perbaikan untuk target input group */
+  .target-input-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .target-input-group input {
+    width: 100%;
+    text-align: left;
+    padding: 8px;
+    font-size: 0.9em;
+  }
+  
+  .progress-card {
+    padding: 15px;
+  }
+  
+  .progress-card h3 {
+    font-size: 1.1em;
+    margin-bottom: 15px;
+  }
+  
+  #totalPoin {
+    font-size: 1.8em;
+    margin-bottom: 15px;
+  }
+  
+  .progress-text {
+    font-size: 0.85em;
+  }
 }
