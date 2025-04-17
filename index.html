@@ -98,14 +98,53 @@
     #layananChart { height: 260px !important; max-height: 260px; background: transparent; border-radius: 6px; margin-top: 20px; transition: background-color var(--transition-speed) ease; }  
     .stat-label { font-weight: 500; color: var(--primary); }  
     /* --- Progress Bar --- */  
-    .progress-card { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; padding: 25px; }  
-    .progress-card h3 { color: white; }  
-    .target-input-group { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }  
-    .target-input-group label { font-weight: 500; flex-shrink: 0; }  
-    .target-input-group input { width: auto; flex-grow: 1; text-align: right; background-color: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); color: white; }  
-    .progress-container { background-color: rgba(255, 255, 255, 0.2); border-radius: 20px; height: 12px; overflow: hidden; margin-bottom: 8px; }  
-    .progress-bar { background-color: var(--success); height: 100%; width: 0%; border-radius: 20px; transition: width 0.5s ease-out; }  
-    .progress-text { font-size: 0.95em; text-align: center; }  
+    .progress-card { 
+      background: linear-gradient(135deg, var(--primary), var(--primary-light)); 
+      color: white; 
+      padding: 25px; 
+    }  
+    .progress-card h3 { 
+      color: white; 
+      margin-top: 0;
+    }  
+    .target-input-group { 
+      display: flex; 
+      align-items: center; 
+      margin-bottom: 15px; 
+    }  
+    .target-input-group label { 
+      font-weight: 500; 
+      flex-shrink: 0;
+      margin-right: 8px;
+      white-space: nowrap;
+    }  
+    .target-input-group input { 
+      width: 100%;
+      flex-grow: 1; 
+      text-align: right; 
+      background-color: rgba(255,255,255,0.1); 
+      border-color: rgba(255,255,255,0.3); 
+      color: white;
+      padding: 8px 12px;
+    }  
+    .progress-container { 
+      background-color: rgba(255, 255, 255, 0.2); 
+      border-radius: 20px; 
+      height: 12px; 
+      overflow: hidden; 
+      margin-bottom: 8px; 
+    }  
+    .progress-bar { 
+      background-color: var(--success); 
+      height: 100%; 
+      width: 0%; 
+      border-radius: 20px; 
+      transition: width 0.5s ease-out; 
+    }  
+    .progress-text { 
+      font-size: 0.95em; 
+      text-align: center; 
+    }
     /* --- Responsif (Mobile) --- */  
     @media (max-width: 600px) {  
       body { padding: 8px; }  
@@ -127,7 +166,19 @@
       .history-header { flex-direction: column; align-items: flex-start; gap: 8px; }  
       .history-header > div { margin-left: 0; width: 100%; display: flex; gap: 6px; justify-content: flex-start; flex-wrap: wrap; }  
       #layananChart { height: 180px !important; max-height: 180px; }  
-      .progress-card { border-radius: var(--border-radius); padding: 18px; }  
+      .progress-card { border-radius: var(--border-radius); padding: 18px 15px; }  
+      .target-input-group {
+        flex-direction: row;
+      }
+      .target-input-group label {
+        width: auto;
+        margin-right: 8px;
+      }
+      .target-input-group input {
+        width: 100%;
+        padding: 6px 8px;
+        font-size: 0.9em;
+      }
     }  
     /* --- Splash Screen --- */  
     .splash-screen {  
@@ -136,6 +187,12 @@
       justify-content: center; align-items: center; z-index: 9999;  
     }  
     .splash-screen h1 { color: white; font-size: 24px; margin-top: 20px; text-align: center; padding: 0 15px; }  
+    
+    /* Styling for input validation */
+    .error {
+        border: 2px solid red;
+        background-color: #ffeeee;
+    }
   </style>  
   <!-- Script Failsafe Splash Screen -->  
   <script>  
@@ -149,6 +206,56 @@
       }  
     }, 3500);  
   </script>  
+
+<script>
+function validateInput() {
+    // Validasi field tidak boleh kosong
+    const requiredFields = document.querySelectorAll('[required]');
+    let isValid = true;
+
+    requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+            field.classList.add('error');
+            isValid = false;
+        } else {
+            field.classList.remove('error');
+        }
+    });
+
+    // Validasi input numerik hanya menerima angka
+    const numericFields = document.querySelectorAll('input[type="number"]');
+    numericFields.forEach(field => {
+        const value = parseFloat(field.value);
+        if (isNaN(value) || value < 0) {
+            field.classList.add('error');
+            isValid = false;
+        } else {
+            field.classList.remove('error');
+        }
+    });
+
+    // Validasi batas maksimal/minimal
+    const targetField = document.getElementById('targetField');
+    if (targetField) {
+        const value = parseFloat(targetField.value);
+        if (value > 1000) { // Contoh batasan maksimal
+            targetField.classList.add('error');
+            isValid = false;
+        }
+    }
+
+    return isValid;
+}
+
+// Tambahkan event listener pada form submit
+document.querySelector('form').addEventListener('submit', function(e) {
+    if (!validateInput()) {
+        e.preventDefault(); // Mencegah form submit jika validasi gagal
+        alert('Harap periksa kembali input Anda');
+    }
+});
+</script>
+
 </head>  
 <body class="">  
   <!-- Splash Screen -->  
@@ -199,12 +306,14 @@
         </table>  
       </div>  
 
-      <!-- Card Total & Progress -->  
+      <!-- Card Total & Progress with Modified Layout -->  
       <div class="card progress-card">  
         <h3 style="text-align:center;">Poin & Target Mingguan</h3>  
-        <div style="font-size: 2.2em; font-weight: 600; text-align: center; margin-bottom: 20px;" id="totalPoin">0</div>  
+        <div style="font-size: 2.2em; font-weight: 700; text-align: center; margin-bottom: 20px;" id="totalPoin">0</div>  
         <div class="target-input-group">  
-            <label for="weeklyTargetInput">Target Minggu Ini:</h3
+            <label for="weeklyTargetInput">Target:</label>  
+            <input type="number" id="weeklyTargetInput" min="0" placeholder="0">  
+        </div>  
         <div class="progress-container">  
             <div id="progressBar" class="progress-bar"></div>  
         </div>  
