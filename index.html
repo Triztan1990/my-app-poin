@@ -144,7 +144,86 @@
     .progress-text { 
       font-size: 0.95em; 
       text-align: center; 
+      margin-bottom: 15px;
     }
+    
+    /* Tombol reset */
+    .reset-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .reset-buttons .btn {
+      padding: 6px 12px;
+      font-size: 0.85em;
+    }
+    
+    /* CSS untuk opsi layanan berwarna */
+    #layanan option {
+      padding: 8px;
+      font-weight: 500;
+    }
+    
+    /* CSS untuk badge layanan di tabel kerjaan */
+    .layanan-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: white;
+      font-size: 0.9em;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+    
+    /* CSS untuk tabel statistik layanan */
+    .layanan-stats {
+      margin-top: 25px;
+      padding-top: 15px;
+      border-top: 1px solid var(--border-color);
+    }
+    
+    .layanan-stats h4 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: var(--primary);
+      font-weight: 600;
+    }
+    
+    .stats-table {
+      width: 100%;
+      margin-top: 10px;
+      border-collapse: collapse;
+    }
+    
+    .stats-table th, .stats-table td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .stats-table th {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .stats-table tfoot {
+      border-top: 2px solid var(--primary);
+    }
+
+    .stats-table tfoot td {
+      padding-top: 12px;
+      border-bottom: none;
+    }
+
+    .stats-total-row {
+      font-weight: 500;
+      color: var(--primary);
+    }
+    
     /* --- Responsif (Mobile) --- */  
     @media (max-width: 600px) {  
       body { padding: 8px; }  
@@ -178,6 +257,22 @@
         width: 100%;
         padding: 6px 8px;
         font-size: 0.9em;
+      }
+      .reset-buttons {
+        flex-wrap: wrap;
+      }
+      .reset-buttons .btn {
+        font-size: 0.8em;
+        padding: 5px 10px;
+      }
+      .layanan-badge {
+        padding: 1px 6px;
+        font-size: 0.8em;
+      }
+      
+      .stats-table th, .stats-table td {
+        padding: 6px;
+        font-size: 12px;
       }
     }  
     /* --- Splash Screen --- */  
@@ -248,7 +343,7 @@ function validateInput() {
 }
 
 // Tambahkan event listener pada form submit
-document.querySelector('form').addEventListener('submit', function(e) {
+document.querySelector('form')?.addEventListener('submit', function(e) {
     if (!validateInput()) {
         e.preventDefault(); // Mencegah form submit jika validasi gagal
         alert('Harap periksa kembali input Anda');
@@ -318,6 +413,12 @@ document.querySelector('form').addEventListener('submit', function(e) {
             <div id="progressBar" class="progress-bar"></div>  
         </div>  
         <div id="progressText" class="progress-text">0 / 0 Poin (0%)</div>  
+        
+        <!-- Tombol Reset -->
+        <div class="reset-buttons">
+          <button id="btnResetTarget" class="btn btn-warning"><i class="fa-solid fa-eraser"></i> Reset Target</button>
+          <button id="btnResetData" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i> Reset Data</button>
+        </div>
       </div>  
 
       <div class="card">  
@@ -356,7 +457,31 @@ document.querySelector('form').addEventListener('submit', function(e) {
         <div><span class="stat-label">Poin Hari Ini: </span><span id="statHarian">0</span></div>  
         <div><span class="stat-label">Poin Minggu Ini: </span><span id="statMingguan">0</span></div>  
         <div><span class="stat-label">Poin Bulan Ini: </span><span id="statBulanan">0</span></div>  
-      </div>  
+      </div>
+      
+      <!-- Statistik per Layanan dengan Total -->
+      <div id="layananStats" class="layanan-stats">
+        <h4><i class="fa-solid fa-tags"></i> Statistik per Layanan</h4>
+        <table class="stats-table">
+          <thead>
+            <tr>
+              <th>Layanan</th>
+              <th>Jumlah</th>
+              <th>Total Poin</th>
+            </tr>
+          </thead>
+          <tbody id="layananStatsBody">
+            <!-- Data statistik layanan akan ditampilkan di sini -->
+          </tbody>
+          <tfoot>
+            <tr class="stats-total-row">
+              <td><strong>TOTAL</strong></td>
+              <td id="totalLayananCount"><strong>0</strong></td>
+              <td id="totalLayananPoin"><strong>0</strong></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
     </div>  
   </div> <!-- Akhir .container #mainApp -->  
 
@@ -380,6 +505,7 @@ document.querySelector('form').addEventListener('submit', function(e) {
     let chartInstance = null;  
     let weeklyTarget = 0;  
     let weeklyPoints = 0;  
+    let layananColors = {}; // Untuk menyimpan warna setiap layanan
 
     // --- DOM SELECTORS ---  
     const splashScreen = document.getElementById('splashScreen');  
@@ -404,10 +530,78 @@ document.querySelector('form').addEventListener('submit', function(e) {
     const statHarianEl = document.getElementById('statHarian');  
     const statMingguanEl = document.getElementById('statMingguan');  
     const statBulananEl = document.getElementById('statBulanan');  
+    const layananStatsBody = document.getElementById('layananStatsBody');
+    const totalLayananCount = document.getElementById('totalLayananCount');
+    const totalLayananPoin = document.getElementById('totalLayananPoin');
     const weeklyTargetInput = document.getElementById('weeklyTargetInput');  
     const progressBar = document.getElementById('progressBar');  
     const progressText = document.getElementById('progressText');  
+    const btnResetTarget = document.getElementById('btnResetTarget');
+    const btnResetData = document.getElementById('btnResetData');
+    
+    // --- COLOR PALETTE FUNCTIONS ---
+    function generateColorPalette(count) {
+      // Daftar warna yang harmonis untuk UI
+      const baseColors = [
+        '#4361ee', // biru (primary)
+        '#3a0ca3', // ungu tua
+        '#7209b7', // ungu
+        '#f72585', // pink (danger)
+        '#4cc9f0', // biru muda
+        '#4895ef', // biru terang
+        '#560bad', // ungu gelap
+        '#f3722c', // oranye
+        '#f8961e', // oranye muda (warning)
+        '#38b000', // hijau (success)
+        '#43aa8b', // teal
+        '#577590', // biru keabu-abuan
+        '#277da1', // biru laut
+        '#90be6d', // hijau muda
+        '#f9c74f', // kuning
+        '#023047', // biru tua
+        '#0a9396', // teal tua
+        '#ee9b00', // kuning tua
+        '#bb3e03', // oranye tua
+        '#ae2012', // merah
+      ];
+      
+      // Jika membutuhkan lebih banyak warna, kita bisa menghasilkan variasi
+      const fullPalette = [...baseColors];
+      
+      while (fullPalette.length < count) {
+        // Tambahkan variasi warna dengan opacity/tint berbeda
+        baseColors.forEach((color, i) => {
+          if (fullPalette.length < count) {
+            // Buat variasi yang lebih terang dari warna dasar
+            const lighter = adjustColorBrightness(color, 20);
+            fullPalette.push(lighter);
+          }
+          if (fullPalette.length < count) {
+            // Buat variasi yang lebih gelap dari warna dasar
+            const darker = adjustColorBrightness(color, -20);
+            fullPalette.push(darker);
+          }
+        });
+      }
+      
+      return fullPalette.slice(0, count);
+    }
 
+    // Fungsi untuk menyesuaikan kecerahan warna
+    function adjustColorBrightness(hex, percent) {
+      // Convert hex to RGB
+      let r = parseInt(hex.substring(1, 3), 16);
+      let g = parseInt(hex.substring(3, 5), 16);
+      let b = parseInt(hex.substring(5, 7), 16);
+
+      // Adjust brightness
+      r = Math.max(0, Math.min(255, r + percent));
+      g = Math.max(0, Math.min(255, g + percent));
+      b = Math.max(0, Math.min(255, b + percent));
+
+      // Convert back to hex
+      return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+    }
 
     // --- FUNGSI UTAMA & INISIALISASI ---  
     function initializeApp() {  
@@ -446,8 +640,33 @@ document.querySelector('form').addEventListener('submit', function(e) {
       btnToggleHistory.addEventListener('click', toggleHistory);  
       darkModeToggle.addEventListener('click', toggleDarkMode);  
       weeklyTargetInput.addEventListener('change', handleTargetChange);  
+      btnResetTarget.addEventListener('click', resetTarget);
+      btnResetData.addEventListener('click', resetAllData);
       setInterval(cekOnlineGoogleSheet, 300000);  
     }  
+    
+    // Fungsi reset target
+    function resetTarget() {
+      if (confirm("Yakin ingin menghapus target mingguan?")) {
+        weeklyTarget = 0;
+        weeklyTargetInput.value = 0;
+        saveTarget();
+        updateProgressBar();
+      }
+    }
+    
+    // Fungsi reset semua data
+    function resetAllData() {
+      if (confirm("PERINGATAN: Tindakan ini akan menghapus SEMUA data kerja Anda. Data yang dihapus tidak dapat dikembalikan!\n\nApakah Anda yakin ingin melanjutkan?")) {
+        if (confirm("Konfirmasi sekali lagi: Anda yakin ingin menghapus semua data kerja?")) {
+          daftarKerjaan = [];
+          saveToLocalStorage();
+          renderTabel();
+          updateStatistikDanChart();
+          alert("Semua data telah dihapus.");
+        }
+      }
+    }
 
     function cekOnlineGoogleSheet() {  
         statusOnline.classList.add('loading');  
@@ -500,13 +719,26 @@ document.querySelector('form').addEventListener('submit', function(e) {
           } else {  
             console.warn("Skipping invalid row:", row);  
           }  
-        });  
+        });
+        
+        // Assign warna untuk setiap layanan
+        assignColorsToLayanan();
+        
         populateLayanan();  
         // Tidak perlu panggil populatePaket/updatePoinDisplay di sini,  
         // populateLayanan akan memicu change event jika nilainya berubah,  
         // atau nilai paket akan otomatis terisi jika layanan tidak berubah.  
     }  
 
+    // Fungsi untuk menetapkan warna ke setiap layanan
+    function assignColorsToLayanan() {
+        const layananKeys = Object.keys(layananData);
+        const colorPalette = generateColorPalette(layananKeys.length);
+        
+        layananKeys.forEach((layanan, index) => {
+            layananColors[layanan] = colorPalette[index];
+        });
+    }
 
     function populateLayanan() {  
       const currentLayanan = layananEl.value;  
@@ -514,7 +746,15 @@ document.querySelector('form').addEventListener('submit', function(e) {
       layananEl.innerHTML = '<option value="">-- Pilih Layanan --</option>';  
       Object.keys(layananData).sort().forEach(layanan => {  
         const opt = document.createElement('option');  
-        opt.value = layanan; opt.textContent = layanan;  
+        opt.value = layanan; 
+        opt.textContent = layanan;
+        
+        // Tambahkan warna background ke opsi
+        if (layananColors[layanan]) {
+            opt.style.backgroundColor = layananColors[layanan];
+            opt.style.color = 'white';
+        }
+        
         if (layanan === currentLayanan) {  
             opt.selected = true;  
             layananDitemukan = true;  
@@ -617,9 +857,15 @@ document.querySelector('form').addEventListener('submit', function(e) {
     function renderSingleRow(k, animate = false) {  
         const tr = document.createElement('tr');  
         tr.dataset.id = k.id;  
+        
+        // Dapatkan warna untuk layanan
+        const layananColor = layananColors[k.layanan] || '#cccccc'; // warna default jika tidak ada
+        
         tr.innerHTML = `  
             <td>${formatTanggal(k.tanggal)}</td>  
-            <td title="${k.layanan} - ${k.paket} (${k.jumlah || 1}x)">${k.layanan} - ${k.paket}</td>  
+            <td title="${k.layanan} - ${k.paket} (${k.jumlah || 1}x)">
+              <span class="layanan-badge" style="background-color: ${layananColor}">${k.layanan}</span> - ${k.paket}
+            </td>  
             <td>  
               <div class="poin-column">  
                 <span>${k.poin.toFixed(2)}</span>  
@@ -803,11 +1049,71 @@ document.querySelector('form').addEventListener('submit', function(e) {
     function updateStatistikDanChart() {  
         updateTotalPoin();  
         updateStatistikPoin();  
+        updateLayananStats(); // Update statistik layanan
         updateProgressBar();  
         if (document.getElementById('chartTab').classList.contains('active-content')) {  
             renderLayananChart();  
         }  
     }  
+    
+    // Fungsi untuk update statistik layanan
+    function updateLayananStats() {
+        if (!layananStatsBody) return;
+        
+        // Hitung total poin dan jumlah per layanan
+        const totalPerLayanan = {};
+        const countPerLayanan = {};
+        
+        let totalCount = 0;
+        let totalPoin = 0;
+        
+        daftarKerjaan.forEach(item => {
+            if (!item.layanan) return;
+            
+            if (!totalPerLayanan[item.layanan]) {
+                totalPerLayanan[item.layanan] = 0;
+                countPerLayanan[item.layanan] = 0;
+            }
+            totalPerLayanan[item.layanan] += (item.poin || 0);
+            countPerLayanan[item.layanan] += (item.jumlah || 1);
+            
+            // Tambahkan ke total keseluruhan
+            totalCount += (item.jumlah || 1);
+            totalPoin += (item.poin || 0);
+        });
+        
+        // Render statistik layanan
+        layananStatsBody.innerHTML = '';
+        
+        if (Object.keys(totalPerLayanan).length === 0) {
+            layananStatsBody.innerHTML = '<tr><td colspan="3" style="text-align:center; font-style:italic; padding:15px; color:var(--text-muted);">Belum ada data layanan</td></tr>';
+            
+            // Reset total juga
+            document.getElementById('totalLayananCount').textContent = '0';
+            document.getElementById('totalLayananPoin').textContent = '0';
+            return;
+        }
+        
+        // Urutkan berdasarkan total poin (terbesar ke terkecil)
+        const sortedLayanan = Object.keys(totalPerLayanan).sort((a, b) => 
+            totalPerLayanan[b] - totalPerLayanan[a]
+        );
+        
+        sortedLayanan.forEach(layanan => {
+            const color = layananColors[layanan] || '#cccccc';
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><span class="layanan-badge" style="background-color: ${color}">${layanan}</span></td>
+                <td>${countPerLayanan[layanan]}</td>
+                <td>${totalPerLayanan[layanan].toFixed(2)}</td>
+            `;
+            layananStatsBody.appendChild(row);
+        });
+        
+        // Update total
+        document.getElementById('totalLayananCount').textContent = totalCount;
+        document.getElementById('totalLayananPoin').textContent = totalPoin.toFixed(2);
+    }
 
     function renderLayananChart() {  
         if (!layananChartCanvas) return;  
@@ -822,6 +1128,9 @@ document.querySelector('form').addEventListener('submit', function(e) {
         }, {});  
         const labels = Object.keys(countPerLayanan).sort();  
         const dataValues = labels.map(label => countPerLayanan[label]);  
+        
+        // Dapatkan warna untuk setiap layanan
+        const backgroundColors = labels.map(label => layananColors[label] || '#cccccc');
 
         if (chartInstance) { chartInstance.destroy(); chartInstance = null; }  
 
@@ -843,9 +1152,12 @@ document.querySelector('form').addEventListener('submit', function(e) {
                 data: {  
                     labels: labels,  
                     datasets: [{  
-                        label: 'Jumlah Item', data: dataValues,  
-                        borderColor: chartBorderColor, borderWidth: 1, hoverOffset: 6  
-                        // Warna akan otomatis dari Chart.js, atau bisa definisikan palet di sini  
+                        label: 'Jumlah Item', 
+                        data: dataValues,  
+                        backgroundColor: backgroundColors, // Gunakan warna kustom
+                        borderColor: chartBorderColor, 
+                        borderWidth: 1, 
+                        hoverOffset: 6  
                     }]  
                 },  
                 options: {  
@@ -965,6 +1277,9 @@ document.querySelector('form').addEventListener('submit', function(e) {
                         daftarKerjaan = validatedData.sort((a, b) => b.id - a.id);  
                         saveToLocalStorage(); // Simpan data baru  
 
+                        // Assign warna untuk setiap layanan yang ada
+                        assignColorsToLayanan();
+                        
                         // Muat ulang semua UI  
                         loadFromLocalStorage(); // Muat ulang dari LS (memastikan konsisten)  
                         renderTabel();  
