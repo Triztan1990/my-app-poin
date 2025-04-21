@@ -1231,73 +1231,102 @@ document.querySelector('form')?.addEventListener('submit', function(e) {
         weeklyPoints = totalMingguan;  
     }  
 
-    // --- Backup & Restore ---  
-    function backupData() {  
-        if(daftarKerjaan.length === 0) { alert("Tidak ada data untuk di-backup."); return; }  
-        try {  
-            const dataStr = JSON.stringify(daftarKerjaan, null, 2); // Pretty print JSON  
-            const dataBlob = new Blob([dataStr], {type: "application/json"});  
-            const url = URL.createObjectURL(dataBlob);  
-            const link = document.createElement('a');  
-            const tgl = new Date().toISOString().slice(0,10); // YYYY-MM-DD  
-            link.download = `homesol_poin_backup_${tgl}.json`;  
-            link.href = url;  
-            link.click();  
-            URL.revokeObjectURL(url); // Bebaskan memori  
-        } catch (e) {  
-            console.error("Gagal membuat file backup:", e);  
-            alert("Gagal membuat file backup.");  
-        }  
-    }  
+// =========================================
+// ENHANCED BACKUP/RESTORE SYSTEM 
+// =========================================
+function backupData() {
+    const backupPayload = {
+        metadata: {
+            created: new Date().toISOString(),
+            version: "2.0",
+            theme: localStorage.getItem(THEME_KEY),
+            target: localStorage.getItem(TARGET_KEY)
+        },
+        kerjaan: daftarKerjaan,
+        layanan: layananData,
+        colors: layananColors,
+        chartConfig: chartInstance ? chartInstance.config : null
+    };
 
-    function restoreData(event) {  
-        const input = event.target;  
-        const file = input.files[0];  
-        if (!file) return;  
-        if (!file.type.match('application/json')) { alert('File harus berupa .json!'); input.value = ""; return; }  
+    try {
+        const blob = new Blob([JSON.stringify(backupPayload, null, 2)], {type: "application/json"});
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = `HomeSol_Full_Backup_${Date.now()}.json`;
+        link.href = url;
+        link.click();
+        
+        // Feedback visual
+        const backupBtn = document.querySelector('[onclick="backupData()"]');
+        backupBtn.innerHTML = '<i class="fas fa-check"></i> Backup Berhasil!';
+        setTimeout(() => {
+            backupBtn.innerHTML = '<i class="fas fa-download"></i> Backup';
+        }, 2000);
+        
+    } catch (error) {
+        alert('Gagal membuat backup: ' + error.message);
+    }
+}
 
-        const reader = new FileReader();  
-        reader.onload = function(e) {  
-            try {  
-                const importedData = JSON.parse(e.target.result);  
-                if (Array.isArray(importedData)) {  
-                    if (confirm(`Anda akan mengganti data saat ini (${daftarKerjaan.length} item) dengan data dari file (${importedData.length} item).\n\nPERINGATAN: Tindakan ini tidak bisa dibatalkan. Yakin ingin melanjutkan?`)) {  
-                         // Validasi sederhana data yang diimpor  
-                        const validatedData = importedData.map((item, index) => ({  
-                            id: item.id || Date.now() + index,  
-                            tanggal: item.tanggal || new Date().toISOString().slice(0,10),  
-                            layanan: item.layanan || "Unknown",  
-                            paket: item.paket || "Unknown",  
-                            jumlah: !isNaN(Number(item.jumlah)) ? Number(item.jumlah) : 1,  
-                            poinSatuan: !isNaN(Number(item.poinSatuan)) ? Number(item.poinSatuan) : 0,  
-                            poin: !isNaN(Number(item.poin)) ? Number(item.poin) : 0,  
-                        })).filter(item => !isNaN(new Date(item.tanggal).getTime())); // Hanya ambil yg tanggalnya valid  
+function restoreData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
 
-                        // Hapus data lama, ganti dengan yang baru  
-                        daftarKerjaan = validatedData.sort((a, b) => b.id - a.id);  
-                        saveToLocalStorage(); // Simpan data baru  
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const backup = JSON.parse(e.target.result);
+            
+            // Validasi struktur backup
+            if (!backup.kerjaan || !backup.layanan || !backup.metadata) {
+                throw new Error("Format file backup tidak valid");
+            }
 
-                        // Assign warna untuk setiap layanan yang ada
-                        assignColorsToLayanan();
-                        
-                        // Muat ulang semua UI  
-                        loadFromLocalStorage(); // Muat ulang dari LS (memastikan konsisten)  
-                        renderTabel();  
-                        updateStatistikDanChart();  
-                        alert(`Data berhasil di-restore dari file! (${daftarKerjaan.length} item dimuat).`);  
-                    }  
-                } else { throw new Error('Format data dalam file tidak valid (bukan array).'); }  
-            } catch(err) {  
-                 console.error("Gagal restore data:", err);  
-                 alert("Gagal memproses file restore: " + err.message);  
-            } finally { input.value = ""; } // Reset input file  
-        };  
-        reader.onerror = function() {  
-            alert("Gagal membaca file.");  
-            input.value = "";  
-        };  
-        reader.readAsText(file);  
-    }  
+            // Konfirmasi pengguna
+            const confirmMsg = [
+                `Anda akan memulihkan:`,
+                `• ${backup.kerjaan.length} data kerjaan`,
+                `• ${Object.keys(backup.layanan).length} layanan`,
+                `• Tema ${backup.metadata.theme}`,
+                `• Target ${backup.metadata.target}`,
+                `\nLanjutkan?`
+            ].join('\n');
+            
+            if (!confirm(confirmMsg)) return;
+
+            // Restore data utama
+            daftarKerjaan = backup.kerjaan;
+            layananData = backup.layanan;
+            layananColors = backup.colors || {};
+            
+            // Restore pengaturan
+            localStorage.setItem(THEME_KEY, backup.metadata.theme);
+            localStorage.setItem(TARGET_KEY, backup.metadata.target);
+            weeklyTargetInput.value = backup.metadata.target;
+            
+            // Update UI
+            loadThemePreference();
+            populateLayanan();
+            renderTabel();
+            updateStatistikDanChart();
+            
+            // Restore chart jika ada konfigurasi
+            if (backup.chartConfig) {
+                if (chartInstance) chartInstance.destroy();
+                chartInstance = new Chart(layananChartCanvas, backup.chartConfig);
+            }
+            
+            alert("Restore berhasil! Data telah dimuat ulang");
+
+        } catch (error) {
+            alert(`Gagal restore: ${error.message}`);
+            console.error("Restore error:", error);
+        } finally {
+            event.target.value = '';
+        }
+    };
+    reader.readAsText(file);
+}  
 
 
     // --- Jalankan Aplikasi Saat DOM Siap ---  
