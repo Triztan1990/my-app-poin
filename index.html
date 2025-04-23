@@ -460,7 +460,15 @@ document.querySelector('form')?.addEventListener('submit', function(e) {
       </div>
       
       <!-- Statistik per Layanan dengan Total -->
-      <div id="layananStats" class="layanan-stats">
+      
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px;">
+      <h4 style="margin: 0; color: var(--primary); font-weight: 600;"><i class="fa-solid fa-tags"></i> Statistik per Layanan</h4>
+      <button id="toggleLayananStatsBtn" class="btn btn-sm btn-info" style="font-size: 0.8em;">
+        Sembunyikan
+      </button>
+    </div>
+    <div id="layananStats" class="layanan-stats">
+    
         <h4><i class="fa-solid fa-tags"></i> Statistik per Layanan</h4>
         <table class="stats-table">
           <thead>
@@ -966,7 +974,9 @@ document.querySelector('form')?.addEventListener('submit', function(e) {
       try {  
         const storedData = localStorage.getItem(LOCALSTORAGE_KEY);  
         const storedVisibility = localStorage.getItem(HISTORY_VISIBLE_KEY);  
-        daftarKerjaan = storedData ? JSON.parse(storedData) : [];  
+        daftarKerjaan = storedData ? JSON.parse(storedData) : [];
+        // Urutkan data agar terbaru di atas
+        daftarKerjaan.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));  
         if (!Array.isArray(daftarKerjaan)) daftarKerjaan = [];  
         // Pastikan semua item punya ID unik dan poin numerik  
         daftarKerjaan = daftarKerjaan.map((item, index) => ({  
@@ -1335,6 +1345,95 @@ function restoreData(event) {
     } else {  
         initializeApp();  
     }  
-  </script>  
-</body>  
+  
+    // --- TOGGLE STATISTIK PER LAYANAN ---
+    const toggleLayananStatsBtn = document.getElementById('toggleLayananStatsBtn');
+    const layananStats = document.getElementById('layananStats');
+    let layananStatsVisible = true;
+
+    toggleLayananStatsBtn?.addEventListener('click', () => {
+        layananStatsVisible = !layananStatsVisible;
+        layananStats.style.display = layananStatsVisible ? 'block' : 'none';
+        toggleLayananStatsBtn.innerText = layananStatsVisible ? 'Sembunyikan' : 'Tampilkan';
+    });
+
+</script>  
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+        import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+        
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDnfmtNvgF1ZQf1CSmHYKH6xqBpUvk8xy8",
+            authDomain: "my-app-poin.firebaseapp.com",
+            projectId: "my-app-poin",
+            storageBucket: "my-app-poin.appspot.com",
+            messagingSenderId: "968938662713",
+            appId: "1:968938662713:web:7550efb50acfb3aa6d96e8"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app); // Inisialisasi Firebase Database
+
+        // Fungsi untuk menambah pekerjaan ke Firebase
+        function addJobToFirebase(nama, status) {
+            const jobId = Date.now();  // Unique ID berdasarkan timestamp
+            const jobRef = ref(database, 'pekerjaan/' + jobId);  // Referensi ke node 'pekerjaan'
+
+            set(jobRef, {
+                nama: nama,
+                status: status,
+                tanggal: new Date().toISOString(),
+            }).then(() => {
+                console.log('Job added to Firebase!');
+                renderJobs();
+            }).catch((error) => {
+                console.error('Error adding job: ', error);
+            });
+        }
+
+        // Fungsi untuk mengambil data pekerjaan dari Firebase
+        function getJobsFromFirebase() {
+            const jobsRef = ref(database, 'pekerjaan'); // Referensi ke node 'pekerjaan'
+            get(jobsRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const jobs = snapshot.val();
+                    renderJobs(jobs); // Render pekerjaan ke UI
+                } else {
+                    console.log('No data available');
+                }
+            }).catch((error) => {
+                console.error('Error fetching jobs: ', error);
+            });
+        }
+
+        // Fungsi untuk merender pekerjaan ke UI
+        function renderJobs(jobs) {
+            const container = document.getElementById('daftarKerjaan');
+            container.innerHTML = '';  // Menghapus pekerjaan lama di UI
+            for (let jobId in jobs) {
+                const job = jobs[jobId];
+                const div = document.createElement('div');
+                div.innerHTML = `<p>${job.nama} - Status: ${job.status} - Tanggal: ${job.tanggal}</p>`;
+                container.appendChild(div);
+            }
+        }
+
+        // Fungsi untuk sinkronisasi data pekerjaan secara real-time
+        function listenForJobChanges() {
+            const jobsRef = ref(database, 'pekerjaan');
+            onValue(jobsRef, (snapshot) => {
+                const jobs = snapshot.val();
+                renderJobs(jobs);  // Update UI setiap kali data berubah
+            });
+        }
+
+        // Memulai sinkronisasi data
+        listenForJobChanges(); // Memulai sinkronisasi data real-time
+    </script>
+    </body>
+      
 </html>
