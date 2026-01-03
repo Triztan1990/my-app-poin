@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>PinBonus AI Platinum v25.0 (Smart Context)</title>
+  <title>PinBonus AI Platinum v26.0 (General + Data)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -67,10 +67,12 @@
         <div id="viewAi" class="tab-content">
             <div class="glass rounded-[2rem] p-4 flex flex-col h-[400px] shadow-sm">
                 <div id="aiChatBox" class="flex-1 overflow-y-auto p-2">
-                     <div class="p-3 bg-slate-100 text-slate-700 rounded-2xl mr-auto text-xs font-bold mb-2 max-w-[80%]"><b>AI:</b> Saya sudah terhubung dengan data keuangan Anda. Tanya saja "Berapa bonus hari ini?"</div>
+                     <div class="p-3 bg-slate-100 text-slate-700 rounded-2xl mr-auto text-xs font-bold mb-2 max-w-[80%]">
+                        <b>AI:</b> Halo! Saya bisa bantu soal pekerjaan atau ngobrol santai soal apa saja. Mau tanya apa?
+                     </div>
                 </div>
                 <div class="flex gap-2 p-2 bg-slate-50 rounded-2xl mt-4 border border-slate-100">
-                    <input type="text" id="aiInput" placeholder="Tanya tentang bonus Anda..." class="flex-1 bg-transparent p-2 text-xs font-bold outline-none">
+                    <input type="text" id="aiInput" placeholder="Ketik apa saja..." class="flex-1 bg-transparent p-2 text-xs font-bold outline-none">
                     <button onclick="askAI()" class="w-10 h-10 bg-indigo-600 text-white rounded-xl shadow-lg"><i class="fa fa-paper-plane"></i></button>
                 </div>
             </div>
@@ -196,7 +198,7 @@
         speak("Data bersih");
     };
 
-    // --- INI BAGIAN KUNCI AGAR AI TAHU DATA ANDA ---
+    // --- AI LOGIC YANG DILONGGARKAN (GENERAL + HYBRID) ---
     window.askAI = async () => {
         const inp = document.getElementById('aiInput'); 
         const box = document.getElementById('aiChatBox');
@@ -207,34 +209,40 @@
         box.innerHTML += `<div class="p-3 bg-blue-600 text-white rounded-2xl ml-auto text-xs font-bold mb-2 max-w-[80%]">${q}</div>`;
         box.scrollTop = box.scrollHeight;
         
-        // 1. HITUNG DATA HARI INI
+        // HITUNG DATA (DIAM-DIAM)
         const today = new Date().toLocaleDateString('id-ID');
         const todayItems = cart.filter(i => i.date === today);
         const totalHariIni = todayItems.reduce((acc, curr) => acc + (Number(curr.price)||0), 0);
         
-        // 2. HITUNG DATA KEMARIN (OPSIONAL)
-        // Disini kita cukup kirim data hari ini dulu agar konteksnya jelas
-        
-        // 3. BUAT KONTEKS (PESAN RAHASIA KE AI)
+        // --- INSTRUKSI HYBRID ---
+        // Kita beri tahu AI: Kamu itu pintar segalanya. TAPI ini data usernya.
+        // Kalau dia tanya umum, jawab umum. Kalau tanya bonus, pakai data ini.
         const contextData = `
-        [SISTEM INFO]
+        [PERAN]
+        Anda adalah Asisten Pribadi yang cerdas, ramah, dan serba bisa (General AI).
+        Anda bisa menjawab pertanyaan umum (sejarah, sains, tips, coding, resep, dll) dengan leluasa.
+        
+        [DATA PENGGUNA SAAT INI]
+        HANYA gunakan data di bawah ini JIKA user bertanya tentang "bonus", "uang", "pekerjaan", atau "laporan":
         - Total Bonus Hari Ini: Rp ${totalHariIni.toLocaleString('id-ID')}
-        - Jumlah Pekerjaan Hari Ini: ${todayItems.length}
-        - Daftar Pekerjaan Hari Ini: ${todayItems.map(i => i.name + ' (' + i.price + ')').join(', ') || 'Belum ada'}
-        [INSTRUKSI]
-        Jawab pertanyaan user berdasarkan data di atas. Gunakan bahasa Indonesia yang ramah.
+        - Jumlah Job Hari Ini: ${todayItems.length}
+        - Rincian Job: ${todayItems.map(i => i.name).join(', ') || 'Belum ada'}
+
+        [ATURAN]
+        1. Jika user bertanya "Apa resep soto?", jawab resep soto (abaikan data bonus).
+        2. Jika user bertanya "Berapa bonus saya?", baru gunakan data di atas.
         `;
 
-        const finalPrompt = contextData + "\n\nUser bertanya: " + q;
+        const finalPrompt = contextData + "\n\nUser: " + q;
 
         try {
             const res = await fetch(`https://script.google.com/macros/s/AKfycbwdlOCivWIyMglDCMCR6fD_rx6fCybcy7rQvwVpiEfor-696Dq_CHIpeQ4jhsJI1fJu/exec?action=ai&prompt=${encodeURIComponent(finalPrompt)}`);
             const data = await res.json();
-            const reply = data.reply || data.message || "Gagal";
+            const reply = data.reply || data.message || "Maaf, coba lagi.";
             
             box.innerHTML += `<div class="p-3 bg-slate-100 text-slate-700 rounded-2xl mr-auto text-xs font-bold mb-2 max-w-[80%]"><b>AI:</b> ${reply}</div>`;
             speak(reply);
-        } catch(e) { speak("Error koneksi AI"); }
+        } catch(e) { speak("Gagal koneksi"); }
         box.scrollTop = box.scrollHeight;
     };
 
@@ -249,12 +257,9 @@
         const sku = document.getElementById('sku');
         const p = parseFloat(sku.value), n = sku.options[sku.selectedIndex]?.getAttribute('data-n');
         if(!p) return;
-        
         const data = { id: Date.now(), order: document.getElementById('orderId').value || "-", name: n, price: p, time: new Date().toLocaleTimeString('id-ID'), date: new Date().toLocaleDateString('id-ID')};
         await setDoc(doc(db, "users", userUID), { bonus: arrayUnion(data) }, { merge: true });
-        
         document.getElementById('orderId').value = ""; 
-        // SUARA DETAIL
         speak(n + " senilai " + p.toLocaleString() + " rupiah, berhasil disimpan.");
     };
 
