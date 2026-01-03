@@ -2,121 +2,102 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>PinBonus AI - MultiDevice v6</title>
+  <title>PinBonus AI Platinum v25.0 (Smart Context)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
-    :root { --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --accent: #1d4ed8; }
-    body { background-color: var(--bg); color: var(--text); font-family: 'Poppins', sans-serif; transition: 0.3s; }
-    .glass { background: var(--card); border: 1px solid rgba(0,0,0,0.05); }
+    :root { --bg: #f8fafc; --accent: #1d4ed8; }
+    body { background-color: var(--bg); font-family: 'Poppins', sans-serif; margin: 0; padding: 0; overflow-x: hidden; }
+    .glass { background: #ffffff; border: 1px solid rgba(0,0,0,0.05); }
     .tab-content { display: none; }
     .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     
-    /* Responsive Navigation */
-    @media (min-width: 768px) {
-        .app-container { display: flex; flex-direction: row-reverse; max-width: 1200px; margin: auto; gap: 20px; padding: 20px; }
-        #navBar { position: sticky; top: 20px; height: fit-content; width: 250px; flex-direction: column; border-radius: 2rem; padding: 30px 10px; gap: 15px; display: flex !important; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        .nav-btn { width: 100%; flex-direction: row !important; padding: 15px 20px; border-radius: 1.5rem; justify-content: flex-start; gap: 15px !important; }
-        .main-content { flex: 1; }
-        #footerTotal { position: sticky; bottom: 20px; margin-top: 20px; left: 0; right: 0; }
-        #loginScreen h1 { font-size: 4rem; }
-    }
+    #loginScreen { position: fixed; inset: 0; z-index: 9999; background: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    #mainApp { display: none; position: relative; z-index: 10; }
+
+    .header-bonus { background: linear-gradient(135deg, #1d4ed8, #3b82f6); color: white; border-radius: 2rem; padding: 20px; margin-bottom: 20px; box-shadow: 0 10px 20px -5px rgba(29, 78, 216, 0.3); }
     
-    .nav-active { background: #eff6ff; color: var(--accent) !important; opacity: 1 !important; }
-    .acc-content { max-height: 0; overflow: hidden; transition: 0.3s; }
-    .acc-item.open .acc-content { max-height: 200px; padding: 15px 0; border-top: 1px solid #f1f5f9; }
-    .acc-arrow { transition: 0.3s; }
-    .acc-item.open .acc-arrow { transform: rotate(180deg); }
-    .blur-mode { filter: blur(12px); pointer-events: none; }
+    .acc-item { overflow: hidden; transition: 0.3s; border-radius: 1rem; margin-bottom: 8px; }
+    .acc-content { max-height: 0; opacity: 0; transition: 0.3s; font-size: 11px; }
+    .acc-item.open .acc-content { max-height: 150px; opacity: 1; margin-top: 10px; padding-top: 10px; border-top: 1px solid #f1f5f9; }
+    .nav-active { background: #eff6ff; color: var(--accent) !important; font-weight: 800; }
+    .hidden { display: none !important; }
   </style>
 </head>
-<body class="min-h-screen">
+<body>
 
-  <div id="loginScreen" class="fixed inset-0 z-[100] bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
-      <div class="w-24 h-24 bg-blue-700 rounded-[2.5rem] mb-8 flex items-center justify-center shadow-2xl shadow-blue-200 animate-bounce">
-          <i class="fa fa-cloud text-white text-5xl"></i>
-      </div>
-      <h1 class="text-4xl md:text-6xl font-800 text-slate-800 tracking-tighter mb-4">PinBonus AI</h1>
-      <p class="text-xs md:text-sm text-slate-400 font-bold uppercase tracking-[0.3em] mb-12">Universal Cloud Access</p>
-      <button id="btnLogin" class="flex items-center gap-4 bg-white px-12 py-5 rounded-[2rem] shadow-xl border border-slate-100 font-black hover:shadow-2xl active:scale-95 transition-all text-slate-700">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-6 h-6"> Masuk dengan Google
-      </button>
+  <div id="loginScreen">
+      <div class="w-16 h-16 bg-blue-700 rounded-3xl mb-6 flex items-center justify-center shadow-2xl animate-bounce"><i class="fa fa-cloud text-white text-3xl"></i></div>
+      <h1 class="text-3xl font-800 text-slate-800 mb-8 tracking-tighter">PinBonus AI</h1>
+      <button id="btnLogin" class="flex items-center gap-4 bg-white px-10 py-4 rounded-2xl shadow-xl font-bold border border-slate-100 active:scale-95 transition-all text-slate-700"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5"> Google Login</button>
   </div>
 
-  <div id="mainApp" class="hidden">
-    <div class="app-container">
+  <div id="mainApp">
+    <div class="max-w-md mx-auto p-4 pb-28">
         
-        <main class="main-content px-4 py-6 md:py-0">
-            <div class="flex justify-between items-center mb-8 bg-white/50 p-4 rounded-3xl backdrop-blur-sm border border-white">
-                <div>
-                    <h1 class="text-2xl font-800 text-blue-700 tracking-tighter">Dashboard</h1>
-                    <p id="userName" class="text-[10px] font-black opacity-40 uppercase tracking-widest">Memuat Profil...</p>
+        <header class="flex justify-between items-center mb-4 p-2">
+            <h1 class="text-xl font-800 text-slate-800">Dashboard</h1>
+            <div class="flex gap-2">
+                <button onclick="toggleVoice()" class="w-9 h-9 glass rounded-xl flex items-center justify-center text-blue-600"><i id="voiceIcon" class="fa fa-volume-up"></i></button>
+                <button onclick="logout()" class="w-9 h-9 glass rounded-xl flex items-center justify-center text-red-400"><i class="fa fa-sign-out"></i></button>
+            </div>
+        </header>
+
+        <div class="header-bonus flex justify-between items-center">
+            <div><p class="text-[10px] font-black opacity-70 uppercase tracking-widest">Bonus Hari Ini</p><p class="text-3xl font-900 tracking-tighter">Rp <span id="totalDisplay">0</span></p></div>
+            <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-2xl"><i class="fa fa-money text-white"></i></div>
+        </div>
+
+        <div id="viewInput" class="tab-content active">
+            <div class="glass rounded-[2rem] p-6 shadow-sm">
+                <div class="space-y-3">
+                    <select id="cat" class="w-full p-4 glass rounded-2xl text-xs font-bold outline-none ring-1 ring-slate-100"></select>
+                    <select id="svc" class="w-full p-4 glass rounded-2xl text-xs font-bold outline-none ring-1 ring-slate-100" disabled></select>
+                    <select id="sku" class="w-full p-4 glass rounded-2xl text-xs font-bold outline-none ring-2 ring-blue-50" disabled></select>
+                    <input type="text" id="orderId" placeholder="ID Order (Opsional)..." class="w-full p-4 glass rounded-2xl text-xs font-bold outline-none ring-1 ring-slate-100">
                 </div>
+                <button id="addBtn" class="w-full bg-blue-700 text-white py-4 rounded-2xl font-800 mt-5 shadow-lg active:scale-95">SIMPAN DATA</button>
+            </div>
+        </div>
+
+        <div id="viewAi" class="tab-content">
+            <div class="glass rounded-[2rem] p-4 flex flex-col h-[400px] shadow-sm">
+                <div id="aiChatBox" class="flex-1 overflow-y-auto p-2">
+                     <div class="p-3 bg-slate-100 text-slate-700 rounded-2xl mr-auto text-xs font-bold mb-2 max-w-[80%]"><b>AI:</b> Saya sudah terhubung dengan data keuangan Anda. Tanya saja "Berapa bonus hari ini?"</div>
+                </div>
+                <div class="flex gap-2 p-2 bg-slate-50 rounded-2xl mt-4 border border-slate-100">
+                    <input type="text" id="aiInput" placeholder="Tanya tentang bonus Anda..." class="flex-1 bg-transparent p-2 text-xs font-bold outline-none">
+                    <button onclick="askAI()" class="w-10 h-10 bg-indigo-600 text-white rounded-xl shadow-lg"><i class="fa fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div id="viewHistory" class="tab-content">
+            <div class="flex justify-between items-center mb-4 px-2">
+                <h2 class="text-[10px] font-black opacity-30 uppercase tracking-widest">Management</h2>
                 <div class="flex gap-2">
-                    <button onclick="togglePrivacy()" class="w-11 h-11 rounded-2xl glass flex items-center justify-center text-blue-600 shadow-sm"><i class="fa fa-shield"></i></button>
-                    <button onclick="logout()" class="w-11 h-11 rounded-2xl glass flex items-center justify-center text-red-500 shadow-sm"><i class="fa fa-sign-out"></i></button>
+                    <button onclick="resetAllData()" class="p-2 bg-red-50 text-red-600 rounded-lg border border-red-100"><i class="fa fa-trash"></i></button>
+                    <button onclick="sendWA()" class="p-2 bg-green-50 text-green-600 rounded-lg"><i class="fa fa-whatsapp"></i></button>
+                    <button onclick="openExportMenu()" class="p-2 bg-blue-50 text-blue-600 rounded-lg"><i class="fa fa-file-excel-o"></i></button>
                 </div>
             </div>
+            
+            <button id="btnShowAll" onclick="toggleLimit()" class="w-full mb-4 py-3 bg-white border border-slate-200 rounded-2xl text-[9px] font-black text-blue-600 uppercase tracking-widest shadow-sm active:bg-blue-50">
+                <i class="fa fa-eye mr-2"></i> Lihat Semua Data
+            </button>
+            
+            <ul id="jobList" class="space-y-2"></ul>
+        </div>
 
-            <div id="viewInput" class="tab-content active space-y-6">
-                <div class="glass rounded-[2.5rem] p-8 md:p-12 shadow-xl border-white border-4">
-                    <h2 class="text-lg font-800 mb-6 flex items-center gap-3"><i class="fa fa-pencil text-blue-600"></i> Catat Pekerjaan</h2>
-                    <div class="grid md:grid-cols-2 gap-4 mb-4">
-                        <select id="cat" class="w-full p-4 glass border-none rounded-2xl text-xs font-bold ring-1 ring-slate-100 outline-none"></select>
-                        <select id="svc" class="w-full p-4 glass border-none rounded-2xl text-xs font-bold ring-1 ring-slate-100 outline-none" disabled></select>
-                    </div>
-                    <select id="sku" class="w-full p-5 glass border-none rounded-2xl text-sm font-black ring-2 ring-blue-50 outline-none mb-4" disabled></select>
-                    <input type="text" id="orderId" placeholder="Masukkan ID Order..." class="w-full p-5 glass rounded-2xl text-sm font-bold outline-none ring-2 ring-slate-50 mb-6">
-                    <button id="addBtn" class="w-full bg-blue-700 text-white py-5 rounded-[2rem] font-800 uppercase tracking-widest text-sm shadow-xl shadow-blue-100 active:scale-95 transition-all">Simpan ke Awan</button>
-                </div>
-            </div>
-
-            <div id="viewStats" class="tab-content space-y-6">
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div class="glass p-8 rounded-[2.5rem] border-l-[12px] border-blue-600 flex items-center gap-6">
-                        <div class="relative w-20 h-20 shrink-0">
-                            <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36"><circle cx="18" cy="18" r="16" fill="none" stroke="#f1f5f9" stroke-width="3"></circle><circle id="circleProgress" cx="18" cy="18" r="16" fill="none" stroke="#1d4ed8" stroke-width="3" stroke-dasharray="0, 100" stroke-linecap="round"></circle></svg>
-                            <div class="absolute inset-0 flex items-center justify-center font-900 text-sm" id="percentText">0%</div>
-                        </div>
-                        <div>
-                            <p class="text-[10px] font-black opacity-30 uppercase">Target Hari Ini</p>
-                            <p id="targetLabel" class="text-xl font-800 text-slate-800">Rp 0 / 500k</p>
-                        </div>
-                    </div>
-                    <div class="glass rounded-[2.5rem] p-8 h-80"><canvas id="statsChart"></canvas></div>
-                </div>
-            </div>
-
-            <div id="viewHistory" class="tab-content space-y-4">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="font-black text-xs text-blue-600 uppercase tracking-widest">Riwayat Database</h3>
-                    <div class="flex gap-2">
-                        <button onclick="sendWA()" class="p-3 bg-green-50 text-green-600 rounded-xl"><i class="fa fa-whatsapp"></i></button>
-                        <button onclick="openExportMenu()" class="p-3 bg-blue-50 text-blue-600 rounded-xl"><i class="fa fa-file-excel-o"></i></button>
-                    </div>
-                </div>
-                <div id="jobListContainer" class="grid md:grid-cols-2 gap-4 pb-20">
-                    <ul id="jobList" class="md:contents space-y-3"></ul>
-                </div>
-            </div>
-
-            <div id="footerTotal" class="glass rounded-3xl p-6 shadow-2xl border-l-[8px] border-blue-600 flex justify-between items-center border border-white hidden">
-                <div><p class="text-[10px] font-black opacity-40 uppercase tracking-widest">Bonus Berjalan</p><p class="text-3xl font-900 text-blue-700 tracking-tighter">Rp <span id="totalDisplay">0</span></p></div>
-                <button onclick="toggleVoice()" class="w-14 h-14 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center active:scale-90 transition-all shadow-inner"><i id="voiceIcon" class="fa fa-volume-up text-xl"></i></button>
-            </div>
-        </main>
-
-        <nav id="navBar" class="fixed bottom-0 left-0 right-0 h-24 glass border-t border-slate-100 flex justify-around items-center px-6 z-50 rounded-t-[3rem] hidden md:shadow-none">
-            <button onclick="switchTab('input')" id="navIn" class="nav-btn nav-active flex flex-col items-center gap-1 opacity-40 transition-all"><i class="fa fa-edit text-2xl"></i><span class="text-[10px] font-black uppercase">Input</span></button>
-            <button onclick="switchTab('stats')" id="navSta" class="nav-btn flex flex-col items-center gap-1 opacity-40 transition-all"><i class="fa fa-pie-chart text-2xl"></i><span class="text-[10px] font-black uppercase">Statistik</span></button>
-            <button onclick="switchTab('history')" id="navHis" class="nav-btn flex flex-col items-center gap-1 opacity-40 transition-all"><i class="fa fa-database text-2xl"></i><span class="text-[10px] font-black uppercase">Laporan</span></button>
+        <nav class="fixed bottom-0 left-0 right-0 h-20 glass rounded-t-[2.5rem] flex justify-around items-center px-6 z-50 shadow-2xl">
+            <button onclick="switchTab('input')" id="navIn" class="nav-btn nav-active flex flex-col items-center opacity-40"><i class="fa fa-pencil-square-o text-xl"></i><span class="text-[8px] mt-1 font-black uppercase">Input</span></button>
+            <button onclick="switchTab('ai')" id="navAi" class="nav-btn flex flex-col items-center opacity-40"><i class="fa fa-magic text-xl"></i><span class="text-[8px] mt-1 font-black uppercase">AI Groq</span></button>
+            <button onclick="switchTab('history')" id="navHis" class="nav-btn flex flex-col items-center opacity-40"><i class="fa fa-list-ul text-xl"></i><span class="text-[8px] mt-1 font-black uppercase">Data</span></button>
         </nav>
-
     </div>
   </div>
 
@@ -131,110 +112,165 @@
       projectId: "pinbonus-kalkulasi",
       storageBucket: "pinbonus-kalkulasi.firebasestorage.app",
       messagingSenderId: "950589733342",
-      appId: "1:950589733342:web:6bbc9647077a8c40e1454f",
-      measurementId: "G-ZDX07SGZC8"
+      appId: "1:950589733342:web:6bbc9647077a8c40e1454f"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
-    let userUID = null, cart = [], master = [], myChart = null, VOICE_ON = true, isPrivate = false;
+    let userUID = null, cart = [], master = [], VOICE_ON = true, isFullList = false;
 
-    const els = {
-      login: document.getElementById('loginScreen'), app: document.getElementById('mainApp'),
-      nav: document.getElementById('navBar'), footer: document.getElementById('footerTotal'),
-      cat: document.getElementById('cat'), svc: document.getElementById('svc'), sku: document.getElementById('sku'),
-      oid: document.getElementById('orderId'), list: document.getElementById('jobList'), total: document.getElementById('totalDisplay')
-    };
-
+    window.speak = (t) => { if(VOICE_ON) { window.speechSynthesis.cancel(); const m = new SpeechSynthesisUtterance(t); m.lang='id-ID'; window.speechSynthesis.speak(m); } };
+    window.toggleVoice = () => { VOICE_ON = !VOICE_ON; document.getElementById('voiceIcon').className = VOICE_ON ? 'fa fa-volume-up' : 'fa fa-volume-off opacity-30'; };
+    window.logout = () => signOut(auth).then(() => location.reload());
     document.getElementById('btnLogin').onclick = () => signInWithPopup(auth, provider);
-    window.logout = () => { if(confirm("Keluar dari aplikasi?")) signOut(auth).then(() => location.reload()); };
 
     onAuthStateChanged(auth, (user) => {
-        if (user) {
+        if(user) {
             userUID = user.uid;
-            document.getElementById('userName').innerText = user.displayName;
-            els.login.classList.add('hidden'); els.app.classList.remove('hidden');
-            els.nav.classList.remove('hidden'); els.footer.classList.remove('hidden');
-            initData(); speak("Selamat bekerja, " + user.displayName);
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            initData();
+        } else {
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('mainApp').style.display = 'none';
         }
     });
 
     async function initData() {
-        try {
-            const r = await fetch("https://script.google.com/macros/s/AKfycbyUtuyUhIXT9uZwd6xZ38JV18rzFUns87AvS4AsST1eun1BQAFtNZGfpmv-mthucDDP/exec");
-            const j = await r.json(); master = j.data;
-            els.cat.innerHTML = '<option value="">Pilih Kategori...</option>' + [...new Set(master.map(i => i.category))].sort().map(c => `<option value="${c}">${c}</option>`).join('');
-        } catch(e) { console.error("Error data"); }
-        onSnapshot(doc(db, "users", userUID), (d) => { if (d.exists()) { cart = d.data().bonus || []; render(); } });
+        const r = await fetch("https://script.google.com/macros/s/AKfycbyUtuyUhIXT9uZwd6xZ38JV18rzFUns87AvS4AsST1eun1BQAFtNZGfpmv-mthucDDP/exec");
+        const j = await r.json(); master = j.data;
+        document.getElementById('cat').innerHTML = '<option value="">Pilih Kategori...</option>' + [...new Set(master.map(i => i.category))].sort().map(c => `<option value="${c}">${c}</option>`).join('');
+        onSnapshot(doc(db, "users", userUID), (d) => { if(d.exists()){ cart = d.data().bonus || []; render(); } });
     }
 
-    els.cat.onchange = () => { const c = els.cat.value; els.svc.innerHTML = '<option value="">Layanan...</option>'; els.svc.disabled = !c; if(c) els.svc.innerHTML += [...new Set(master.filter(i => i.category === c).map(i => i.service))].sort().map(s => `<option value="${s}">${s}</option>`).join(''); };
-    els.svc.onchange = () => { const c = els.cat.value, s = els.svc.value; els.sku.innerHTML = '<option value="">Pilih SKU...</option>'; els.sku.disabled = !s; if(s) els.sku.innerHTML += master.filter(i => i.category === c && i.service === s).map(i => `<option value="${i.nominal_angka}" data-n="${i.sku_name}">${i.sku_name}</option>`).join(''); };
-
-    document.getElementById('addBtn').onclick = async () => {
-        const p = parseFloat(els.sku.value), n = els.sku.options[els.sku.selectedIndex]?.getAttribute('data-n'), oid = els.oid.value;
-        if(!p || !n) return;
-        const data = { id: Date.now(), order: oid || "-", name: n, price: p, time: new Date().toLocaleTimeString('id-ID'), date: new Date().toLocaleDateString('id-ID')};
-        await setDoc(doc(db, "users", userUID), { bonus: arrayUnion(data) }, { merge: true });
-        els.oid.value = ""; speak(n + " dicatat.");
-    };
-
-    window.deleteItem = async (id) => {
-        if(confirm("Hapus data selamanya?")) {
-            const updated = cart.filter(i => i.id !== id);
-            await setDoc(doc(db, "users", userUID), { bonus: updated }, { merge: true });
-        }
+    window.toggleLimit = () => {
+        isFullList = !isFullList;
+        document.getElementById('btnShowAll').innerHTML = isFullList ? '<i class="fa fa-eye-slash mr-2"></i> Tampilkan Sedikit' : '<i class="fa fa-eye mr-2"></i> Lihat Semua Data';
+        render();
     };
 
     window.render = () => {
-        els.list.innerHTML = ""; let tot = 0; const today = new Date().toLocaleDateString('id-ID');
-        [...cart].sort((a,b) => b.id - a.id).forEach((item) => {
-            if(item.date === today) tot += item.price;
-            els.list.innerHTML += `
-            <li id="acc-${item.id}" class="acc-item glass rounded-[1.8rem] p-6 mb-2 border-l-8 border-blue-600 shadow-sm">
-                <div class="flex justify-between items-center">
-                    <div class="cursor-pointer flex-1" onclick="document.getElementById('acc-${item.id}').classList.toggle('open')">
-                        <p class="text-[10px] font-900 uppercase opacity-40 leading-none">${item.name}</p>
-                        <p class="text-md font-black text-blue-700 mt-1">Rp${item.price.toLocaleString('id-ID')}</p>
+        const list = document.getElementById('jobList');
+        let tot = 0; const td = new Date().toLocaleDateString('id-ID');
+        list.innerHTML = "";
+        const sortedData = [...cart].sort((a,b) => b.id - a.id);
+        const displayData = isFullList ? sortedData : sortedData.slice(0, 5);
+
+        cart.forEach(i => { if(i.date === td) tot += (Number(i.price) || 0); });
+
+        displayData.forEach(i => {
+            const v = Number(i.price) || 0;
+            list.innerHTML += `
+                <li class="acc-item glass p-4 shadow-sm border-l-4 border-blue-600 cursor-pointer" onclick="this.classList.toggle('open')">
+                    <div class="flex justify-between items-center">
+                        <span class="text-[11px] font-black text-slate-700 uppercase">${i.name}</span>
+                        <span class="text-[12px] font-black text-blue-700">Rp${v.toLocaleString('id-ID')}</span>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <button onclick="deleteItem(${item.id})" class="text-red-300 hover:text-red-600 p-2"><i class="fa fa-trash"></i></button>
-                        <i class="fa fa-chevron-down acc-arrow text-slate-300"></i>
+                    <div class="acc-content">
+                        <div class="grid grid-cols-2 gap-2 mb-2">
+                            <div><p class="text-[9px] font-black text-slate-300 uppercase">TANGGAL</p><p class="text-[10px] font-bold text-slate-600">${i.date}</p></div>
+                            <div><p class="text-[9px] font-black text-slate-300 uppercase">JAM</p><p class="text-[10px] font-bold text-slate-600">${i.time}</p></div>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <div><p class="text-[9px] font-black text-slate-300 uppercase">ID ORDER</p><p class="text-[10px] font-bold text-blue-600">${i.order}</p></div>
+                            <button onclick="event.stopPropagation(); deleteItem(${i.id})" class="bg-red-50 text-red-500 px-3 py-1 rounded-lg text-[9px] hover:bg-red-100 font-black border border-red-100">HAPUS</button>
+                        </div>
                     </div>
-                </div>
-                <div class="acc-content text-[10px] font-bold text-slate-400">
-                    <p class="mb-1 uppercase tracking-widest text-slate-600">ID ORDER: ${item.order}</p>
-                    <p class="uppercase tracking-widest">Waktu: ${item.date} | ${item.time}</p>
-                </div>
-            </li>`;
+                </li>`;
         });
-        els.total.innerText = tot.toLocaleString('id-ID');
-        const per = Math.min((tot / 500000) * 100, 100);
-        document.getElementById('circleProgress').style.strokeDasharray = `${per}, 100`;
-        document.getElementById('percentText').innerText = Math.floor(per) + '%';
-        document.getElementById('targetLabel').innerText = `Rp ${tot.toLocaleString('id-ID')} / 500k`;
-        updateChart();
+        document.getElementById('totalDisplay').innerText = tot.toLocaleString('id-ID');
+    };
+
+    window.deleteItem = async (id) => {
+        if(!confirm("Hapus data ini?")) return;
+        const newCart = cart.filter(item => item.id !== id);
+        await setDoc(doc(db, "users", userUID), { bonus: newCart }, { merge: true });
+        speak("Data terhapus");
+    };
+
+    window.resetAllData = async () => {
+        if(prompt("Ketik RESET untuk hapus semua:") !== 'RESET') return;
+        await setDoc(doc(db, "users", userUID), { bonus: [] }, { merge: true });
+        speak("Data bersih");
+    };
+
+    // --- INI BAGIAN KUNCI AGAR AI TAHU DATA ANDA ---
+    window.askAI = async () => {
+        const inp = document.getElementById('aiInput'); 
+        const box = document.getElementById('aiChatBox');
+        if(!inp.value) return; 
+        const q = inp.value; 
+        inp.value = "";
+        
+        box.innerHTML += `<div class="p-3 bg-blue-600 text-white rounded-2xl ml-auto text-xs font-bold mb-2 max-w-[80%]">${q}</div>`;
+        box.scrollTop = box.scrollHeight;
+        
+        // 1. HITUNG DATA HARI INI
+        const today = new Date().toLocaleDateString('id-ID');
+        const todayItems = cart.filter(i => i.date === today);
+        const totalHariIni = todayItems.reduce((acc, curr) => acc + (Number(curr.price)||0), 0);
+        
+        // 2. HITUNG DATA KEMARIN (OPSIONAL)
+        // Disini kita cukup kirim data hari ini dulu agar konteksnya jelas
+        
+        // 3. BUAT KONTEKS (PESAN RAHASIA KE AI)
+        const contextData = `
+        [SISTEM INFO]
+        - Total Bonus Hari Ini: Rp ${totalHariIni.toLocaleString('id-ID')}
+        - Jumlah Pekerjaan Hari Ini: ${todayItems.length}
+        - Daftar Pekerjaan Hari Ini: ${todayItems.map(i => i.name + ' (' + i.price + ')').join(', ') || 'Belum ada'}
+        [INSTRUKSI]
+        Jawab pertanyaan user berdasarkan data di atas. Gunakan bahasa Indonesia yang ramah.
+        `;
+
+        const finalPrompt = contextData + "\n\nUser bertanya: " + q;
+
+        try {
+            const res = await fetch(`https://script.google.com/macros/s/AKfycbwdlOCivWIyMglDCMCR6fD_rx6fCybcy7rQvwVpiEfor-696Dq_CHIpeQ4jhsJI1fJu/exec?action=ai&prompt=${encodeURIComponent(finalPrompt)}`);
+            const data = await res.json();
+            const reply = data.reply || data.message || "Gagal";
+            
+            box.innerHTML += `<div class="p-3 bg-slate-100 text-slate-700 rounded-2xl mr-auto text-xs font-bold mb-2 max-w-[80%]"><b>AI:</b> ${reply}</div>`;
+            speak(reply);
+        } catch(e) { speak("Error koneksi AI"); }
+        box.scrollTop = box.scrollHeight;
     };
 
     window.switchTab = (t) => {
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         document.getElementById('view' + t.charAt(0).toUpperCase() + t.slice(1)).classList.add('active');
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('nav-active'));
-        document.getElementById(t === 'input' ? 'navIn' : t === 'stats' ? 'navSta' : 'navHis').classList.add('nav-active');
+        document.getElementById(t==='input'?'navIn':t==='ai'?'navAi':'navHis').classList.add('nav-active');
     };
-    window.togglePrivacy = () => { isPrivate = !isPrivate; document.getElementById('jobList').classList.toggle('blur-mode'); document.getElementById('footerTotal').classList.toggle('blur-mode'); };
-    window.toggleVoice = () => { VOICE_ON = !VOICE_ON; document.getElementById('voiceIcon').className = VOICE_ON ? "fa fa-volume-up" : "fa fa-volume-off opacity-30"; };
-    function speak(t) { if (VOICE_ON) { window.speechSynthesis.cancel(); const m = new SpeechSynthesisUtterance(t); m.lang = 'id-ID'; window.speechSynthesis.speak(m); } }
-    function updateChart() {
-        const counts = {}; cart.forEach(i => counts[i.name] = (counts[i.name] || 0) + 1);
-        if (myChart) myChart.destroy();
-        const ctx = document.getElementById('statsChart').getContext('2d');
-        myChart = new Chart(ctx, { type: 'doughnut', data: { labels: Object.keys(counts), datasets: [{ data: Object.values(counts), backgroundColor: ['#1d4ed8', '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 9, weight: 'bold' } } } } } });
-    }
-    window.sendWA = () => { let t = "*LAPORAN KOMISI*\n"; cart.filter(i => i.date === new Date().toLocaleDateString('id-ID')).forEach(i => t += `- ${i.name}: Rp${i.price.toLocaleString()}\n`); window.open("https://wa.me/?text=" + encodeURIComponent(t + "\n*TOTAL: Rp" + els.total.innerText + "*")); };
-    window.openExportMenu = () => { const ws = XLSX.utils.json_to_sheet(cart); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Audit"); XLSX.writeFile(wb, "Audit_Cloud_MultiDevice.xlsx"); };
+
+    document.getElementById('addBtn').onclick = async () => {
+        const sku = document.getElementById('sku');
+        const p = parseFloat(sku.value), n = sku.options[sku.selectedIndex]?.getAttribute('data-n');
+        if(!p) return;
+        
+        const data = { id: Date.now(), order: document.getElementById('orderId').value || "-", name: n, price: p, time: new Date().toLocaleTimeString('id-ID'), date: new Date().toLocaleDateString('id-ID')};
+        await setDoc(doc(db, "users", userUID), { bonus: arrayUnion(data) }, { merge: true });
+        
+        document.getElementById('orderId').value = ""; 
+        // SUARA DETAIL
+        speak(n + " senilai " + p.toLocaleString() + " rupiah, berhasil disimpan.");
+    };
+
+    document.getElementById('cat').onchange = () => {
+        const s = document.getElementById('svc'); s.disabled = !document.getElementById('cat').value;
+        s.innerHTML = '<option value="">Layanan...</option>';
+        if(!s.disabled) s.innerHTML += [...new Set(master.filter(i => i.category === document.getElementById('cat').value).map(i => i.service))].sort().map(sv => `<option value="${sv}">${sv}</option>`).join('');
+    };
+    document.getElementById('svc').onchange = () => {
+        const sk = document.getElementById('sku'); sk.disabled = !document.getElementById('svc').value;
+        sk.innerHTML = '<option value="">SKU...</option>';
+        if(!sk.disabled) sk.innerHTML += master.filter(i => i.category === document.getElementById('cat').value && i.service === document.getElementById('svc').value).map(i => `<option value="${i.nominal_angka}" data-n="${i.sku_name}">${i.sku_name}</option>`).join('');
+    };
+    
+    window.openExportMenu = () => { const ws = XLSX.utils.json_to_sheet(cart); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Database"); XLSX.writeFile(wb, "Data_PinBonus.xlsx"); };
+    window.sendWA = () => { let t = "*LAPORAN*\n"; cart.filter(i => i.date === new Date().toLocaleDateString('id-ID')).forEach(i => t += `- ${i.name}: Rp${i.price.toLocaleString()}\n`); window.open("https://wa.me/?text=" + encodeURIComponent(t)); };
   </script>
 </body>
 </html>
