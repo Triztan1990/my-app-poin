@@ -1,1538 +1,254 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Protected Page</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .login-container, .main-content {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
-        .login-container {
-            background-color: #f4f4f4;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .main-content {
-            background-color: #ffffff;
-            min-height: 100vh;
-            padding: 40px;
-            display: none;
-        }
-        input[type="password"] {
-            padding: 10px;
-            font-size: 16px;
-            margin: 10px 0;
-            width: 100%;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-    </style>
-    <script>
-        // Function to check password and toggle content visibility
-        function checkPassword() {
-            var password = document.getElementById('passwordInput').value;
-
-            // Simpan status login dengan localStorage
-            if (password === '1') {
-                localStorage.setItem('passwordEntered', JSON.stringify(true));  // Menyimpan status password benar
-                document.getElementById('loginPage').style.display = 'none';  // Hide login page
-                document.getElementById('mainContent').style.display = 'block';  // Show main content
-            } else {
-                document.getElementById('errorMessage').style.display = 'block';  // Show error
-            }
-        }
-
-        // Cek apakah password sudah dimasukkan sebelumnya
-        window.onload = function() {
-            var passwordStatus = JSON.parse(localStorage.getItem('passwordEntered'));
-
-            if (passwordStatus) {
-                document.getElementById('loginPage').style.display = 'none';  // Hide login page
-                document.getElementById('mainContent').style.display = 'block';  // Show main content
-            } else {
-                document.getElementById('loginPage').style.display = 'flex';  // Show login page
-            }
-        }
-    </script>
-</head>
-<body>
-
-<!-- Login Page -->
-<div id="loginPage" class="login-container">
-    <div>
-        <h2>Please Enter Access Code</h2>
-        <input type="password" id="passwordInput" placeholder="Enter your password">
-        <button onclick="checkPassword()">Submit</button>
-        <p id="errorMessage" style="color:red; display:none;">Incorrect password. Please try again.</p>
-    </div>
-</div>
-
-<!-- Main Content (Hidden initially) -->
-<div id="mainContent" class="main-content">
-    <!DOCTYPE html>  
-<html lang="id">  
-<head>  
-  <meta charset="UTF-8">  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">  
-  <title>Hitung Poin HomeSol</title>  
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">  
-  <style>  
-    /* --- THEME VARIABLES (Light & Dark Mode) --- */  
-    :root {  
-      --primary: #4361ee; --primary-light: #4895ef; --danger: #f72585;  
-      --warning: #f8961e; --success: #38b000; --offline: #dc3545;  
-      --light: #f8f9fa; --dark: #212529; --border-color: #dee2e6;  
-      --bg-color: #f5f7ff; --card-bg: white; --text-color: #212529;  
-      --text-muted: #6c757d; --shadow-color: rgba(0,0,0,0.08);  
-      --border-radius: 10px; --transition-speed: 0.3s;  
-    }  
-    body.dark-mode {  
-      --primary: #4895ef; --primary-light: #53a1f1; --danger: #f75099;  
-      --warning: #ffaa3d; --success: #5cb85c; --offline: #f75099;  
-      --light: #343a40; --dark: #f8f9fa; --border-color: #495057;  
-      --bg-color: #121212; --card-bg: #1e1e1e; --text-color: #f8f9fa;  
-      --text-muted: #adb5bd; --shadow-color: rgba(255, 255, 255, 0.08);  
-    }  
-    /* --- Base Styles & Transitions --- */  
-    body {  
-      font-family: 'Poppins', sans-serif; background-color: var(--bg-color);  
-      margin: 0; padding: 20px; color: var(--text-color);  
-      transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;  
-      line-height: 1.6;  
-    }  
-    .container { max-width: 720px; margin: 0 auto; }  
-    * { box-sizing: border-box; }  
-    /* --- Header --- */  
-    .app-header {  
-      display: flex; align-items: center; gap: 15px; margin-bottom: 25px;  
-      padding-bottom: 10px; border-bottom: 1px solid var(--border-color);  
-      transition: border-color var(--transition-speed) ease;  
-    }  
-    .crown-icon { color: gold; font-size: 28px; text-shadow: 0 0 4px rgba(0,0,0,0.4); }  
-    .app-header h1 { font-weight: 600; margin: 0; font-size: 1.5em; color: var(--text-color); transition: color var(--transition-speed) ease; }  
-    .status-container { margin-left: auto; display: flex; align-items: center; gap: 15px; }  
-    .status-indikator { padding: 5px 14px; border-radius: 20px; font-weight: 500; font-size: 0.9em; display: flex; align-items: center; gap: 5px; transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease; }  
-    .status-indikator .spinner { display: none; width: 1em; height: 1em; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 5px; }  
-    .status-indikator.loading .spinner { display: inline-block; }  
-    .status-indikator.loading .status-text { display: none; }  
-    .online { background: var(--success); color: white; }  
-    .offline { background: var(--offline); color: white; }  
-    #darkModeToggle { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.3em; padding: 5px; transition: color var(--transition-speed) ease; }  
-    #darkModeToggle:hover { color: var(--primary); }  
-    @keyframes spin { to { transform: rotate(360deg); } }  
-    /* --- Tabs --- */  
-    .tabs { display: flex; margin-bottom: 20px; gap: 8px; flex-wrap: wrap; }  
-    .tablink { padding: 10px 18px; cursor: pointer; background-color: var(--light); border-radius: 6px 6px 0 0; border: 1px solid var(--border-color); border-bottom: none; font-family: 'Poppins'; font-weight: 500; color: var(--text-muted); transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease, border-color var(--transition-speed) ease; margin-bottom: -1px; }  
-    .tablink.active, .tablink:hover { background-color: var(--primary); color: white; border-color: var(--primary); }  
-    .tabcontent { display: none; background: var(--card-bg); padding: 25px 20px; border-radius: 0 var(--border-radius) var(--border-radius) var(--border-radius); box-shadow: 0 4px 15px var(--shadow-color); margin-bottom: 30px; border: 1px solid var(--border-color); transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease; opacity: 0; animation: fadeIn 0.5s forwards; }  
-    .tabcontent.active-content { display: block; }  
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }  
-    /* --- Card --- */  
-    .card { background: var(--card-bg); border-radius: var(--border-radius); box-shadow: 0 4px 15px var(--shadow-color); padding: 22px; margin-bottom: 25px; border: 1px solid var(--border-color); transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease; }  
-    .card h3 { margin-top: 0; margin-bottom: 18px; color: var(--primary); font-weight: 600; }  
-    /* --- Tabel --- */  
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; table-layout: fixed; }  
-    th, td { padding: 14px 12px; border-bottom: 1px solid var(--border-color); text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: border-color var(--transition-speed) ease; }  
-    th { background-color: var(--primary); color: white; font-weight: 500; }  
-    tr { transition: background-color 0.2s ease; }  
-    tbody tr:hover { background-color: rgba(0,0,0,0.03); }  
-    body.dark-mode tbody tr:hover { background-color: rgba(255,255,255,0.05); }  
-    .poin-column { display: flex; align-items: center; justify-content: space-between; }  
-    @keyframes rowFadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }  
-    @keyframes rowFadeOut { from { opacity: 1; } to { opacity: 0; transform: scaleY(0.1); } }  
-    .row-fade-in { animation: rowFadeIn 0.4s ease forwards; }  
-    .row-fade-out { animation: rowFadeOut 0.4s ease forwards; }  
-    /* --- Tombol & Input --- */  
-    .point-action { display: flex; align-items: center; justify-content: space-between; gap: 10px; }  
-    .btn-icon { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 1.1em; padding: 5px; transition: color 0.2s ease; }  
-    .btn-icon:hover { color: #c00; }  
-    body.dark-mode .btn-icon:hover { color: #ff7a8a; }  
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Poppins'; font-weight: 500; transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease; }  
-    .btn:active { transform: scale(0.98); }  
-    .btn-primary { background-color: var(--primary); color: white; }  
-    .btn-primary:hover { background-color: var(--primary-light); box-shadow: 0 2px 8px rgba(67, 97, 238, 0.3); }  
-    .btn-danger { background-color: var(--danger); color: white; }  
-    .btn-danger:hover { background-color: #d01a6a; box-shadow: 0 2px 8px rgba(247, 37, 133, 0.3); }  
-    .btn-warning { background-color: var(--warning); color: white; }  
-    .btn-warning:hover { background-color: #d88010; box-shadow: 0 2px 8px rgba(248, 150, 30, 0.3); }  
-    .btn-success { background-color: var(--success); color: white; }  
-    .btn-success:hover { background-color: #2b8000; box-shadow: 0 2px 8px rgba(56, 176, 0, 0.3); }  
-    .btn-info { background-color: #0dcaf0; color: white; } /* Tambahkan style untuk btn-info */  
-    .btn-info:hover { background-color: #0aa3c2; box-shadow: 0 2px 8px rgba(13, 202, 240, 0.3); }  
-    .btn-feedback { background-color: var(--success) !important; cursor: default !important; transform: none !important; box-shadow: none !important; }  
-    input, select { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; font-family: 'Poppins'; background-color: var(--card-bg); color: var(--text-color); transition: border-color var(--transition-speed) ease, background-color var(--transition-speed) ease, color var(--transition-speed) ease; }  
-    input:focus, select:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2); }  
-    input[type="number"] { text-align: center; }  
-    input::placeholder { color: var(--text-muted); }  
-    /* --- Chart & Statistik --- */  
-    #layananChart { height: 260px !important; max-height: 260px; background: transparent; border-radius: 6px; margin-top: 20px; transition: background-color var(--transition-speed) ease; }  
-    .stat-label { font-weight: 500; color: var(--primary); }  
-    /* --- Progress Bar --- */  
-    .progress-card { 
-      background: linear-gradient(135deg, var(--primary), var(--primary-light)); 
-      color: white; 
-      padding: 25px; 
-    }  
-    .progress-card h3 { 
-      color: white; 
-      margin-top: 0;
-    }  
-    .target-input-group { 
-      display: flex; 
-      align-items: center; 
-      margin-bottom: 15px; 
-    }  
-    .target-input-group label { 
-      font-weight: 500; 
-      flex-shrink: 0;
-      margin-right: 8px;
-      white-space: nowrap;
-    }  
-    .target-input-group input { 
-      width: 100%;
-      flex-grow: 1; 
-      text-align: right; 
-      background-color: rgba(255,255,255,0.1); 
-      border-color: rgba(255,255,255,0.3); 
-      color: white;
-      padding: 8px 12px;
-    }  
-    .progress-container { 
-      background-color: rgba(255, 255, 255, 0.2); 
-      border-radius: 20px; 
-      height: 12px; 
-      overflow: hidden; 
-      margin-bottom: 8px; 
-    }  
-    .progress-bar { 
-      background-color: var(--success); 
-      height: 100%; 
-      width: 0%; 
-      border-radius: 20px; 
-      transition: width 0.5s ease-out; 
-    }  
-    .progress-text { 
-      font-size: 0.95em; 
-      text-align: center; 
-      margin-bottom: 15px;
-    }
-    
-    /* Tombol reset */
-    .reset-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 10px;
-    }
-    .reset-buttons .btn {
-      padding: 6px 12px;
-      font-size: 0.85em;
-    }
-    
-    /* CSS untuk opsi layanan berwarna */
-    #layanan option {
-      padding: 8px;
-      font-weight: 500;
-    }
-    
-    /* CSS untuk badge layanan di tabel kerjaan */
-    .layanan-badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      color: white;
-      font-size: 0.9em;
-      font-weight: 500;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100%;
-    }
-    
-    /* CSS untuk tabel statistik layanan */
-    .layanan-stats {
-      margin-top: 25px;
-      padding-top: 15px;
-      border-top: 1px solid var(--border-color);
-    }
-    
-    .layanan-stats h4 {
-      margin-top: 0;
-      margin-bottom: 15px;
-      color: var(--primary);
-      font-weight: 600;
-    }
-    
-    .stats-table {
-      width: 100%;
-      margin-top: 10px;
-      border-collapse: collapse;
-    }
-    
-    .stats-table th, .stats-table td {
-      padding: 10px;
-      text-align: left;
-      border-bottom: 1px solid var(--border-color);
-    }
-    
-    .stats-table th {
-      background-color: var(--primary);
-      color: white;
-    }
-    
-    .stats-table tfoot {
-      border-top: 2px solid var(--primary);
-    }
-
-    .stats-table tfoot td {
-      padding-top: 12px;
-      border-bottom: none;
-    }
-
-    .stats-total-row {
-      font-weight: 500;
-      color: var(--primary);
-    }
-    
-    /* --- Responsif (Mobile) --- */  
-    @media (max-width: 600px) {  
-      body { padding: 8px; }  
-      .container { padding: 0px; }  
-      .card, .tabcontent { padding: 12px; border-radius: 0; border-left: none; border-right: none; margin-bottom: 8px; box-shadow: none; }  
-      .card:first-child { border-top-left-radius: var(--border-radius); border-top-right-radius: var(--border-radius); border-top: 1px solid var(--border-color);}  
-      .card:last-child { border-bottom-left-radius: var(--border-radius); border-bottom-right-radius: var(--border-radius); border-bottom: 1px solid var(--border-color);}  
-      .tabcontent { border-radius: 0 0 var(--border-radius) var(--border-radius); box-shadow: 0 4px 15px var(--shadow-color); margin-bottom: 15px; }  
-      table, th, td { font-size: 13px; }  
-      th, td { padding: 9px 7px; white-space: normal; }  
-      th:nth-child(1), td:nth-child(1) { width: 28%; }  
-      th:nth-child(2), td:nth-child(2) { width: 50%; }  
-      th:nth-child(3), td:nth-child(3) { width: 22%; }  
-      h1, h2, h3, h4 { font-size: 1.05em; }  
-      .app-header h1 { font-size: 1.15em; }  
-      .progress-card #totalPoin { font-size: 1.8em; margin-bottom: 15px; }  
-      .btn { padding: 8px 12px; font-size: 0.85em; }  
-      input, select { padding: 9px; font-size: 0.85em;}  
-      .history-header { flex-direction: column; align-items: flex-start; gap: 8px; }  
-      .history-header > div { margin-left: 0; width: 100%; display: flex; gap: 6px; justify-content: flex-start; flex-wrap: wrap; }  
-      #layananChart { height: 180px !important; max-height: 180px; }  
-      .progress-card { border-radius: var(--border-radius); padding: 18px 15px; }  
-      .target-input-group {
-        flex-direction: row;
-      }
-      .target-input-group label {
-        width: auto;
-        margin-right: 8px;
-      }
-      .target-input-group input {
-        width: 100%;
-        padding: 6px 8px;
-        font-size: 0.9em;
-      }
-      .reset-buttons {
-        flex-wrap: wrap;
-      }
-      .reset-buttons .btn {
-        font-size: 0.8em;
-        padding: 5px 10px;
-      }
-      .layanan-badge {
-        padding: 1px 6px;
-        font-size: 0.8em;
-      }
-      
-      .stats-table th, .stats-table td {
-        padding: 6px;
-        font-size: 12px;
-      }
-    }  
-    /* --- Splash Screen --- */  
-    .splash-screen {  
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;  
-      background-color: var(--primary); display: flex; flex-direction: column;  
-      justify-content: center; align-items: center; z-index: 9999;  
-    }  
-    .splash-screen h1 { color: white; font-size: 24px; margin-top: 20px; text-align: center; padding: 0 15px; }  
-    
-    /* Styling for input validation */
-    .error {
-        border: 2px solid red;
-        background-color: #ffeeee;
-    }
-  </style>  
-  <!-- Script Failsafe Splash Screen -->  
-  <script>  
-    window.setTimeout(function() {  
-      var splash = document.getElementById('splashScreen');  
-      var mainApp = document.getElementById('mainApp');  
-      if (splash && splash.style.display !== 'none') {  
-        splash.style.display = 'none';  
-        if (mainApp) mainApp.style.display = 'block';  
-        console.log("Splash screen dihapus oleh failsafe timer");  
-      }  
-    }, 3500);  
-  </script>  
-
-<script>
-function validateInput() {
-    // Validasi field tidak boleh kosong
-    const requiredFields = document.querySelectorAll('[required]');
-    let isValid = true;
-
-    requiredFields.forEach(field => {
-        if (!field.value.trim()) {
-            field.classList.add('error');
-            isValid = false;
-        } else {
-            field.classList.remove('error');
-        }
-    });
-
-    // Validasi input numerik hanya menerima angka
-    const numericFields = document.querySelectorAll('input[type="number"]');
-    numericFields.forEach(field => {
-        const value = parseFloat(field.value);
-        if (isNaN(value) || value < 0) {
-            field.classList.add('error');
-            isValid = false;
-        } else {
-            field.classList.remove('error');
-        }
-    });
-
-    // Validasi batas maksimal/minimal
-    const targetField = document.getElementById('targetField');
-    if (targetField) {
-        const value = parseFloat(targetField.value);
-        if (value > 1000) { // Contoh batasan maksimal
-            targetField.classList.add('error');
-            isValid = false;
-        }
-    }
-
-    return isValid;
-}
-
-// Tambahkan event listener pada form submit
-document.querySelector('form')?.addEventListener('submit', function(e) {
-    if (!validateInput()) {
-        e.preventDefault(); // Mencegah form submit jika validasi gagal
-        alert('Harap periksa kembali input Anda');
-    }
-});
-</script>
-
-</head>  
-<body class="">  
-  <!-- Splash Screen -->  
-  <div id="splashScreen" class="splash-screen">  
-    <i class="fas fa-crown crown-icon" style="font-size: 50px; color: gold;"></i>  
-    <h1>Hitung Poin HomeSol</h1>  
-  </div>  
-
-  <!-- Konten Aplikasi Utama (Awalnya Tersembunyi) -->  
-  <div id="mainApp" class="container" style="display:none;">  
-    <!-- Header -->  
-    <div class="app-header">  
-      <i class="fas fa-crown crown-icon"></i>  
-      <h1 style="font-weight:600; margin: 0;">HomeSol Points</h1>  
-      <div class="status-container">  
-         <span id="statusOnline" class="status-indikator offline">  
-             <div class="spinner"></div>  
-             <span class="status-text">Offline</span>  
-         </span>  
-         <button id="darkModeToggle" title="Ganti Tema"><i class="fa-solid fa-moon"></i></button>  
-      </div>  
-    </div>  
-
-    <!-- Navigasi Tab -->  
-    <div class="tabs">  
-      <button class="tablink active" onclick="showTab('formTab', this)"><i class="fa-solid fa-pen-to-square"></i> Form</button>  
-      <button class="tablink" onclick="showTab('chartTab', this)"><i class="fa-solid fa-chart-pie"></i> Grafik</button>  
-      <button class="tablink" onclick="showTab('statTab', this)"><i class="fa-solid fa-chart-line"></i> Statistik</button>  
-    </div>  
-
-    <!-- Konten Tab: Form -->  
-    <div id="formTab" class="tabcontent active-content">  
-      <div class="card">  
-        <h3><i class="fa-solid fa-plus"></i> Tambah Kerjaan Baru</h3>  
-        <table>  
-          <tr><td>Tanggal</td><td><input type="date" id="tanggal"></td></tr>  
-          <tr><td>Layanan</td><td><select id="layanan" required><option value="">Memuat...</option></select></td></tr>  
-          <tr><td>Paket</td><td><select id="paket" required><option value="">Pilih Layanan Dulu</option></select></td></tr>  
-          <tr><td>Jumlah</td><td><input type="number" id="jumlah" min="1" value="1" oninput="updatePointByJumlah()"></td></tr>  
-          <tr><td>Point</td><td>  
-            <div class="point-action">  
-              <div>  
-                <span id="poinSatuan">0</span> × <span id="displayJumlah">1</span> = <strong id="poin">0</strong>  
-              </div>  
-              <button id="btnTambah" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Tambah</button>  
-            </div>  
-          </td></tr>  
-        </table>  
-      </div>  
-
-      <!-- Card Total & Progress with Modified Layout -->  
-      <div class="card progress-card">  
-        <h3 style="text-align:center;">Poin & Target Mingguan</h3>  
-        <div style="font-size: 2.2em; font-weight: 700; text-align: center; margin-bottom: 20px;" id="totalPoin">0</div>  
-        <div class="target-input-group">  
-            <label for="weeklyTargetInput">Target:</label>  
-            <input type="number" id="weeklyTargetInput" min="0" placeholder="0">  
-        </div>  
-        <div class="progress-container">  
-            <div id="progressBar" class="progress-bar"></div>  
-        </div>  
-        <div id="progressText" class="progress-text">0 / 0 Poin (0%)</div>  
-        
-        <!-- Tombol Reset -->
-        <div class="reset-buttons">
-          <button id="btnResetTarget" class="btn btn-warning"><i class="fa-solid fa-eraser"></i> Reset Target</button>
-          <button id="btnResetData" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i> Reset Data</button>
-        </div>
-      </div>  
-
-      <div class="card">  
-        <!-- Header Tabel Kerjaan -->  
-        <div class="history-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">  
-          <h3 style="margin: 0;"><i class="fa-solid fa-list-check"></i> Daftar Kerjaan</h3>  
-          <div>  
-            <button class="btn btn-primary btn-sm" onclick="backupData()" title="Download data kerjaan Anda"><i class="fas fa-download"></i> Backup</button>  
-            <button class="btn btn-warning btn-sm" onclick="document.getElementById('importFileInput').click()" title="Restore data dari file backup"><i class="fas fa-upload"></i> Restore</button>  
-            <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="restoreData(event)">  
-            <button id="btnToggleHistory" class="btn btn-sm btn-info" style="min-width: 40px;" title="Tampilkan/Sembunyikan Daftar">  
-              <i class="fas fa-eye"></i>  
-            </button>  
-          </div>  
-        </div>  
-        <!-- Tabel Kerjaan -->  
-        <div id="historyTableContainer" style="overflow-x: auto;">  
-          <table id="tabelKerjaan">  
-            <thead><tr><th style="width:30%">Tanggal</th><th style="width:45%">Paket</th><th style="width:25%">Poin</th></tr></thead>  
-            <tbody><!-- Data Kerjaan Dimasukkan di Sini --></tbody>  
-          </table>  
-        </div>  
-      </div>  
-    </div>  
-
-    <!-- Konten Tab: Grafik -->  
-    <div id="chartTab" class="tabcontent">  
-      <h3><i class="fa-solid fa-chart-pie"></i> Proporsi Layanan</h3>  
-      <canvas id="layananChart"></canvas>  
-    </div>  
-
-    <!-- Konten Tab: Statistik -->  
-    <div id="statTab" class="tabcontent">  
-      <h3><i class="fa-solid fa-calendar-days"></i> Statistik Poin</h3>  
-      <div style="font-size:1.1em; padding:14px 0; line-height: 2;">  
-        <div><span class="stat-label">Poin Hari Ini: </span><span id="statHarian">0</span></div>  
-        <div><span class="stat-label">Poin Minggu Ini: </span><span id="statMingguan">0</span></div>  
-        <div><span class="stat-label">Poin Bulan Ini: </span><span id="statBulanan">0</span></div>  
-      </div>
-      
-      <!-- Statistik per Layanan dengan Total -->
-      
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px;">
-      <h4 style="margin: 0; color: var(--primary); font-weight: 600;"><i class="fa-solid fa-tags"></i> Statistik per Layanan</h4>
-      <button id="toggleLayananStatsBtn" class="btn btn-sm btn-info" style="font-size: 0.8em;">
-        Sembunyikan
-      </button>
-    </div>
-    <div id="layananStats" class="layanan-stats">
-    
-        <h4><i class="fa-solid fa-tags"></i> Statistik per Layanan</h4>
-        <table class="stats-table">
-          <thead>
-            <tr>
-              <th>Layanan</th>
-              <th>Jumlah</th>
-              <th>Total Poin</th>
-            </tr>
-          </thead>
-          <tbody id="layananStatsBody">
-            <!-- Data statistik layanan akan ditampilkan di sini -->
-          </tbody>
-          <tfoot>
-            <tr class="stats-total-row">
-              <td><strong>TOTAL</strong></td>
-              <td id="totalLayananCount"><strong>0</strong></td>
-              <td id="totalLayananPoin"><strong>0</strong></td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    </div>  
-  </div> <!-- Akhir .container #mainApp -->  
-
-  <!-- Library Chart.js -->  
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  
-
-  <!-- Script Aplikasi Utama -->  
-  <script>  
-    // --- KONFIGURASI ---  
-    const API_URL = 'https://script.google.com/macros/s/AKfycbyuSjt7dlJLXB_283b7dQNpEWm3LAjcPEwnO8ho0nF6OH82x9jKqXuRjB6pKp_-OcfLBg/exec';  
-    const LOCALSTORAGE_KEY = 'daftarKerjaanHomeSol';  
-    const THEME_KEY = 'themePreferenceHomeSol';  
-    const TARGET_KEY = 'weeklyTargetHomeSol';  
-    const HISTORY_VISIBLE_KEY = 'historyVisibleHomeSol';  
-
-    // --- VARIABEL GLOBAL ---  
-    let layananData = {};  
-    let daftarKerjaan = [];  
-    let isHistoryVisible = true;  
-    let online = false;  
-    let chartInstance = null;  
-    let weeklyTarget = 0;  
-    let weeklyPoints = 0;  
-    let layananColors = {}; // Untuk menyimpan warna setiap layanan
-
-    // --- DOM SELECTORS ---  
-    const splashScreen = document.getElementById('splashScreen');  
-    const mainApp = document.getElementById('mainApp');  
-    const statusOnline = document.getElementById('statusOnline');  
-    const statusText = statusOnline.querySelector('.status-text');  
-    const darkModeToggle = document.getElementById('darkModeToggle');  
-    const bodyEl = document.body;  
-    const tanggalEl = document.getElementById('tanggal');  
-    const layananEl = document.getElementById('layanan');  
-    const paketEl = document.getElementById('paket');  
-    const jumlahEl = document.getElementById('jumlah');  
-    const poinSatuanEl = document.getElementById('poinSatuan');  
-    const displayJumlahEl = document.getElementById('displayJumlah');  
-    const poinEl = document.getElementById('poin');  
-    const btnTambah = document.getElementById('btnTambah');  
-    const totalPoinEl = document.getElementById('totalPoin');  
-    const tabelBody = document.querySelector('#tabelKerjaan tbody');  
-    const btnToggleHistory = document.getElementById('btnToggleHistory');  
-    const historyTableContainer = document.getElementById('historyTableContainer');  
-    const layananChartCanvas = document.getElementById('layananChart');  
-    const statHarianEl = document.getElementById('statHarian');  
-    const statMingguanEl = document.getElementById('statMingguan');  
-    const statBulananEl = document.getElementById('statBulanan');  
-    const layananStatsBody = document.getElementById('layananStatsBody');
-    const totalLayananCount = document.getElementById('totalLayananCount');
-    const totalLayananPoin = document.getElementById('totalLayananPoin');
-    const weeklyTargetInput = document.getElementById('weeklyTargetInput');  
-    const progressBar = document.getElementById('progressBar');  
-    const progressText = document.getElementById('progressText');  
-    const btnResetTarget = document.getElementById('btnResetTarget');
-    const btnResetData = document.getElementById('btnResetData');
-    
-    // --- COLOR PALETTE FUNCTIONS ---
-    function generateColorPalette(count) {
-      // Daftar warna yang harmonis untuk UI
-      const baseColors = [
-        '#4361ee', // biru (primary)
-        '#3a0ca3', // ungu tua
-        '#7209b7', // ungu
-        '#f72585', // pink (danger)
-        '#4cc9f0', // biru muda
-        '#4895ef', // biru terang
-        '#560bad', // ungu gelap
-        '#f3722c', // oranye
-        '#f8961e', // oranye muda (warning)
-        '#38b000', // hijau (success)
-        '#43aa8b', // teal
-        '#577590', // biru keabu-abuan
-        '#277da1', // biru laut
-        '#90be6d', // hijau muda
-        '#f9c74f', // kuning
-        '#023047', // biru tua
-        '#0a9396', // teal tua
-        '#ee9b00', // kuning tua
-        '#bb3e03', // oranye tua
-        '#ae2012', // merah
-      ];
-      
-      // Jika membutuhkan lebih banyak warna, kita bisa menghasilkan variasi
-      const fullPalette = [...baseColors];
-      
-      while (fullPalette.length < count) {
-        // Tambahkan variasi warna dengan opacity/tint berbeda
-        baseColors.forEach((color, i) => {
-          if (fullPalette.length < count) {
-            // Buat variasi yang lebih terang dari warna dasar
-            const lighter = adjustColorBrightness(color, 20);
-            fullPalette.push(lighter);
-          }
-          if (fullPalette.length < count) {
-            // Buat variasi yang lebih gelap dari warna dasar
-            const darker = adjustColorBrightness(color, -20);
-            fullPalette.push(darker);
-          }
-        });
-      }
-      
-      return fullPalette.slice(0, count);
-    }
-
-    // Fungsi untuk menyesuaikan kecerahan warna
-    function adjustColorBrightness(hex, percent) {
-      // Convert hex to RGB
-      let r = parseInt(hex.substring(1, 3), 16);
-      let g = parseInt(hex.substring(3, 5), 16);
-      let b = parseInt(hex.substring(5, 7), 16);
-
-      // Adjust brightness
-      r = Math.max(0, Math.min(255, r + percent));
-      g = Math.max(0, Math.min(255, g + percent));
-      b = Math.max(0, Math.min(255, b + percent));
-
-      // Convert back to hex
-      return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-    }
-
-    // --- FUNGSI UTAMA & INISIALISASI ---  
-    function initializeApp() {  
-      console.log("Inisialisasi Aplikasi Modern...");  
-      loadThemePreference();  
-      setTimeout(removeSplashShowApp, 50);  
-      try {  
-        tanggalEl.valueAsDate = new Date();  
-        loadTarget();  
-        loadFromLocalStorage();  
-        updateToggleButtonStyle();  
-        renderTabel();  
-        updateStatistikDanChart(); // Panggil setelah data dimuat  
-        setupEventListeners();  
-        cekOnlineGoogleSheet();  
-      } catch(err) {  
-        console.error("Error saat inisialisasi:", err);  
-        alert("Gagal memuat aplikasi sepenuhnya. Cek konsol untuk detail.");  
-        removeSplashShowApp();  
-      }  
-    }  
-
-    function removeSplashShowApp() {  
-        if (splashScreen && splashScreen.style.display !== 'none') {  
-            splashScreen.style.display = 'none';  
-            if (mainApp) mainApp.style.display = 'block';  
-            console.log("Splash screen dihapus, aplikasi ditampilkan.");  
-        }  
-    }  
-
-     function setupEventListeners() {  
-      layananEl.addEventListener('change', populatePaket);  
-      paketEl.addEventListener('change', updatePoinDisplay);  
-      jumlahEl.addEventListener('input', updatePointByJumlah);  
-      btnTambah.addEventListener('click', tambahKerjaan);  
-      btnToggleHistory.addEventListener('click', toggleHistory);  
-      darkModeToggle.addEventListener('click', toggleDarkMode);  
-      weeklyTargetInput.addEventListener('change', handleTargetChange);  
-      btnResetTarget.addEventListener('click', resetTarget);
-      btnResetData.addEventListener('click', resetAllData);
-      setInterval(cekOnlineGoogleSheet, 300000);  
-    }  
-    
-    // Fungsi reset target
-    function resetTarget() {
-      if (confirm("Yakin ingin menghapus target mingguan?")) {
-        weeklyTarget = 0;
-        weeklyTargetInput.value = 0;
-        saveTarget();
-        updateProgressBar();
-      }
-    }
-    
-    // Fungsi reset semua data
-    function resetAllData() {
-      if (confirm("PERINGATAN: Tindakan ini akan menghapus SEMUA data kerja Anda. Data yang dihapus tidak dapat dikembalikan!\n\nApakah Anda yakin ingin melanjutkan?")) {
-        if (confirm("Konfirmasi sekali lagi: Anda yakin ingin menghapus semua data kerja?")) {
-          daftarKerjaan = [];
-          saveToLocalStorage();
-          renderTabel();
-          updateStatistikDanChart();
-          alert("Semua data telah dihapus.");
-        }
-      }
-    }
-
-    function cekOnlineGoogleSheet() {  
-        statusOnline.classList.add('loading');  
-        statusOnline.classList.remove('online', 'offline');  
-        statusText.textContent = "Memeriksa...";  
-
-        fetch(API_URL + '?cache_bust=' + Date.now(), { cache: "no-store" })  
-            .then(response => {  
-                if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); }  
-                return response.json();  
-            })  
-            .then(data => {  
-                online = true;  
-                statusOnline.classList.remove('loading', 'offline');  
-                statusOnline.classList.add('online');  
-                statusText.textContent = "Online";  
-                if (data && Array.isArray(data.data)) {  
-                    processLayananData(data.data);  
-                } else {  
-                    handleFetchError("Data API tidak valid");  
-                }  
-            })  
-            .catch(err => {  
-                handleFetchError(err.message);  
-            });  
-    }  
-
-     function handleFetchError(errorMessage) {  
-        online = false;  
-        statusOnline.classList.remove('loading', 'online');  
-        statusOnline.classList.add('offline');  
-        statusText.textContent = "Offline";  
-        if (Object.keys(layananData).length === 0) {  
-            layananData = {};  
-            layananEl.innerHTML = '<option value="">Gagal Memuat (Offline)</option>';  
-            paketEl.innerHTML = '<option value="">Pilih Layanan Dulu</option>';  
-            updatePoinDisplay();  
-        }  
-        console.error("Fetch error:", errorMessage);  
-    }  
-
-     function processLayananData(apiData) {  
-        layananData = {};  
-        apiData.forEach(row => {  
-          if (row && typeof row.layanan === 'string' && row.layanan.trim() !== '' &&  
-              typeof row.paket === 'string' && row.paket.trim() !== '' && !isNaN(Number(row.poin))) {  
-            const layanan = row.layanan.trim();  
-            if (!layananData[layanan]) layananData[layanan] = [];  
-            layananData[layanan].push({ paket: row.paket.trim(), poin: Number(row.poin) });  
-          } else {  
-            console.warn("Skipping invalid row:", row);  
-          }  
-        });
-        
-        // Assign warna untuk setiap layanan
-        assignColorsToLayanan();
-        
-        populateLayanan();  
-        // Tidak perlu panggil populatePaket/updatePoinDisplay di sini,  
-        // populateLayanan akan memicu change event jika nilainya berubah,  
-        // atau nilai paket akan otomatis terisi jika layanan tidak berubah.  
-    }  
-
-    // Fungsi untuk menetapkan warna ke setiap layanan
-    function assignColorsToLayanan() {
-        const layananKeys = Object.keys(layananData);
-        const colorPalette = generateColorPalette(layananKeys.length);
-        
-        layananKeys.forEach((layanan, index) => {
-            layananColors[layanan] = colorPalette[index];
-        });
-    }
-
-    function populateLayanan() {  
-      const currentLayanan = layananEl.value;  
-      let layananDitemukan = false;  
-      layananEl.innerHTML = '<option value="">-- Pilih Layanan --</option>';  
-      Object.keys(layananData).sort().forEach(layanan => {  
-        const opt = document.createElement('option');  
-        opt.value = layanan; 
-        opt.textContent = layanan;
-        
-        // Tambahkan warna background ke opsi
-        if (layananColors[layanan]) {
-            opt.style.backgroundColor = layananColors[layanan];
-            opt.style.color = 'white';
-        }
-        
-        if (layanan === currentLayanan) {  
-            opt.selected = true;  
-            layananDitemukan = true;  
-        }  
-        layananEl.appendChild(opt);  
-      });  
-
-      // Panggil populatePaket secara eksplisit setelah loop selesai  
-      populatePaket();  
-    }  
-
-    function populatePaket() {  
-      const selectedLayanan = layananEl.value;  
-      paketEl.innerHTML = '<option value="">-- Pilih Paket --</option>';  
-      if (selectedLayanan && layananData[selectedLayanan]) {  
-        layananData[selectedLayanan].sort((a, b) => a.paket.localeCompare(b.paket)).forEach(obj => {  
-          const opt = document.createElement('option');  
-          opt.value = obj.paket;  
-          opt.textContent = `${obj.paket} (${obj.poin} poin)`;  
-          paketEl.appendChild(opt);  
-        });  
-      }  
-      // Panggil updatePoinDisplay setelah opsi paket diisi  
-      updatePoinDisplay();  
-    }  
-
-    function updatePoinDisplay() {  
-      const selectedLayanan = layananEl.value;  
-      const selectedPaket = paketEl.value;  
-      let poinPerItem = 0;  
-      if (selectedLayanan && selectedPaket && layananData[selectedLayanan]) {  
-        const item = layananData[selectedLayanan].find(p => p.paket === selectedPaket);  
-        poinPerItem = item ? item.poin : 0;  
-      }  
-      const jumlah = parseInt(jumlahEl.value) || 0;  
-      if (jumlah < 0) jumlahEl.value = 0;  
-      poinSatuanEl.textContent = poinPerItem.toFixed(2); // Tampilkan 2 desimal  
-      displayJumlahEl.textContent = Math.max(0, jumlah);  
-      poinEl.textContent = (poinPerItem * Math.max(0, jumlah)).toFixed(2);  
-    }  
-
-     function updatePointByJumlah() {  
-        if (parseInt(jumlahEl.value) < 0) jumlahEl.value = 0;  
-        updatePoinDisplay();  
-    }  
-
-
-    function tambahKerjaan() {  
-      const tanggal = tanggalEl.value;  
-      const layanan = layananEl.value;  
-      const paket = paketEl.value;  
-      const jumlah = parseInt(jumlahEl.value);  
-      const poinSatuan = parseFloat(poinSatuanEl.textContent);  
-      const poinTotal = parseFloat(poinEl.textContent);  
-
-      if (!tanggal || !layanan || !paket || isNaN(jumlah) || jumlah <= 0 || isNaN(poinTotal) || poinTotal <= 0) { // Tambah cek poinTotal > 0  
-        alert('Harap lengkapi semua field dengan benar (Jumlah & Poin harus > 0)!');  
-        return;  
-      }  
-
-      const newItem = {  
-        id: Date.now(), tanggal: tanggal, layanan: layanan, paket: paket,  
-        jumlah: jumlah, poinSatuan: poinSatuan, poin: poinTotal  
-      };  
-      daftarKerjaan.unshift(newItem);  
-
-      saveToLocalStorage();  
-      renderSingleRow(newItem, true);  
-      updateStatistikDanChart(); // Panggil update gabungan  
-
-      // Feedback visual tombol Tambah  
-      const originalBtnHtml = btnTambah.innerHTML;  
-      btnTambah.innerHTML = `<i class="fa-solid fa-check"></i> Ditambahkan!`;  
-      btnTambah.classList.add('btn-feedback');  
-      btnTambah.disabled = true;  
-      setTimeout(() => {  
-          btnTambah.innerHTML = originalBtnHtml;  
-          btnTambah.classList.remove('btn-feedback');  
-          btnTambah.disabled = false;  
-      }, 1500);  
-
-      paketEl.value = '';  
-      jumlahEl.value = '1';  
-      updatePoinDisplay();  
-    }  
-
-    function renderTabel() {  
-        tabelBody.innerHTML = '';  
-        if (daftarKerjaan.length === 0) {  
-            tabelBody.innerHTML = '<tr><td colspan="3" style="text-align:center; font-style: italic; padding: 25px; color: var(--text-muted);">Belum ada data kerjaan</td></tr>';  
-        } else {  
-            daftarKerjaan.forEach((item) => {  
-                renderSingleRow(item, false);  
-            });  
-        }  
-        updateToggleButtonStyle();  
-    }  
-
-
-    function renderSingleRow(k, animate = false) {  
-        const tr = document.createElement('tr');  
-        tr.dataset.id = k.id;  
-        
-        // Dapatkan warna untuk layanan
-        const layananColor = layananColors[k.layanan] || '#cccccc'; // warna default jika tidak ada
-        
-        tr.innerHTML = `  
-            <td>${formatTanggal(k.tanggal)}</td>  
-            <td title="${k.layanan} - ${k.paket} (${k.jumlah || 1}x)">
-              <span class="layanan-badge" style="background-color: ${layananColor}">${k.layanan}</span> - ${k.paket}
-            </td>  
-            <td>  
-              <div class="poin-column">  
-                <span>${k.poin.toFixed(2)}</span>  
-                <button class="btn-icon" onclick="hapusKerjaan(${k.id})" title="Hapus"><i class="fas fa-trash-alt"></i></button>  
-              </div>  
-            </td>  
-          `;  
-
-        const placeholder = tabelBody.querySelector('td[colspan="3"]');  
-        if (placeholder) placeholder.parentElement.remove();  
-
-        tabelBody.prepend(tr);  
-
-        if (animate) {  
-            tr.classList.add('row-fade-in');  
-            tr.addEventListener('animationend', () => {  
-                 if(tr) tr.classList.remove('row-fade-in');  
-            }, { once: true });  
-        }  
-    }  
-
-    function hapusKerjaan(id) {  
-        const itemIndex = daftarKerjaan.findIndex(item => item.id === id);  
-        if (itemIndex === -1) return;  
-        const item = daftarKerjaan[itemIndex];  
-
-        if (confirm(`Yakin hapus "${item.layanan} - ${item.paket}" (${formatTanggal(item.tanggal)})?`)) {  
-            const rowElement = tabelBody.querySelector(`tr[data-id="${id}"]`);  
-            daftarKerjaan.splice(itemIndex, 1);  
-
-            if (rowElement) {  
-                rowElement.classList.add('row-fade-out');  
-                rowElement.addEventListener('animationend', () => {  
-                    if(rowElement) rowElement.remove();  
-                    checkEmptyTable(); // Cek setelah animasi selesai  
-                }, { once: true });  
-            } else {  
-                 renderTabel(); // Fallback  
-                 checkEmptyTable(); // Cek setelah render ulang  
-            }  
-
-            saveToLocalStorage();  
-            updateStatistikDanChart(); // Panggil update gabungan  
-        }  
-    }  
-    window.hapusKerjaan = hapusKerjaan;  
-
-    function checkEmptyTable() {  
-         if (daftarKerjaan.length === 0 && !tabelBody.querySelector('tr')) {  
-             tabelBody.innerHTML = '<tr><td colspan="3" style="text-align:center; font-style: italic; padding: 25px; color: var(--text-muted);">Belum ada data kerjaan</td></tr>';  
-         }  
-    }  
-
-    function toggleHistory() {  
-      isHistoryVisible = !isHistoryVisible;  
-      localStorage.setItem(HISTORY_VISIBLE_KEY, isHistoryVisible);  
-      updateToggleButtonStyle();  
-    }  
-
-    function updateToggleButtonStyle() {  
-        const iconClass = isHistoryVisible ? 'fa-eye-slash' : 'fa-eye';  
-        const titleText = isHistoryVisible ? 'Sembunyikan Daftar' : 'Tampilkan Daftar';  
-        btnToggleHistory.innerHTML = `<i class="fas ${iconClass}"></i>`;  
-        btnToggleHistory.title = titleText;  
-        btnToggleHistory.classList.toggle('btn-warning', isHistoryVisible);  
-        btnToggleHistory.classList.toggle('btn-info', !isHistoryVisible);  
-        historyTableContainer.style.display = isHistoryVisible ? 'block' : 'none';  
-    }  
-
-
-    function updateTotalPoin() {  
-      const total = daftarKerjaan.reduce((sum, item) => sum + (item.poin || 0), 0); // Pastikan poin ada  
-      totalPoinEl.textContent = total.toFixed(2);  
-    }  
-
-     function formatTanggal(tanggalString){  
-      if (!tanggalString || isNaN(new Date(tanggalString).getTime())) return "Tgl Invalid";  
-      try {  
-        const t = new Date(tanggalString + 'T00:00:00'); // Coba tanpa Z untuk fleksibilitas input  
-        // Jika invalid, coba dengan Z  
-        if (isNaN(t.getTime())) {  
-            const tUtc = new Date(tanggalString + 'T00:00:00Z');  
-             return tUtc.toLocaleDateString('id-ID', { year:'numeric', month:'2-digit', day:'2-digit', timeZone: 'UTC' });  
-        }  
-        return t.toLocaleDateString('id-ID', { year:'numeric', month:'2-digit', day:'2-digit' }); // Gunakan timezone lokal jika valid tanpa Z  
-      } catch (e) { return "Error Tgl"; }  
-    }  
-
-    // --- LOCAL STORAGE ---  
-    function saveToLocalStorage() {  
-      try {  
-        localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(daftarKerjaan));  
-        localStorage.setItem(HISTORY_VISIBLE_KEY, String(isHistoryVisible)); // Simpan sbg string  
-      } catch (e) { console.error("Gagal menyimpan ke localStorage:", e); }  
-    }  
-
-    function loadFromLocalStorage() {  
-      try {  
-        const storedData = localStorage.getItem(LOCALSTORAGE_KEY);  
-        const storedVisibility = localStorage.getItem(HISTORY_VISIBLE_KEY);  
-        daftarKerjaan = storedData ? JSON.parse(storedData) : [];
-        // Urutkan data agar terbaru di atas
-        daftarKerjaan.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));  
-        if (!Array.isArray(daftarKerjaan)) daftarKerjaan = [];  
-        // Pastikan semua item punya ID unik dan poin numerik  
-        daftarKerjaan = daftarKerjaan.map((item, index) => ({  
-            ...item,  
-            id: item.id || Date.now() + index,  
-            poin: !isNaN(Number(item.poin)) ? Number(item.poin) : 0,  
-            jumlah: !isNaN(Number(item.jumlah)) ? Number(item.jumlah) : 1,  
-        })).sort((a, b) => b.id - a.id); // Urutkan terbaru di atas  
-        isHistoryVisible = storedVisibility === null ? true : (storedVisibility === 'true');  
-      } catch (e) {  
-        console.error("Gagal memuat dari localStorage:", e);  
-        daftarKerjaan = []; isHistoryVisible = true;  
-      }  
-    }  
-
-    // --- DARK MODE ---  
-    function loadThemePreference() {  
-        const savedTheme = localStorage.getItem(THEME_KEY);  
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;  
-        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {  
-            bodyEl.classList.add('dark-mode');  
-            darkModeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';  
-        } else {  
-            bodyEl.classList.remove('dark-mode');  
-            darkModeToggle.innerHTML = '<i class="fa-solid fa-moon"></i>';  
-        }  
-    }  
-    function toggleDarkMode() {  
-        bodyEl.classList.toggle('dark-mode');  
-        const isDark = bodyEl.classList.contains('dark-mode');  
-        localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');  
-        darkModeToggle.innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';  
-        updateStatistikDanChart(); // Update chart saat tema berubah  
-    }  
-
-    // --- PROGRESS BAR ---  
-    function loadTarget() {  
-        const savedTarget = localStorage.getItem(TARGET_KEY);  
-        weeklyTarget = savedTarget ? parseInt(savedTarget) : 0;  
-        weeklyTargetInput.value = weeklyTarget;  
-    }  
-    function saveTarget() {  
-        localStorage.setItem(TARGET_KEY, weeklyTarget);  
-    }  
-    function handleTargetChange() {  
-        const newTarget = parseInt(weeklyTargetInput.value);  
-        if (!isNaN(newTarget) && newTarget >= 0) {  
-            weeklyTarget = newTarget;  
-            saveTarget();  
-            updateProgressBar();  
-        } else {  
-            weeklyTargetInput.value = weeklyTarget;  
-        }  
-    }  
-    function updateProgressBar() {  
-        if (!progressBar || !progressText) return;  
-        const currentPoints = weeklyPoints;  
-        const target = weeklyTarget;  
-        let percentage = 0;  
-        if (target > 0) { percentage = Math.min(100, (currentPoints / target) * 100); }  
-        else if (currentPoints > 0) { percentage = 100; }  
-
-        progressBar.style.width = `${percentage}%`;  
-        progressText.textContent = `${currentPoints.toFixed(2)} / ${target} Poin (${percentage.toFixed(0)}%)`;  
-        progressBar.style.backgroundColor = percentage >= 100 ? 'var(--warning)' : 'var(--success)';  
-    }  
-
-    // --- TAB & CHART/STATS ---  
-    function showTab(tabId, buttonElement){  
-      document.querySelectorAll('.tabcontent').forEach(tc => tc.classList.remove('active-content'));  
-      document.querySelectorAll('.tablink').forEach(tl => tl.classList.remove('active'));  
-      const tabToShow = document.getElementById(tabId);  
-      tabToShow.classList.add('active-content');  
-      buttonElement.classList.add('active');  
-      if (tabId === 'chartTab' || tabId === 'statTab') {  
-          updateStatistikDanChart();  
-      }  
-    }  
-
-    function updateStatistikDanChart() {  
-        updateTotalPoin();  
-        updateStatistikPoin();  
-        updateLayananStats(); // Update statistik layanan
-        updateProgressBar();  
-        if (document.getElementById('chartTab').classList.contains('active-content')) {  
-            renderLayananChart();  
-        }  
-    }  
-    
-    // Fungsi untuk update statistik layanan
-    function updateLayananStats() {
-        if (!layananStatsBody) return;
-        
-        // Hitung total poin dan jumlah per layanan
-        const totalPerLayanan = {};
-        const countPerLayanan = {};
-        
-        let totalCount = 0;
-        let totalPoin = 0;
-        
-        daftarKerjaan.forEach(item => {
-            if (!item.layanan) return;
-            
-            if (!totalPerLayanan[item.layanan]) {
-                totalPerLayanan[item.layanan] = 0;
-                countPerLayanan[item.layanan] = 0;
-            }
-            totalPerLayanan[item.layanan] += (item.poin || 0);
-            countPerLayanan[item.layanan] += (item.jumlah || 1);
-            
-            // Tambahkan ke total keseluruhan
-            totalCount += (item.jumlah || 1);
-            totalPoin += (item.poin || 0);
-        });
-        
-        // Render statistik layanan
-        layananStatsBody.innerHTML = '';
-        
-        if (Object.keys(totalPerLayanan).length === 0) {
-            layananStatsBody.innerHTML = '<tr><td colspan="3" style="text-align:center; font-style:italic; padding:15px; color:var(--text-muted);">Belum ada data layanan</td></tr>';
-            
-            // Reset total juga
-            document.getElementById('totalLayananCount').textContent = '0';
-            document.getElementById('totalLayananPoin').textContent = '0';
-            return;
-        }
-        
-        // Urutkan berdasarkan total poin (terbesar ke terkecil)
-        const sortedLayanan = Object.keys(totalPerLayanan).sort((a, b) => 
-            totalPerLayanan[b] - totalPerLayanan[a]
-        );
-        
-        sortedLayanan.forEach(layanan => {
-            const color = layananColors[layanan] || '#cccccc';
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td><span class="layanan-badge" style="background-color: ${color}">${layanan}</span></td>
-                <td>${countPerLayanan[layanan]}</td>
-                <td>${totalPerLayanan[layanan].toFixed(2)}</td>
-            `;
-            layananStatsBody.appendChild(row);
-        });
-        
-        // Update total
-        document.getElementById('totalLayananCount').textContent = totalCount;
-        document.getElementById('totalLayananPoin').textContent = totalPoin.toFixed(2);
-    }
-
-    function renderLayananChart() {  
-        if (!layananChartCanvas) return;  
-        const ctx = layananChartCanvas.getContext('2d');  
-        if (!ctx) { console.error("Gagal mendapatkan context canvas"); return; }  
-
-        const countPerLayanan = daftarKerjaan.reduce((acc, item) => {  
-            if (item && item.layanan) { // Pastikan item dan layanan valid  
-                 acc[item.layanan] = (acc[item.layanan] || 0) + (item.jumlah || 1);  
-            }  
-            return acc;  
-        }, {});  
-        const labels = Object.keys(countPerLayanan).sort();  
-        const dataValues = labels.map(label => countPerLayanan[label]);  
-        
-        // Dapatkan warna untuk setiap layanan
-        const backgroundColors = labels.map(label => layananColors[label] || '#cccccc');
-
-        if (chartInstance) { chartInstance.destroy(); chartInstance = null; }  
-
-        if (labels.length === 0) {  
-            ctx.clearRect(0, 0, layananChartCanvas.width, layananChartCanvas.height);  
-            ctx.fillStyle = getComputedStyle(bodyEl).getPropertyValue('--text-muted');  
-            ctx.font = '16px Poppins'; ctx.textAlign = 'center';  
-            ctx.fillText('Belum ada data untuk grafik.', layananChartCanvas.width / 2, layananChartCanvas.height / 2);  
-            return;  
-        }  
-
-        const isDarkMode = bodyEl.classList.contains('dark-mode');  
-        const chartTextColor = getComputedStyle(bodyEl).getPropertyValue('--text-color');  
-        const chartBorderColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';  
-
-        try {  
-            chartInstance = new Chart(ctx, {  
-                type: 'doughnut',  
-                data: {  
-                    labels: labels,  
-                    datasets: [{  
-                        label: 'Jumlah Item', 
-                        data: dataValues,  
-                        backgroundColor: backgroundColors, // Gunakan warna kustom
-                        borderColor: chartBorderColor, 
-                        borderWidth: 1, 
-                        hoverOffset: 6  
-                    }]  
-                },  
-                options: {  
-                    responsive: true, maintainAspectRatio: false,  
-                    plugins: {  
-                        legend: { position: 'top', display: true, labels: { color: chartTextColor, padding: 15 } },  
-                        tooltip: {  
-                             bodyColor: chartTextColor, titleColor: chartTextColor,  
-                             backgroundColor: getComputedStyle(bodyEl).getPropertyValue('--card-bg'),  
-                             borderColor: chartBorderColor, borderWidth: 1,  
-                             callbacks: {  
-                                label: function(context) {  
-                                    let label = context.dataset.label || '';  
-                                    if (label) { label += ': '; }  
-                                    if (context.parsed !== null) {  
-                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);  
-                                        const percentage = total > 0 ? ((context.parsed / total) * 100).toFixed(1) : 0;  
-                                        label += `${context.label}: ${context.parsed} (${percentage}%)`;  
-                                    }  
-                                    return label;  
-                                }  
-                             }  
-                        }  
-                    }  
-                }  
-            });  
-        } catch (err) {  
-            console.error("Gagal membuat doughnut chart:", err);  
-            ctx.clearRect(0, 0, layananChartCanvas.width, layananChartCanvas.height);  
-            ctx.fillStyle = 'red'; ctx.font = '16px Poppins'; ctx.textAlign = 'center';  
-            ctx.fillText('Gagal memuat grafik.', layananChartCanvas.width / 2, layananChartCanvas.height / 2);  
-        }  
-    }  
-
-    function updateStatistikPoin() {  
-        const now = new Date();  
-        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());  
-        const todayEnd = new Date(todayStart); todayEnd.setDate(todayStart.getDate() + 1);  
-        const dayOfWeek = now.getDay(); // 0 = Minggu, 1 = Senin, ... 6 = Sabtu  
-        const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Hitung mundur ke Senin  
-        const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diffToMonday); weekStart.setHours(0,0,0,0);  
-        const weekEnd = new Date(weekStart); weekEnd.setDate(weekStart.getDate() + 7);  
-        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);  
-        const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1);  
-
-        let totalHarian = 0, totalMingguan = 0, totalBulanan = 0;  
-        daftarKerjaan.forEach(item => {  
-            try {  
-                if (!item.tanggal || isNaN(new Date(item.tanggal).getTime())) return; // Skip jika tanggal invalid  
-                const itemDate = new Date(item.tanggal + 'T00:00:00'); // Anggap input tanpa timezone  
-                 // Jika invalid, coba interpretasi sebagai UTC  
-                 if (isNaN(itemDate.getTime())) {  
-                     const itemUtcDate = new Date(item.tanggal + 'T00:00:00Z');  
-                     if (isNaN(itemUtcDate.getTime())) return; // Skip jika tetap invalid  
-
-                     if (itemUtcDate >= todayStart && itemUtcDate < todayEnd) totalHarian += item.poin;  
-                     if (itemUtcDate >= weekStart && itemUtcDate < weekEnd) totalMingguan += item.poin;  
-                     if (itemUtcDate >= monthStart && itemUtcDate < monthEnd) totalBulanan += item.poin;  
-                 } else {  
-                    // Gunakan tanggal lokal jika valid  
-                     if (itemDate >= todayStart && itemDate < todayEnd) totalHarian += item.poin;  
-                     if (itemDate >= weekStart && itemDate < weekEnd) totalMingguan += item.poin;  
-                     if (itemDate >= monthStart && itemDate < monthEnd) totalBulanan += item.poin;  
-                 }  
-            } catch (e) { console.error("Error processing date for stats:", item.tanggal, e); }  
-        });  
-
-        statHarianEl.textContent = totalHarian.toFixed(2);  
-        statMingguanEl.textContent = totalMingguan.toFixed(2);  
-        statBulananEl.textContent = totalBulanan.toFixed(2);  
-        weeklyPoints = totalMingguan;  
-    }  
-
-// =========================================
-// ENHANCED BACKUP/RESTORE SYSTEM 
-// =========================================
-function backupData() {
-    const backupPayload = {
-        metadata: {
-            created: new Date().toISOString(),
-            version: "2.0",
-            theme: localStorage.getItem(THEME_KEY),
-            target: localStorage.getItem(TARGET_KEY)
-        },
-        kerjaan: daftarKerjaan,
-        layanan: layananData,
-        colors: layananColors,
-        chartConfig: chartInstance ? chartInstance.config : null
-    };
-
-    try {
-        const blob = new Blob([JSON.stringify(backupPayload, null, 2)], {type: "application/json"});
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.download = `HomeSol_Full_Backup_${Date.now()}.json`;
-        link.href = url;
-        link.click();
-        
-        // Feedback visual
-        const backupBtn = document.querySelector('[onclick="backupData()"]');
-        backupBtn.innerHTML = '<i class="fas fa-check"></i> Backup Berhasil!';
-        setTimeout(() => {
-            backupBtn.innerHTML = '<i class="fas fa-download"></i> Backup';
-        }, 2000);
-        
-    } catch (error) {
-        alert('Gagal membuat backup: ' + error.message);
-    }
-}
-
-function restoreData(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const backup = JSON.parse(e.target.result);
-            
-            // Validasi struktur backup
-            if (!backup.kerjaan || !backup.layanan || !backup.metadata) {
-                throw new Error("Format file backup tidak valid");
-            }
-
-            // Konfirmasi pengguna
-            const confirmMsg = [
-                `Anda akan memulihkan:`,
-                `• ${backup.kerjaan.length} data kerjaan`,
-                `• ${Object.keys(backup.layanan).length} layanan`,
-                `• Tema ${backup.metadata.theme}`,
-                `• Target ${backup.metadata.target}`,
-                `\nLanjutkan?`
-            ].join('\n');
-            
-            if (!confirm(confirmMsg)) return;
-
-            // Restore data utama
-            daftarKerjaan = backup.kerjaan;
-            layananData = backup.layanan;
-            layananColors = backup.colors || {};
-            
-            // Restore pengaturan
-            localStorage.setItem(THEME_KEY, backup.metadata.theme);
-            localStorage.setItem(TARGET_KEY, backup.metadata.target);
-            weeklyTargetInput.value = backup.metadata.target;
-            
-            // Update UI
-            loadThemePreference();
-            populateLayanan();
-            renderTabel();
-            updateStatistikDanChart();
-            
-            // Restore chart jika ada konfigurasi
-            if (backup.chartConfig) {
-                if (chartInstance) chartInstance.destroy();
-                chartInstance = new Chart(layananChartCanvas, backup.chartConfig);
-            }
-            
-            alert("Restore berhasil! Data telah dimuat ulang");
-
-        } catch (error) {
-            alert(`Gagal restore: ${error.message}`);
-            console.error("Restore error:", error);
-        } finally {
-            event.target.value = '';
-        }
-    };
-    reader.readAsText(file);
-}  
-
-
-    // --- Jalankan Aplikasi Saat DOM Siap ---  
-    if (document.readyState === 'loading') {  
-        document.addEventListener('DOMContentLoaded', initializeApp);  
-    } else {  
-        initializeApp();  
-    }  
+  <meta charset="UTF-8">
+  <title>PinBonus AI - Cloud v5</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
   
-    // --- TOGGLE STATISTIK PER LAYANAN ---
-    const toggleLayananStatsBtn = document.getElementById('toggleLayananStatsBtn');
-    const layananStats = document.getElementById('layananStats');
-    let layananStatsVisible = true;
+  <style>
+    :root { --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --accent: #1d4ed8; }
+    .dark-mode { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #3b82f6; }
+    body { background-color: var(--bg); color: var(--text); font-family: 'Poppins', sans-serif; transition: 0.3s; }
+    .glass { background: var(--card); border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .nav-active { color: var(--accent) !important; font-weight: 800; transform: translateY(-2px); }
+    .acc-content { max-height: 0; overflow: hidden; transition: 0.3s ease-out; }
+    .acc-item.open .acc-content { max-height: 200px; padding: 10px 0; border-top: 1px solid rgba(0,0,0,0.05); }
+    .acc-arrow { transition: 0.3s; }
+    .acc-item.open .acc-arrow { transform: rotate(180deg); }
+    #jobListContainer.collapsed { display: none; }
+    .blur-mode { filter: blur(12px); pointer-events: none; }
+  </style>
+</head>
+<body class="min-h-screen pb-32">
 
-    toggleLayananStatsBtn?.addEventListener('click', () => {
-        layananStatsVisible = !layananStatsVisible;
-        layananStats.style.display = layananStatsVisible ? 'block' : 'none';
-        toggleLayananStatsBtn.innerText = layananStatsVisible ? 'Sembunyikan' : 'Tampilkan';
+  <div id="loginScreen" class="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center p-6 text-center">
+      <div class="w-20 h-20 bg-blue-600 rounded-3xl mb-6 flex items-center justify-center shadow-2xl shadow-blue-200">
+          <i class="fa fa-cloud text-white text-4xl"></i>
+      </div>
+      <h1 class="text-3xl font-800 text-slate-800 tracking-tighter">PinBonus AI</h1>
+      <p class="text-xs text-slate-400 font-bold uppercase tracking-[0.2em] mb-10">Cloud Sync & Audit System</p>
+      <button id="btnLogin" class="flex items-center gap-4 bg-white px-10 py-4 rounded-2xl shadow-xl border border-slate-100 font-bold hover:bg-slate-50 active:scale-95 transition-all">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-6 h-6">
+          Masuk dengan Google
+      </button>
+  </div>
+
+  <div id="mainApp" class="hidden max-w-md mx-auto px-6 py-6">
+    <div class="flex justify-between items-center mb-8">
+      <div>
+          <h1 class="text-xl font-800 text-blue-700 tracking-tighter leading-none">PinBonus AI</h1>
+          <p id="userName" class="text-[9px] font-black opacity-40 uppercase mt-1 tracking-widest">Memuat...</p>
+      </div>
+      <div class="flex gap-3">
+        <button onclick="togglePrivacy()" class="w-10 h-10 rounded-xl glass flex items-center justify-center text-blue-600"><i class="fa fa-shield text-lg"></i></button>
+        <button onclick="toggleTheme()" class="w-10 h-10 rounded-xl glass flex items-center justify-center text-slate-500"><i class="fa fa-moon-o text-lg"></i></button>
+      </div>
+    </div>
+
+    <div id="viewInput" class="tab-content active space-y-5">
+      <div class="glass rounded-[2.5rem] p-8 space-y-6">
+        <div class="space-y-3">
+            <label class="text-[10px] font-black opacity-30 uppercase ml-2">Pilih Pekerjaan</label>
+            <select id="cat" class="w-full p-4 glass border-none rounded-2xl text-xs font-bold outline-none ring-1 ring-slate-100"></select>
+            <select id="svc" class="w-full p-4 glass border-none rounded-2xl text-xs font-bold outline-none ring-1 ring-slate-100" disabled></select>
+            <select id="sku" class="w-full p-4 glass border-none rounded-2xl text-sm font-black outline-none ring-1 ring-blue-100" disabled></select>
+        </div>
+        <div class="space-y-3">
+            <label class="text-[10px] font-black opacity-30 uppercase ml-2">Detail Order</label>
+            <input type="text" id="orderId" placeholder="ID Order / Nomor Pekerjaan..." class="w-full p-4 glass rounded-2xl text-sm font-bold outline-none ring-2 ring-blue-50">
+        </div>
+        <button id="addBtn" class="w-full bg-blue-700 text-white py-5 rounded-[2rem] font-800 uppercase tracking-widest text-xs shadow-lg shadow-blue-200 active:scale-95 transition-all">Simpan ke Awan</button>
+      </div>
+    </div>
+
+    <div id="viewStats" class="tab-content space-y-4">
+      <div class="glass p-6 rounded-3xl border-l-8 border-blue-600 flex items-center gap-5">
+        <div class="relative w-16 h-16 shrink-0">
+            <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36"><circle cx="18" cy="18" r="16" fill="none" stroke="#f1f5f9" stroke-width="3.5"></circle><circle id="circleProgress" cx="18" cy="18" r="16" fill="none" stroke="#1d4ed8" stroke-width="3.5" stroke-dasharray="0, 100" stroke-linecap="round"></circle></svg>
+            <div class="absolute inset-0 flex items-center justify-center text-[11px] font-900" id="percentText">0%</div>
+        </div>
+        <div>
+            <p class="text-[9px] font-black opacity-40 uppercase tracking-widest">Target Hari Ini</p>
+            <p id="targetLabel" class="text-md font-800 text-slate-800">Rp 0 / 500k</p>
+        </div>
+      </div>
+      <div class="glass rounded-[2rem] p-6 h-80 flex flex-col">
+          <p class="text-[10px] font-black opacity-30 uppercase mb-4">Distribusi Layanan</p>
+          <div class="flex-1"><canvas id="statsChart"></canvas></div>
+      </div>
+    </div>
+
+    <div id="viewHistory" class="tab-content space-y-4">
+      <div class="flex justify-between items-center px-2">
+          <button onclick="toggleGlobalLog()" class="flex items-center gap-2">
+              <span class="font-black text-[10px] text-blue-600 uppercase tracking-widest">Database Log</span>
+              <i id="globalArrow" class="fa fa-chevron-down text-[10px] text-blue-600"></i>
+          </button>
+          <div class="flex gap-4">
+              <button onclick="sendWA()" class="text-green-500 hover:scale-110 transition-all"><i class="fa fa-whatsapp text-xl"></i></button>
+              <button onclick="openExportMenu()" class="text-blue-500 hover:scale-110 transition-all"><i class="fa fa-file-excel-o text-xl"></i></button>
+              <button onclick="logout()" class="text-red-400 hover:scale-110 transition-all"><i class="fa fa-sign-out text-xl"></i></button>
+          </div>
+      </div>
+      <div id="jobListContainer" class="space-y-3 pb-10">
+          <ul id="jobList" class="space-y-3"></ul>
+          <div id="empty" class="py-20 text-center opacity-20 italic font-bold">Belum ada data di awan</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="footerTotal" class="fixed bottom-28 left-6 right-6 glass rounded-2xl p-5 shadow-2xl z-40 border-l-[6px] border-blue-600 flex justify-between items-center hidden border border-white/50 backdrop-blur-md">
+      <div>
+          <p class="text-[9px] font-black opacity-40 uppercase tracking-widest">Total Komisi (Hari Ini)</p>
+          <p class="text-2xl font-900 text-blue-700 tracking-tighter">Rp <span id="totalDisplay">0</span></p>
+      </div>
+      <button onclick="toggleVoice()" id="voiceBtn" class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center active:scale-90 transition-all">
+          <i id="voiceIcon" class="fa fa-volume-up text-lg"></i>
+      </button>
+  </div>
+
+  <div id="navBar" class="fixed bottom-0 left-0 right-0 h-24 glass border-t border-slate-100 flex justify-around items-center px-10 z-50 rounded-t-[3rem] hidden shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+    <button onclick="switchTab('input')" id="navIn" class="nav-btn nav-active flex flex-col items-center gap-1 opacity-40"><i class="fa fa-pencil-square-o text-2xl"></i><span class="text-[9px] font-black uppercase tracking-tighter">Input</span></button>
+    <button onclick="switchTab('stats')" id="navSta" class="nav-btn flex flex-col items-center gap-1 opacity-40"><i class="fa fa-bar-chart text-2xl"></i><span class="text-[9px] font-black uppercase tracking-tighter">Stats</span></button>
+    <button onclick="switchTab('history')" id="navHis" class="nav-btn flex flex-col items-center gap-1 opacity-40"><i class="fa fa-database text-2xl"></i><span class="text-[9px] font-black uppercase tracking-tighter">Log</span></button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, onSnapshot, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // CONFIG FIREBASE MAS
+    const firebaseConfig = {
+      apiKey: "AIzaSyBaulpvROT6vO1-LjK3bae3ETnpWz4irIw",
+      authDomain: "pinbonus-kalkulasi.firebaseapp.com",
+      projectId: "pinbonus-kalkulasi",
+      storageBucket: "pinbonus-kalkulasi.firebasestorage.app",
+      messagingSenderId: "950589733342",
+      appId: "1:950589733342:web:6bbc9647077a8c40e1454f",
+      measurementId: "G-ZDX07SGZC8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+    let userUID = null, cart = [], master = [], myChart = null, VOICE_ON = true, isPrivate = false;
+
+    // UI ELEMENTS
+    const els = {
+      login: document.getElementById('loginScreen'), app: document.getElementById('mainApp'),
+      nav: document.getElementById('navBar'), footer: document.getElementById('footerTotal'),
+      cat: document.getElementById('cat'), svc: document.getElementById('svc'), sku: document.getElementById('sku'),
+      oid: document.getElementById('orderId'), list: document.getElementById('jobList'), total: document.getElementById('totalDisplay')
+    };
+
+    // AUTH
+    document.getElementById('btnLogin').onclick = () => signInWithPopup(auth, provider);
+    window.logout = () => { if(confirm("Keluar aplikasi?")) signOut(auth).then(() => location.reload()); };
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            userUID = user.uid;
+            document.getElementById('userName').innerText = user.displayName;
+            els.login.classList.add('hidden'); els.app.classList.remove('hidden');
+            els.nav.classList.remove('hidden'); els.footer.classList.remove('hidden');
+            initData();
+            speak("Halo " + user.displayName + ", siap mencatat komisi?");
+        }
     });
 
-</script>  
+    async function initData() {
+        try {
+            const r = await fetch("https://script.google.com/macros/s/AKfycbyUtuyUhIXT9uZwd6xZ38JV18rzFUns87AvS4AsST1eun1BQAFtNZGfpmv-mthucDDP/exec");
+            const j = await r.json();
+            master = j.data;
+            els.cat.innerHTML = '<option value="">Pilih Kategori...</option>' + [...new Set(master.map(i => i.category))].sort().map(c => `<option value="${c}">${c}</option>`).join('');
+        } catch(e) { console.error("Gagal load master data"); }
+        onSnapshot(doc(db, "users", userUID), (d) => { if (d.exists()) { cart = d.data().bonus || []; render(); } });
+    }
 
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-        import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
-        
-        // Firebase config
-        const firebaseConfig = {
-            apiKey: "AIzaSyDnfmtNvgF1ZQf1CSmHYKH6xqBpUvk8xy8",
-            authDomain: "my-app-poin.firebaseapp.com",
-            projectId: "my-app-poin",
-            storageBucket: "my-app-poin.appspot.com",
-            messagingSenderId: "968938662713",
-            appId: "1:968938662713:web:7550efb50acfb3aa6d96e8"
-        };
+    // FORM LOGIC
+    els.cat.onchange = () => { const c = els.cat.value; els.svc.innerHTML = '<option value="">Pilih Layanan...</option>'; els.svc.disabled = !c; if(c) els.svc.innerHTML += [...new Set(master.filter(i => i.category === c).map(i => i.service))].sort().map(s => `<option value="${s}">${s}</option>`).join(''); };
+    els.svc.onchange = () => { const c = els.cat.value, s = els.svc.value; els.sku.innerHTML = '<option value="">Pilih SKU...</option>'; els.sku.disabled = !s; if(s) els.sku.innerHTML += master.filter(i => i.category === c && i.service === s).map(i => `<option value="${i.nominal_angka}" data-n="${i.sku_name}">${i.sku_name}</option>`).join(''); };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app); // Inisialisasi Firebase Database
+    document.getElementById('addBtn').onclick = async () => {
+        const p = parseFloat(els.sku.value), n = els.sku.options[els.sku.selectedIndex]?.getAttribute('data-n'), oid = els.oid.value;
+        if(!p || !n) return speak("Pilih layanan dulu, Mas.");
+        const data = { id: Date.now(), order: oid || "-", name: n, price: p, time: new Date().toLocaleTimeString('id-ID'), date: new Date().toLocaleDateString('id-ID')};
+        await setDoc(doc(db, "users", userUID), { bonus: arrayUnion(data) }, { merge: true });
+        els.oid.value = ""; speak("Data " + n + " masuk ke awan.");
+    };
 
-        // Fungsi untuk menambah pekerjaan ke Firebase
-        function addJobToFirebase(nama, status) {
-            const jobId = Date.now();  // Unique ID berdasarkan timestamp
-            const jobRef = ref(database, 'pekerjaan/' + jobId);  // Referensi ke node 'pekerjaan'
-
-            set(jobRef, {
-                nama: nama,
-                status: status,
-                tanggal: new Date().toISOString(),
-            }).then(() => {
-                console.log('Job added to Firebase!');
-                renderJobs();
-            }).catch((error) => {
-                console.error('Error adding job: ', error);
-            });
+    window.deleteItem = async (id) => {
+        if(confirm("Hapus data dari awan?")) {
+            const updated = cart.filter(i => i.id !== id);
+            await setDoc(doc(db, "users", userUID), { bonus: updated }, { merge: true });
+            speak("Data terhapus.");
         }
+    };
 
-        // Fungsi untuk mengambil data pekerjaan dari Firebase
-        function getJobsFromFirebase() {
-            const jobsRef = ref(database, 'pekerjaan'); // Referensi ke node 'pekerjaan'
-            get(jobsRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const jobs = snapshot.val();
-                    renderJobs(jobs); // Render pekerjaan ke UI
-                } else {
-                    console.log('No data available');
-                }
-            }).catch((error) => {
-                console.error('Error fetching jobs: ', error);
-            });
-        }
+    window.render = () => {
+        els.list.innerHTML = ""; let tot = 0; const today = new Date().toLocaleDateString('id-ID');
+        [...cart].sort((a,b) => b.id - a.id).forEach((item) => {
+            if(item.date === today) tot += item.price;
+            els.list.innerHTML += `
+            <li id="acc-${item.id}" class="acc-item glass rounded-[1.8rem] p-5 mb-3 border-l-8 border-blue-600">
+                <div class="flex justify-between items-center">
+                    <div class="cursor-pointer flex-1" onclick="document.getElementById('acc-${item.id}').classList.toggle('open')">
+                        <p class="text-[10px] font-900 uppercase leading-none opacity-50">${item.name}</p>
+                        <p class="text-sm font-black text-blue-700 mt-1">Rp${item.price.toLocaleString('id-ID')}</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="deleteItem(${item.id})" class="text-red-300 hover:text-red-500 p-2"><i class="fa fa-trash text-sm"></i></button>
+                        <i class="fa fa-chevron-down acc-arrow text-[10px] text-slate-300"></i>
+                    </div>
+                </div>
+                <div class="acc-content text-[9px] font-bold text-slate-400 leading-relaxed">
+                    <p class="uppercase tracking-widest">Order ID: <span class="text-slate-800">${item.order}</span></p>
+                    <p class="uppercase tracking-widest">Waktu: <span class="text-slate-800">${item.date} | ${item.time}</span></p>
+                </div>
+            </li>`;
+        });
+        els.total.innerText = tot.toLocaleString('id-ID');
+        const per = Math.min((tot / 500000) * 100, 100);
+        document.getElementById('circleProgress').style.strokeDasharray = `${per}, 100`;
+        document.getElementById('percentText').innerText = Math.floor(per) + '%';
+        document.getElementById('targetLabel').innerText = `Rp ${tot.toLocaleString('id-ID')} / 500k`;
+        document.getElementById('empty').style.display = cart.length ? 'none' : 'block';
+        updateChart();
+    };
 
-        // Fungsi untuk merender pekerjaan ke UI
-        function renderJobs(jobs) {
-            const container = document.getElementById('daftarKerjaan');
-            container.innerHTML = '';  // Menghapus pekerjaan lama di UI
-            for (let jobId in jobs) {
-                const job = jobs[jobId];
-                const div = document.createElement('div');
-                div.innerHTML = `<p>${job.nama} - Status: ${job.status} - Tanggal: ${job.tanggal}</p>`;
-                container.appendChild(div);
-            }
-        }
+    // UI ACTIONS
+    window.toggleGlobalLog = () => { document.getElementById('jobListContainer').classList.toggle('collapsed'); document.getElementById('globalArrow').classList.toggle('rotate-180'); };
+    window.switchTab = (t) => {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.getElementById('view' + t.charAt(0).toUpperCase() + t.slice(1)).classList.add('active');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('nav-active'));
+        document.getElementById(t === 'input' ? 'navIn' : t === 'stats' ? 'navSta' : 'navHis').classList.add('nav-active');
+    };
+    window.togglePrivacy = () => { isPrivate = !isPrivate; document.getElementById('jobList').classList.toggle('blur-mode'); document.getElementById('footerTotal').classList.toggle('blur-mode'); speak(isPrivate ? "Privasi Aktif" : "Privasi Mati"); };
+    window.toggleTheme = () => { document.body.classList.toggle('dark-mode'); };
+    window.toggleVoice = () => { VOICE_ON = !VOICE_ON; document.getElementById('voiceIcon').className = VOICE_ON ? "fa fa-volume-up" : "fa fa-volume-off opacity-20"; };
+    function speak(t) { if (VOICE_ON) { window.speechSynthesis.cancel(); const m = new SpeechSynthesisUtterance(t); m.lang = 'id-ID'; m.rate = 1.1; window.speechSynthesis.speak(m); } }
+    
+    function updateChart() {
+        const counts = {}; cart.forEach(i => counts[i.name] = (counts[i.name] || 0) + 1);
+        if (myChart) myChart.destroy();
+        const ctx = document.getElementById('statsChart').getContext('2d');
+        myChart = new Chart(ctx, { type: 'doughnut', data: { labels: Object.keys(counts), datasets: [{ data: Object.values(counts), backgroundColor: ['#1d4ed8', '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 9, weight: 'bold' }, padding: 15 } } } } });
+    }
 
-        // Fungsi untuk sinkronisasi data pekerjaan secara real-time
-        function listenForJobChanges() {
-            const jobsRef = ref(database, 'pekerjaan');
-            onValue(jobsRef, (snapshot) => {
-                const jobs = snapshot.val();
-                renderJobs(jobs);  // Update UI setiap kali data berubah
-            });
-        }
-
-        // Memulai sinkronisasi data
-        listenForJobChanges(); // Memulai sinkronisasi data real-time
-    </script>
-    </body>
-      
-</html>
-
-</div>
-
+    window.sendWA = () => { let t = "*LAPORAN KOMISI HARI INI*\n"; cart.filter(i => i.date === new Date().toLocaleDateString('id-ID')).forEach(i => t += `- ${i.name}: Rp${i.price.toLocaleString()}\n`); window.open("https://wa.me/?text=" + encodeURIComponent(t + "\n*TOTAL: Rp" + els.total.innerText + "*")); };
+    window.openExportMenu = () => { const ws = XLSX.utils.json_to_sheet(cart); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Audit"); XLSX.writeFile(wb, "Audit_Pinhome_Cloud.xlsx"); };
+  </script>
 </body>
 </html>
