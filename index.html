@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>PinBonus AI Platinum v36.2</title>
+  <title>PinBonus AI Platinum v36.1</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#1d4ed8">
 
@@ -167,6 +167,57 @@
     }
     .toast.error { background: rgba(239,68,68,0.94); }
     .toast.show { transform: translateY(0); }
+    /* Period selector */
+    .period-selector {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+    .period-btn {
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 800;
+      background: rgba(15,23,42,0.7);
+      border: 1px solid rgba(148,163,184,0.3);
+      color: #e5e7eb;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .period-btn.active {
+      background: rgba(56,189,248,0.3);
+      border-color: rgba(56,189,248,0.6);
+      color: #38bdf8;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .stat-box {
+      background: rgba(15,23,42,0.6);
+      border-radius: 12px;
+      padding: 12px;
+      border: 1px solid rgba(148,163,184,0.2);
+    }
+    .stat-label {
+      font-size: 9px;
+      color: #94a3b8;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .stat-value {
+      font-size: 16px;
+      font-weight: 800;
+      color: #38bdf8;
+      margin-top: 5px;
+    }
+    .stat-value.month {
+      color: #22c55e;
+    }
+    /* Emergency button */
     .emergency-btn {
       margin-top: 15px;
       color: #60a5fa;
@@ -175,21 +226,6 @@
       background: none;
       border: none;
       cursor: pointer;
-    }
-    .typing-indicator {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      background-color: #94a3b8;
-      border-radius: 50%;
-      margin: 0 2px;
-      animation: typing 1s infinite ease-in-out;
-    }
-    .typing-indicator:nth-child(2) { animation-delay: 0.2s; }
-    .typing-indicator:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes typing {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
     }
   </style>
 </head>
@@ -203,7 +239,7 @@
       PinBonus AI
     </h1>
     <p class="text-[10px] text-slate-400 mb-6 font-semibold px-6 text-center">
-      v36.2 • Fixed AI General & Login Issues
+      v36.1 • Login Google atau Mode Tamu, data guest tetap tersimpan lokal.
     </p>
     <div class="flex flex-col gap-3 w-64 text-center">
       <button id="btnGoogle" class="flex items-center justify-center gap-3 bg-white/10 p-3.5 rounded-2xl font-bold border border-slate-500/60 text-xs text-slate-100 backdrop-blur-lg active:scale-95 transition">
@@ -214,6 +250,7 @@
       </button>
     </div>
     <div id="loginMsg" class="text-red-400 mt-4 text-xs font-bold text-center px-6 hidden"></div>
+    <!-- Emergency button -->
     <button onclick="forceGuestMode()" class="emergency-btn">Force Guest Mode (Emergency)</button>
   </div>
 
@@ -236,13 +273,34 @@
         </div>
       </header>
 
-      <div class="header-bonus flex justify-between items-center shadow-lg md:mb-6">
-        <div>
-          <p class="text-[10px] md:text-[11px] font-black opacity-80 uppercase tracking-widest">Bonus Hari Ini</p>
-          <p class="text-3xl md:text-4xl font-900 tracking-tighter">Rp <span id="totalDisplay">0</span></p>
+      <div class="header-bonus shadow-lg md:mb-6">
+        <!-- Period Selector -->
+        <div class="period-selector mb-4">
+          <button onclick="switchPeriod('today')" id="periodToday" class="period-btn active">Hari Ini</button>
+          <button onclick="switchPeriod('month')" id="periodMonth" class="period-btn">Bulan Ini</button>
+          <button onclick="switchPeriod('all')" id="periodAll" class="period-btn">Semua</button>
         </div>
-        <div class="w-12 h-12 md:w-14 md:h-14 bg-white/20 rounded-2xl flex items-center justify-center text-2xl md:text-3xl">
-          <i class="fa fa-money text-white"></i>
+        
+        <div class="flex justify-between items-center">
+          <div>
+            <p id="periodLabel" class="text-[10px] md:text-[11px] font-black opacity-80 uppercase tracking-widest">Bonus Hari Ini</p>
+            <p class="text-3xl md:text-4xl font-900 tracking-tighter">Rp <span id="totalDisplay">0</span></p>
+          </div>
+          <div class="w-12 h-12 md:w-14 md:h-14 bg-white/20 rounded-2xl flex items-center justify-center text-2xl md:text-3xl">
+            <i class="fa fa-money text-white"></i>
+          </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-label">Harian</div>
+            <div class="stat-value" id="dailyTotal">Rp 0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Bulanan</div>
+            <div class="stat-value month" id="monthlyTotal">Rp 0</div>
+          </div>
         </div>
       </div>
 
@@ -250,15 +308,9 @@
       <div id="viewInput" class="tab-content active">
         <div class="glass rounded-[2rem] p-6 md:p-7 border border-slate-700/60">
           <div class="space-y-3 md:space-y-4">
-            <select id="cat" class="w-full p-4 md:p-4.5 rounded-2xl text-xs md:text-[11px] font-bold">
-              <option value="">Loading kategori...</option>
-            </select>
-            <select id="svc" class="w-full p-4 md:p-4.5 rounded-2xl text-xs md:text-[11px] font-bold" disabled>
-              <option value="">Pilih kategori dulu</option>
-            </select>
-            <select id="sku" class="w-full p-4 md:p-4.5 rounded-2xl text-xs md:text-[11px] font-bold" disabled>
-              <option value="">Pilih layanan dulu</option>
-            </select>
+            <select id="cat" class="w-full p-4 md:p-4.5 rounded-2xl text-xs md:text-[11px] font-bold"></select>
+            <select id="svc" class="w-full p-4 md:p-4.5 rounded-2xl text-xs md:text-[11px] font-bold" disabled></select>
+            <select id="sku" class="w-full p-4 md:p-4.5 rounded-2xl text-xs md:text-[11px] font-bold" disabled></select>
             <input type="text" id="orderId" placeholder="ID Order..." class="w-full p-4 md:p-4.5 rounded-2xl text-xs md:text-[11px] font-bold">
           </div>
           <button id="addBtn" class="primary-btn w-full text-white py-4 md:py-4.5 rounded-2xl font-800 mt-5 active:scale-95 transition-all">
@@ -281,9 +333,7 @@
 
           <div id="aiChatBox" class="flex-1 overflow-y-auto p-3 space-y-3 text-[11px] mb-4 rounded-2xl">
             <div class="p-3 bg-indigo-100 text-indigo-700 rounded-2xl rounded-tl-none mr-auto font-bold max-w-[85%]">
-              👋 Halo! Tanya apapun atau gunakan fitur bonus!<br>
-              <span class="text-xs">Mode Bonus: Tanya tentang data bonus Anda</span><br>
-              <span class="text-xs">Mode General: Tanya apapun dengan AI (gunakan kalimat lengkap)</span>
+              👋 Halo! Tanya apapun atau gunakan fitur bonus!
             </div>
           </div>
 
@@ -295,12 +345,11 @@
           </div>
 
           <div id="generalInfo" class="hidden text-center text-slate-300 text-[10px] md:text-[11px] p-2 mb-3">
-            <p>💡 Mode General: Tanya apapun dengan AI. Contoh: "Apa itu bonus?", "Bagaimana cara kerja aplikasi ini?", dll.</p>
+            <p>💡 Mode General: Tanya apapun dengan AI Groq via Apps Script.</p>
           </div>
 
           <div class="flex gap-2 p-2 bg-slate-900/70 rounded-2xl border border-slate-700">
-            <input type="text" id="aiInput" placeholder="Tanya sesuatu..." class="flex-1 bg-transparent p-2 text-xs md:text-[11px] font-bold outline-none" 
-                   onkeypress="if(event.key === 'Enter') askAI()">
+            <input type="text" id="aiInput" placeholder="Tanya sesuatu..." class="flex-1 bg-transparent p-2 text-xs md:text-[11px] font-bold outline-none">
             <button id="btnAskAi" onclick="askAI()" class="w-10 h-10 md:w-11 md:h-11 text-white rounded-xl shadow-lg flex items-center justify-center hover:bg-indigo-700 transition-all">
               <i id="aiIcon" class="fa fa-paper-plane"></i>
             </button>
@@ -311,12 +360,16 @@
       <!-- HISTORY -->
       <div id="viewHistory" class="tab-content">
         <div class="flex justify-between items-center mb-4 md:mb-5 px-2">
-          <h2 class="text-[10px] md:text-[11px] font-black opacity-60 uppercase tracking-widest text-slate-200">Riwayat</h2>
+          <div>
+            <h2 class="text-[10px] md:text-[11px] font-black opacity-60 uppercase tracking-widest text-slate-200">Riwayat</h2>
+            <p id="historyPeriodLabel" class="text-[8px] text-blue-300 font-bold">Hari Ini</p>
+          </div>
           <div class="flex gap-2 items-center">
             <select id="historyFilter" class="p-2 bg-slate-900/70 rounded-lg text-xs md:text-[11px] font-bold border border-slate-700 text-slate-100">
               <option value="5">5 Item</option>
               <option value="10" selected>10 Item</option>
               <option value="20">20 Item</option>
+              <option value="50">50 Item</option>
               <option value="all">Semua</option>
             </select>
             <button onclick="resetAllData()" class="p-2 bg-red-500/10 text-red-400 rounded-lg text-xs md:text-[11px] border border-red-500/40">
@@ -362,16 +415,27 @@
   </div>
 
   <script>
-    // KONFIG
-    const GAS_DATA_URL = 'https://script.google.com/macros/s/AKfycbyUtuyUhIXT9uZwd6xZ38JV18rzFUns87AvS4AsST1eun1BQAFtNZGfpmv-mthucDDP/exec';
-    const GAS_AI_URL = 'https://script.google.com/macros/s/AKfycbwdlOCivWIyMglDCMCR6fD_rx6fCybcy7rQvwVpiEfor-696Dq_CHIpeQ4jhsJI1fJu/exec';
+    // URL GAS YANG BARU
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbxM6GNxX_Q1U8TmGpU3GgexXK2JFCy_EvkbfosrAZSLQP_avu_N3hdpajiWiEIK1Ial/exec';
 
-    // STATE
     let userUID = null, cart = [], master = [], VOICE_ON = true, LOGIN_MODE = "";
     let chartInstance = null;
     let aiMode = 'bonus';
     let appInitialized = false;
+    let auth, db, provider;
+    let currentPeriod = 'today'; // 'today', 'month', 'all'
 
+    // FIREBASE CONFIG
+    const firebaseConfig = {
+      apiKey: "AIzaSyBaulpvROT6vO1-LjK3bae3ETnpWz4irIw",
+      authDomain: "pinbonus-kalkulasi.firebaseapp.com",
+      projectId: "pinbonus-kalkulasi",
+      storageBucket: "pinbonus-kalkulasi.firebasestorage.app",
+      messagingSenderId: "950589733342",
+      appId: "1:950589733342:web:6bbc9647077a8c40e1454f"
+    };
+
+    // UTILITY FUNCTIONS
     function showToast(message, type = 'success') {
       const el = document.getElementById('toast');
       el.textContent = message;
@@ -398,8 +462,111 @@
       VOICE_ON = !VOICE_ON;
       document.getElementById('voiceIcon').className =
         VOICE_ON ? 'fa fa-volume-up' : 'fa fa-volume-off opacity-30';
-      showToast(VOICE_ON ? 'Suara diaktifkan' : 'Suara dimatikan');
     };
+
+    // PERIOD MANAGEMENT
+    window.switchPeriod = (period) => {
+      currentPeriod = period;
+      
+      // Update active button
+      document.querySelectorAll('.period-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.getElementById('period' + period.charAt(0).toUpperCase() + period.slice(1)).classList.add('active');
+      
+      // Update label
+      const labels = {
+        'today': 'Bonus Hari Ini',
+        'month': 'Bonus Bulan Ini',
+        'all': 'Total Semua Bonus'
+      };
+      document.getElementById('periodLabel').textContent = labels[period];
+      
+      // Update history label
+      const historyLabels = {
+        'today': 'Hari Ini',
+        'month': 'Bulan Ini',
+        'all': 'Semua Waktu'
+      };
+      document.getElementById('historyPeriodLabel').textContent = historyLabels[period];
+      
+      // Re-render everything
+      render();
+    };
+
+    // Helper function to parse Indonesian date "d/m/yyyy"
+    function parseIndoDate(dateStr) {
+      if (!dateStr) return null;
+      const parts = dateStr.split('/');
+      if (parts.length !== 3) return null;
+      return new Date(parts[2], parts[1] - 1, parts[0]);
+    }
+
+    // Get current date in Indonesian format
+    function getTodayIndo() {
+      const today = new Date();
+      return today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
+    }
+
+    // Get current month and year
+    function getCurrentMonthYear() {
+      const today = new Date();
+      return {
+        month: today.getMonth() + 1,
+        year: today.getFullYear()
+      };
+    }
+
+    // Filter data based on period
+    function filterDataByPeriod(data, period) {
+      if (period === 'today') {
+        const today = getTodayIndo();
+        return data.filter(item => item.date === today);
+      } else if (period === 'month') {
+        const current = getCurrentMonthYear();
+        return data.filter(item => {
+          const itemDate = parseIndoDate(item.date);
+          if (!itemDate) return false;
+          return itemDate.getMonth() + 1 === current.month && 
+                 itemDate.getFullYear() === current.year;
+        });
+      } else if (period === 'all') {
+        return data;
+      }
+      return [];
+    }
+
+    // Calculate totals
+    function calculateTotals() {
+      const today = getTodayIndo();
+      const current = getCurrentMonthYear();
+      
+      let dailyTotal = 0;
+      let monthlyTotal = 0;
+      let allTimeTotal = 0;
+      
+      cart.forEach(item => {
+        const amount = Number(item.price) || 0;
+        allTimeTotal += amount;
+        
+        if (item.date === today) {
+          dailyTotal += amount;
+        }
+        
+        const itemDate = parseIndoDate(item.date);
+        if (itemDate && 
+            itemDate.getMonth() + 1 === current.month && 
+            itemDate.getFullYear() === current.year) {
+          monthlyTotal += amount;
+        }
+      });
+      
+      return {
+        daily: dailyTotal,
+        monthly: monthlyTotal,
+        all: allTimeTotal
+      };
+    }
 
     // Emergency function to force guest mode
     window.forceGuestMode = () => {
@@ -407,101 +574,105 @@
       userUID = "guest_user_" + Date.now();
       localStorage.setItem("pinbonus_mode", "guest");
       localStorage.setItem("pinbonus_uid", userUID);
-      showToast('Mode tamu diaktifkan', 'success');
       enterApp();
     };
 
-    // FIREBASE
-    const firebaseConfig = {
-      apiKey: "AIzaSyBaulpvROT6vO1-LjK3bae3ETnpWz4irIw",
-      authDomain: "pinbonus-kalkulasi.firebaseapp.com",
-      projectId: "pinbonus-kalkulasi",
-      storageBucket: "pinbonus-kalkulasi.firebasestorage.app",
-      messagingSenderId: "950589733342",
-      appId: "1:950589733342:web:6bbc9647077a8c40e1454f"
-    };
-    
-    // Initialize Firebase only once
-    let auth, db, provider;
-    try {
-      if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-      }
-      auth = firebase.auth();
-      db = firebase.firestore();
-      provider = new firebase.auth.GoogleAuthProvider();
-      console.log('Firebase initialized successfully');
-    } catch (error) {
-      console.log('Firebase init error:', error);
-      showToast('Firebase error, using guest mode only', 'error');
-    }
-
-    document.getElementById('btnGoogle').onclick = async () => {
+    // FIREBASE INITIALIZATION
+    function initFirebase() {
       try {
-        const result = await auth.signInWithPopup(provider);
-        userUID = result.user.uid;
-        LOGIN_MODE = "google";
-        localStorage.setItem("pinbonus_mode", "google");
-        localStorage.setItem("pinbonus_uid", userUID);
-        showToast('Login Google berhasil', 'success');
-        enterApp();
-      } catch (error) {
-        console.error('Google login error:', error);
-        document.getElementById('loginMsg').textContent = '❌ ' + error.message;
-        document.getElementById('loginMsg').classList.remove('hidden');
-        showToast('Login Google gagal: ' + error.code, 'error');
-      }
-    };
-
-    document.getElementById('btnGuest').onclick = () => {
-      LOGIN_MODE = "guest";
-      userUID = "guest_user_" + Date.now();
-      localStorage.setItem("pinbonus_mode", "guest");
-      localStorage.setItem("pinbonus_uid", userUID);
-      showToast('Mode tamu diaktifkan', 'success');
-      enterApp();
-    };
-
-    // FIXED: Simpler auth state listener
-    if (auth) {
-      auth.onAuthStateChanged((user) => {
-        console.log('Auth state:', user ? 'Logged in' : 'Logged out');
-        
-        if (user) {
-          // Google user
-          LOGIN_MODE = "google";
-          userUID = user.uid;
-          localStorage.setItem("pinbonus_mode", "google");
-          localStorage.setItem("pinbonus_uid", userUID);
-          
-          if (!appInitialized) {
-            enterApp();
-          }
+        if (!firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+          console.log("Firebase initialized successfully");
         } else {
-          // No Google user, check for guest mode
-          const mode = localStorage.getItem("pinbonus_mode");
-          const savedUID = localStorage.getItem("pinbonus_uid");
-          
-          if (mode === "guest" && savedUID && !appInitialized) {
-            LOGIN_MODE = "guest";
-            userUID = savedUID;
-            
-            setTimeout(() => {
-              if (!appInitialized) {
-                enterApp();
-              }
-            }, 300);
-          }
+          console.log("Firebase already initialized");
         }
-      });
+        
+        auth = firebase.auth();
+        db = firebase.firestore();
+        provider = new firebase.auth.GoogleAuthProvider();
+        
+        // Configure Firestore for better compatibility
+        if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+          db.settings({
+            experimentalForceLongPolling: true
+          });
+        }
+        
+        return true;
+      } catch (error) {
+        console.error("Firebase initialization error:", error);
+        showToast("Firebase tidak tersedia, gunakan Mode Tamu", "error");
+        return false;
+      }
     }
 
+    // LOAD FROM LOCAL STORAGE
+    function loadFromLocalStorage() {
+      try {
+        const saved = localStorage.getItem("pinbonus_data_" + userUID);
+        cart = saved ? JSON.parse(saved) : [];
+        console.log("Loaded from localStorage:", cart.length, "items");
+        render();
+      } catch (e) {
+        console.error("Error loading from localStorage:", e);
+        cart = [];
+        render();
+      }
+    }
+
+    // SETUP FIRESTORE LISTENER
+    function setupFirestoreListener() {
+      if (!db || !userUID) return;
+      
+      try {
+        db.collection("users").doc(userUID).onSnapshot(
+          (docSnap) => {
+            if (docSnap.exists) {
+              const data = docSnap.data();
+              cart = data.bonus || [];
+              console.log("Firestore data updated:", cart.length, "items");
+            } else {
+              cart = [];
+              // Create initial document
+              db.collection("users").doc(userUID).set({ bonus: [] }, { merge: true })
+                .then(() => console.log("New user document created"))
+                .catch(e => console.error("Error creating document:", e));
+            }
+            render();
+          },
+          (error) => {
+            console.error("Firestore snapshot error:", error);
+            showToast('Cloud sync error, using local data', 'error');
+            loadFromLocalStorage(); // Fallback to localStorage
+          }
+        );
+      } catch (error) {
+        console.error("Error setting up Firestore listener:", error);
+        loadFromLocalStorage();
+      }
+    }
+
+    // RESET TO LOGIN SCREEN
+    function resetToLogin() {
+      appInitialized = false;
+      const loginScreen = document.getElementById('loginScreen');
+      const mainApp = document.getElementById('mainApp');
+      
+      if (loginScreen) loginScreen.style.display = 'flex';
+      if (mainApp) mainApp.style.display = 'none';
+    }
+
+    // ENTER APP FUNCTION
     function enterApp() {
       if (appInitialized) return;
       
       try {
         const loginScreen = document.getElementById('loginScreen');
         const mainApp = document.getElementById('mainApp');
+        
+        if (!loginScreen || !mainApp) {
+          throw new Error("Element tidak ditemukan");
+        }
         
         loginScreen.style.display = 'none';
         mainApp.style.display = 'block';
@@ -510,83 +681,114 @@
         document.getElementById('modeStatus').innerText =
           LOGIN_MODE === "google" ? "☁️ Cloud Sync" : "👤 Mode Tamu (Lokal)";
         
-        // Load data
-        if (LOGIN_MODE === "google") {
-          try {
-            db.collection("users").doc(userUID).onSnapshot((docSnap) => {
-              if (docSnap.exists) {
-                cart = docSnap.data().bonus || [];
-              } else {
-                cart = [];
-                db.collection("users").doc(userUID).set({ bonus: [] }, { merge: true });
-              }
-              render();
-            }, (error) => {
-              console.error("Firestore error:", error);
-              showToast('Error sinkronisasi cloud', 'error');
-              const saved = localStorage.getItem("pinbonus_data_" + userUID);
-              cart = saved ? JSON.parse(saved) : [];
-              render();
-            });
-          } catch (firestoreError) {
-            console.error('Firestore setup error:', firestoreError);
-            const saved = localStorage.getItem("pinbonus_data_" + userUID);
-            cart = saved ? JSON.parse(saved) : [];
-            render();
-          }
+        // Load data based on login mode
+        if (LOGIN_MODE === "google" && db) {
+          // Setup Firestore listener
+          setupFirestoreListener();
         } else {
-          const saved = localStorage.getItem("pinbonus_data_" + userUID);
-          cart = saved ? JSON.parse(saved) : [];
-          render();
+          // Guest mode - load from localStorage
+          loadFromLocalStorage();
         }
         
-        initData();
+        // Initialize data master
+        setTimeout(() => {
+          initData();
+        }, 500);
+        
         showToast('Aplikasi siap digunakan', 'success');
         speak("Dashboard siap digunakan");
         
       } catch (error) {
         console.error('❌ Error in enterApp:', error);
-        showToast('Error masuk aplikasi', 'error');
-        appInitialized = false;
-        document.getElementById('loginScreen').style.display = 'flex';
-        document.getElementById('mainApp').style.display = 'none';
+        showToast('Error masuk aplikasi: ' + error.message, 'error');
+        resetToLogin();
       }
     }
 
+    // INIT DATA MASTER FROM GAS
     async function initData() {
       try {
-        const catEl = document.getElementById('cat');
-        catEl.innerHTML = '<option value="">Loading...</option>';
+        showToast("Memuat data master...", "success");
         
-        const r = await fetch(GAS_DATA_URL);
+        // Add timeout for fetch
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        
+        const r = await fetch(GAS_URL, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        
+        if (!r.ok) {
+          throw new Error(`HTTP ${r.status} - ${r.statusText}`);
+        }
+        
         const j = await r.json();
-        master = j.data || [];
         
+        // Debug log to see data structure
+        console.log("Data dari GAS:", j);
+        
+        // Handle different response formats
+        if (j.data) {
+          master = j.data;
+        } else if (Array.isArray(j)) {
+          master = j;
+        } else {
+          // Fallback data if format doesn't match
+          master = [
+            { category: "Pulsa", service: "Telkomsel", sku_name: "Pulsa 5k", nominal_angka: 5000 },
+            { category: "Pulsa", service: "Telkomsel", sku_name: "Pulsa 10k", nominal_angka: 10000 },
+            { category: "Pulsa", service: "Telkomsel", sku_name: "Pulsa 25k", nominal_angka: 25000 },
+            { category: "Pulsa", service: "XL", sku_name: "Pulsa XL 5k", nominal_angka: 5000 },
+            { category: "Paket Data", service: "Telkomsel", sku_name: "Internet 1GB", nominal_angka: 15000 },
+            { category: "Paket Data", service: "XL", sku_name: "XL 2GB", nominal_angka: 20000 }
+          ];
+          showToast("Menggunakan data lokal (format GAS tidak sesuai)", "error");
+        }
+        
+        const catEl = document.getElementById('cat');
         const categories = [...new Set(master.map(i => i.category))].sort();
-        catEl.innerHTML = '<option value="">Pilih Kategori...</option>' +
+        
+        if (categories.length === 0) {
+          catEl.innerHTML = '<option value="">Tidak ada data...</option>';
+          showToast("Data master kosong", "error");
+          return;
+        }
+        
+        catEl.innerHTML = '<option value="">Pilih Layanan...</option>' +
           categories.map(c => `<option value="${c}">${c}</option>`).join('');
-          
-        showToast('Data master berhasil dimuat', 'success');
+        
+        showToast("Data master berhasil dimuat", "success");
+        
       } catch (e) {
-        console.error('Error loading master data:', e);
-        showToast("Gagal ambil data master", "error");
-        // Fallback data
-        catEl.innerHTML = '<option value="">Error loading data</option>';
+        console.error("Gagal ambil data master:", e);
+        
+        // Fallback to static data if GAS error
+        master = [
+          { category: "Pulsa", service: "Telkomsel", sku_name: "Pulsa 5k", nominal_angka: 5000 },
+          { category: "Pulsa", service: "Telkomsel", sku_name: "Pulsa 10k", nominal_angka: 10000 },
+          { category: "Pulsa", service: "Telkomsel", sku_name: "Pulsa 25k", nominal_angka: 25000 },
+          { category: "Pulsa", service: "XL", sku_name: "Pulsa XL 5k", nominal_angka: 5000 }
+        ];
+        
+        const catEl = document.getElementById('cat');
+        const categories = [...new Set(master.map(i => i.category))].sort();
+        catEl.innerHTML = '<option value="">Pilih Layanan...</option>' +
+          categories.map(c => `<option value="${c}">${c}</option>`).join('');
+        
+        showToast("Menggunakan data lokal (GAS offline)", "error");
+        speak("Data master offline digunakan");
       }
     }
 
+    // EVENT LISTENERS FOR SELECTS
     document.getElementById('cat').onchange = () => {
       const s = document.getElementById('svc');
       const cat = document.getElementById('cat').value;
       s.disabled = !cat;
-      s.innerHTML = '<option value="">Pilih Layanan...</option>';
+      s.innerHTML = '<option value="">Layanan...</option>';
       if (!cat) return;
-      
-      const services = [...new Set(master
-        .filter(i => i.category === cat)
-        .map(i => i.service))].sort();
-      
-      s.innerHTML += services.map(v => `<option value="${v}">${v}</option>`).join('');
+      s.innerHTML += [...new Set(master.filter(i => i.category === cat)
+        .map(i => i.service))].sort()
+        .map(v => `<option value="${v}">${v}</option>`).join('');
     };
 
     document.getElementById('svc').onchange = () => {
@@ -596,13 +798,13 @@
       sk.disabled = !svc;
       sk.innerHTML = '<option value="">Pilih SKU...</option>';
       if (!svc) return;
-      
       sk.innerHTML += master
         .filter(i => i.category === cat && i.service === svc)
-        .map(i => `<option value="${i.nominal_angka}" data-n="${i.sku_name}">${i.sku_name} (Rp${parseInt(i.nominal_angka).toLocaleString('id-ID')})</option>`)
+        .map(i => `<option value="${i.nominal_angka}" data-n="${i.sku_name}">${i.sku_name}</option>`)
         .join('');
     };
 
+    // ADD DATA BUTTON
     document.getElementById('addBtn').onclick = async () => {
       const skuSelect = document.getElementById('sku');
       const nominal = parseFloat(skuSelect.value);
@@ -619,12 +821,13 @@
         id: Date.now(),
         name: skuName,
         price: nominal,
-        time: now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
-        date: now.toLocaleDateString('id-ID'),
-        order: orderId || "-"
+        time: now.toLocaleTimeString('id-ID'),
+        date: now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear(),
+        order: orderId || "-",
+        timestamp: now.getTime()
       };
 
-      if (LOGIN_MODE === "google") {
+      if (LOGIN_MODE === "google" && db) {
         try {
           await db.collection("users").doc(userUID).set({
             bonus: firebase.firestore.FieldValue.arrayUnion(data)
@@ -632,6 +835,7 @@
         } catch (error) {
           console.error('Firestore save error:', error);
           showToast('Gagal menyimpan ke cloud', 'error');
+          // Fallback to localStorage
           cart.push(data);
           localStorage.setItem("pinbonus_data_" + userUID, JSON.stringify(cart));
         }
@@ -646,35 +850,55 @@
       speak(`${skuName} senilai ${nominal.toLocaleString('id-ID')} rupiah berhasil disimpan.`);
     };
 
+    // RENDER FUNCTIONS
     window.render = () => {
-      const td = new Date().toLocaleDateString('id-ID');
-      let tot = 0;
-      cart.forEach(i => { if (i.date === td) tot += (Number(i.price) || 0); });
-      document.getElementById('totalDisplay').innerText = tot.toLocaleString('id-ID');
+      // Calculate all totals
+      const totals = calculateTotals();
+      
+      // Update daily and monthly stats
+      document.getElementById('dailyTotal').textContent = 'Rp ' + totals.daily.toLocaleString('id-ID');
+      document.getElementById('monthlyTotal').textContent = 'Rp ' + totals.monthly.toLocaleString('id-ID');
+      
+      // Update main display based on current period
+      let displayTotal = 0;
+      if (currentPeriod === 'today') {
+        displayTotal = totals.daily;
+      } else if (currentPeriod === 'month') {
+        displayTotal = totals.monthly;
+      } else {
+        displayTotal = totals.all;
+      }
+      
+      document.getElementById('totalDisplay').innerText = displayTotal.toLocaleString('id-ID');
       renderHistory();
     };
 
     window.renderHistory = () => {
       const list = document.getElementById('jobList');
       const filterValue = document.getElementById('historyFilter')?.value || '10';
-      let displayItems = cart.slice().reverse();
+      
+      // Filter data based on current period
+      let filteredData = filterDataByPeriod(cart, currentPeriod);
+      
+      let displayItems = filteredData.slice().sort((a, b) => b.timestamp - a.timestamp);
+      
       if (filterValue !== 'all') {
         displayItems = displayItems.slice(0, parseInt(filterValue));
       }
       
+      list.innerHTML = displayItems.map(i => `
+        <li class="glass p-4 mb-2 border-l-4 border-blue-500 font-bold text-xs flex justify-between items-start rounded-xl">
+          <div class="flex flex-col">
+            <span>${i.name}</span>
+            <span class="text-[9px] text-slate-300 font-normal mt-1">${i.date} • ${i.time}</span>
+            <span class="text-[9px] text-slate-400 font-normal">Order: ${i.order || "-"}</span>
+          </div>
+          <span class="text-blue-300 whitespace-nowrap">Rp${(i.price||0).toLocaleString('id-ID')}</span>
+        </li>
+      `).join('');
+
       if (displayItems.length === 0) {
-        list.innerHTML = '<li class="text-center text-slate-400 py-8 text-xs">Tidak ada riwayat</li>';
-      } else {
-        list.innerHTML = displayItems.map(i => `
-          <li class="glass p-4 mb-2 border-l-4 border-blue-500 font-bold text-xs flex justify-between items-start rounded-xl">
-            <div class="flex flex-col">
-              <span>${i.name}</span>
-              <span class="text-[9px] text-slate-300 font-normal mt-1">${i.date} • ${i.time}</span>
-              <span class="text-[9px] text-slate-400 font-normal">Order: ${i.order || "-"}</span>
-            </div>
-            <span class="text-blue-300 whitespace-nowrap">Rp${(i.price||0).toLocaleString('id-ID')}</span>
-          </li>
-        `).join('');
+        list.innerHTML = '<li class="text-center text-slate-400 py-8 text-xs">Tidak ada riwayat untuk periode ini</li>';
       }
 
       renderBonusChart(displayItems);
@@ -691,7 +915,15 @@
       container.classList.remove('hidden');
       const ctx = document.getElementById('bonusChart').getContext('2d');
       const total = items.reduce((a,b)=>a+(Number(b.price)||0),0);
-      const target = 500000;
+      
+      // Dynamic target based on period
+      let target = 500000; // Default daily target
+      if (currentPeriod === 'month') {
+        target = 15000000; // Monthly target
+      } else if (currentPeriod === 'all') {
+        target = total * 1.5; // All time target (50% more than current)
+      }
+      
       if (chartInstance) chartInstance.destroy();
       chartInstance = new Chart(ctx, {
         type: 'doughnut',
@@ -704,92 +936,93 @@
           }]
         },
         options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: {
-                color: '#e5e7eb',
-                font: { size: 11, family: 'Poppins' },
-                padding: 15
-              }
-            },
-            tooltip: {
-              callbacks: {
-                label: (c) => 'Rp' + (c.parsed||0).toLocaleString('id-ID')
-              }
-            }
+          responsive:true,
+          maintainAspectRatio:false,
+          plugins:{
+            legend:{position:'bottom',labels:{color:'#e5e7eb',font:{size:11,family:'Poppins'},padding:15}},
+            tooltip:{callbacks:{label:(c)=>'Rp'+(c.parsed||0).toLocaleString('id-ID')}}
           }
         }
       });
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const historyFilter = document.getElementById('historyFilter');
-      if (historyFilter) historyFilter.onchange = renderHistory;
-      
-      // Check for existing session
-      const mode = localStorage.getItem("pinbonus_mode");
-      const savedUID = localStorage.getItem("pinbonus_uid");
-      
-      if (mode === "guest" && savedUID && !appInitialized) {
-        LOGIN_MODE = "guest";
-        userUID = savedUID;
-        setTimeout(() => {
-          if (!appInitialized) {
-            enterApp();
-          }
-        }, 500);
+    // LOGIN FUNCTIONS
+    document.getElementById('btnGoogle').onclick = async () => {
+      try {
+        if (!auth) {
+          showToast("Firebase tidak tersedia", "error");
+          return;
+        }
+        const result = await auth.signInWithPopup(provider);
+        userUID = result.user.uid;
+        LOGIN_MODE = "google";
+        localStorage.setItem("pinbonus_mode", "google");
+        localStorage.setItem("pinbonus_uid", userUID);
+        enterApp();
+      } catch (error) {
+        console.error('Google login error:', error);
+        document.getElementById('loginMsg').textContent = '❌ ' + error.message;
+        document.getElementById('loginMsg').classList.remove('hidden');
+        showToast('Login Google gagal', 'error');
       }
-    });
+    };
 
+    document.getElementById('btnGuest').onclick = () => {
+      LOGIN_MODE = "guest";
+      userUID = "guest_user_" + Date.now();
+      localStorage.setItem("pinbonus_mode", "guest");
+      localStorage.setItem("pinbonus_uid", userUID);
+      enterApp();
+    };
+
+    // AI FUNCTIONS - UPDATED FOR PERIOD SUPPORT
     window.switchAIMode = (mode) => {
       aiMode = mode;
       const modeBonus = document.getElementById('modeBonus');
       const modeGeneral = document.getElementById('modeGeneral');
       const quickActions = document.getElementById('quickActionsBonus');
       const generalInfo = document.getElementById('generalInfo');
-      
       if (mode === 'bonus') {
-        modeBonus.className = "flex-1 py-2 px-3 bg-blue-500 text-white rounded-lg text-[10px] md:text-[11px] font-bold transition-all";
-        modeGeneral.className = "flex-1 py-2 px-3 bg-slate-700 text-slate-200 rounded-lg text-[10px] md:text-[11px] font-bold transition-all";
+        modeBonus.className = "flex-1 py-2 px-3 bg-blue-500 text-white rounded-lg text-[10px] md:text-[11px] font-bold";
+        modeGeneral.className = "flex-1 py-2 px-3 bg-slate-700 text-slate-200 rounded-lg text-[10px] md:text-[11px] font-bold";
         quickActions.classList.remove('hidden');
         generalInfo.classList.add('hidden');
-        document.getElementById('aiInput').placeholder = "Tanya tentang bonus...";
+        document.getElementById('aiInput').placeholder = "Tanya bonus...";
       } else {
-        modeGeneral.className = "flex-1 py-2 px-3 bg-green-500 text-white rounded-lg text-[10px] md:text-[11px] font-bold transition-all";
-        modeBonus.className = "flex-1 py-2 px-3 bg-slate-700 text-slate-200 rounded-lg text-[10px] md:text-[11px] font-bold transition-all";
+        modeGeneral.className = "flex-1 py-2 px-3 bg-green-500 text-white rounded-lg text-[10px] md:text-[11px] font-bold";
+        modeBonus.className = "flex-1 py-2 px-3 bg-slate-700 text-slate-200 rounded-lg text-[10px] md:text-[11px] font-bold";
         quickActions.classList.add('hidden');
         generalInfo.classList.remove('hidden');
-        document.getElementById('aiInput').placeholder = "Tanya apapun (contoh: jelaskan tentang aplikasi ini)...";
+        document.getElementById('aiInput').placeholder = "Tanya apapun (AI Groq via GAS)...";
       }
     };
 
     window.quickAI = (type) => {
-      const td = new Date().toLocaleDateString('id-ID');
-      const todayItems = cart.filter(i => i.date === td);
-      const tot = todayItems.reduce((a,b)=>a+(Number(b.price)||0),0);
-      let message = "";
+      const totals = calculateTotals();
+      const today = getTodayIndo();
+      const todayItems = cart.filter(item => item.date === today);
       
+      let message = "";
       if (type === 'total') {
         const historyText = todayItems.slice(-5).map(i=>`${i.name} Rp${i.price}`).join(' + ') || 'Belum ada';
-        message = `📊 Total bonus hari ini: Rp${tot.toLocaleString('id-ID')}\n\n💰 Riwayat: ${historyText}`;
+        message = `📊 STATISTIK BONUS\n\n💰 Hari Ini: Rp${totals.daily.toLocaleString('id-ID')}\n📅 Bulan Ini: Rp${totals.monthly.toLocaleString('id-ID')}\n🏆 Total Semua: Rp${totals.all.toLocaleString('id-ID')}\n\n📝 Riwayat Hari Ini: ${historyText}`;
       } else if (type === 'prediksi') {
-        const target = 500000;
-        const remaining = Math.max(0,target-tot);
-        const percent = Math.round(tot/target*100);
-        const status = tot>=target ? '✅ TARGET TERCAPAI!' : '🔄 Terus tambah bonus';
-        message = `🎯 Target: Rp${target.toLocaleString('id-ID')}\n📊 Tercapai: ${percent}%\n💵 Kurang: Rp${remaining.toLocaleString('id-ID')}\n${status}`;
+        const targetDaily = 500000;
+        const targetMonthly = 15000000;
+        const remainingDaily = Math.max(0, targetDaily - totals.daily);
+        const remainingMonthly = Math.max(0, targetMonthly - totals.monthly);
+        const percentDaily = Math.round(totals.daily/targetDaily*100);
+        const percentMonthly = Math.round(totals.monthly/targetMonthly*100);
+        const statusDaily = totals.daily>=targetDaily ? '✅ TARGET HARIAN TERCAPAI!' : '🔄 Terus tambah bonus';
+        const statusMonthly = totals.monthly>=targetMonthly ? '✅ TARGET BULANAN TERCAPAI!' : '📈 Lanjutkan konsisten';
+        message = `🎯 PREDIKSI BONUS\n\n📊 Harian: ${percentDaily}% (Rp${remainingDaily.toLocaleString('id-ID')})\n📅 Bulanan: ${percentMonthly}% (Rp${remainingMonthly.toLocaleString('id-ID')})\n\n${statusDaily}\n${statusMonthly}`;
       } else if (type === 'rata') {
-        const avg = todayItems.length>0 ? Math.round(tot/todayItems.length) : 0;
-        const max = todayItems.length>0 ? Math.max(...todayItems.map(i => i.price)) : 0;
-        const min = todayItems.length>0 ? Math.min(...todayItems.map(i => i.price)) : 0;
-        message = `📈 Statistik Hari Ini\n📌 Total item: ${todayItems.length}\n💰 Total bonus: Rp${tot.toLocaleString('id-ID')}\n🔢 Rata-rata: Rp${avg.toLocaleString('id-ID')}\n📈 Tertinggi: Rp${max.toLocaleString('id-ID')}\n📉 Terendah: Rp${min.toLocaleString('id-ID')}`;
+        const avgDaily = todayItems.length>0 ? Math.round(totals.daily/todayItems.length) : 0;
+        const avgMonthly = totals.monthly>0 ? Math.round(totals.monthly/30) : 0;
+        message = `📈 STATISTIK RATA-RATA\n\n📌 Hari Ini: ${todayItems.length} item (Rp${avgDaily.toLocaleString('id-ID')}/item)\n📅 Bulan Ini: Rp${avgMonthly.toLocaleString('id-ID')}/hari\n💰 Total Bonus: Rp${totals.all.toLocaleString('id-ID')}`;
       } else if (type === 'bantuan') {
-        message = `❓ PANDUAN FITUR\n\n📌 INPUT: Tambah bonus dari dropdown\n💾 RIWAYAT: Lihat semua bonus (filter 5/10/20/semua)\n🤖 AI: Tanya total, prediksi, atau bantuan\n📥 EXPORT: Simpan bonus ke CSV/XLSX/JSON\n🗑️ RESET: Hapus semua data`;
+        message = `❓ PANDUAN FITUR\n\n📌 PERIODE: Pilih tampilan (Hari/Bulan/Semua)\n✏️ INPUT: Tambah bonus dari dropdown\n💾 RIWAYAT: Lihat semua bonus berdasarkan periode\n🤖 AI: Tanya total, prediksi, atau bantuan\n📥 EXPORT: Simpan bonus ke CSV/XLSX/JSON\n🗑️ RESET: Hapus semua data`;
       }
-      
       const box = document.getElementById('aiChatBox');
       box.innerHTML += `<div class="p-3 bg-indigo-600 text-white rounded-2xl rounded-tr-none ml-auto text-xs font-bold mb-2 max-w-[80%]">${type.toUpperCase()}</div>`;
       box.innerHTML += `<div class="p-3 bg-slate-100 text-slate-700 rounded-2xl rounded-tl-none mr-auto text-xs font-bold mb-2 max-w-[80%] whitespace-pre-line"><b>🤖 AI:</b> ${message}</div>`;
@@ -803,137 +1036,84 @@
       const btn = document.getElementById('btnAskAi');
       const icon = document.getElementById('aiIcon');
       const q = inp.value.trim();
-      
-      if (!q) {
-        showToast("Masukkan pertanyaan", "error");
-        return;
-      }
-      
+      if (!q) return;
       btn.disabled = true;
       icon.className = "fa fa-spinner fa-spin";
-      
-      // Add user message to chat
       box.innerHTML += `<div class="p-3 bg-blue-600 text-white rounded-2xl rounded-tr-none ml-auto text-xs font-bold mb-2 max-w-[80%]">${q}</div>`;
       inp.value = "";
       box.scrollTop = box.scrollHeight;
-      
-      const td = new Date().toLocaleDateString('id-ID');
-      const todayItems = cart.filter(i => i.date === td);
-      const tot = todayItems.reduce((a,b)=>a+(Number(b.price)||0),0);
+
+      const totals = calculateTotals();
+      const today = getTodayIndo();
+      const todayItems = cart.filter(item => item.date === today);
       const historyText = todayItems.slice(-5).map(i=>`${i.name}(Rp${i.price})`).join(', ');
-      
+
       let resultMessage = "";
 
       if (aiMode === 'bonus') {
         const qLower = q.toLowerCase();
-        
         if (qLower.includes('total') || qLower.includes('berapa') || qLower.includes('sum')) {
-          resultMessage = `📊 Total bonus hari ini: Rp${tot.toLocaleString('id-ID')}\n\nDetail: ${historyText || 'Belum ada data'}`;
+          resultMessage = `📊 TOTAL BONUS\n💰 Hari Ini: Rp${totals.daily.toLocaleString('id-ID')}\n📅 Bulan Ini: Rp${totals.monthly.toLocaleString('id-ID')}\n🏆 Total Semua: Rp${totals.all.toLocaleString('id-ID')}`;
         } else if (qLower.includes('prediksi') || qLower.includes('target') || qLower.includes('goal')) {
-          const target = 500000;
-          const remaining = Math.max(0,target-tot);
-          const percent = Math.round(tot/target*100);
-          resultMessage = `🎯 Target Rp${target.toLocaleString('id-ID')}\n✅ Sudah: ${percent}%\n💵 Kurang: Rp${remaining.toLocaleString('id-ID')}`;
+          const targetDaily = 500000;
+          const targetMonthly = 15000000;
+          const remainingDaily = Math.max(0, targetDaily - totals.daily);
+          const remainingMonthly = Math.max(0, targetMonthly - totals.monthly);
+          const percentDaily = Math.round(totals.daily/targetDaily*100);
+          const percentMonthly = Math.round(totals.monthly/targetMonthly*100);
+          resultMessage = `🎯 PREDIKSI\n📊 Harian: ${percentDaily}% (Kurang Rp${remainingDaily.toLocaleString('id-ID')})\n📅 Bulanan: ${percentMonthly}% (Kurang Rp${remainingMonthly.toLocaleString('id-ID')})`;
         } else if (qLower.includes('rata') || qLower.includes('average') || qLower.includes('mean')) {
-          const avg = todayItems.length>0 ? Math.round(tot/todayItems.length) : 0;
-          resultMessage = `📈 Rata-rata per item: Rp${avg.toLocaleString('id-ID')}\nTotal ${todayItems.length} item hari ini`;
+          const avgDaily = todayItems.length>0 ? Math.round(totals.daily/todayItems.length) : 0;
+          const avgMonthly = totals.monthly>0 ? Math.round(totals.monthly/30) : 0;
+          resultMessage = `📈 RATA-RATA\n📌 Per Item: Rp${avgDaily.toLocaleString('id-ID')}\n📅 Per Hari: Rp${avgMonthly.toLocaleString('id-ID')}`;
         } else if (qLower.includes('reset') || qLower.includes('hapus') || qLower.includes('delete')) {
           resultMessage = '🗑️ Cara reset: Buka tab DATA → Klik tombol sampah → Ketik RESET';
         } else if (qLower.includes('export') || qLower.includes('download') || qLower.includes('csv')) {
           resultMessage = '📥 Cara export: Buka tab DATA → Pakai tombol CSV/XLSX/JSON/WA';
         } else if (qLower.includes('fitur') || qLower.includes('bantuan') || qLower.includes('help')) {
-          resultMessage = `📚 FITUR UTAMA:\n✏️ INPUT - Tambah bonus\n📊 DATA - Lihat semua transaksi + chart\n🤖 AI - Tanya apapun\n📥 EXPORT - Simpan CSV/XLSX/JSON atau kirim WA\n🗑️ RESET - Bersihkan data`;
+          resultMessage = `📚 FITUR UTAMA:\n📊 PERIODE - Pilih tampilan (Hari/Bulan/Semua)\n✏️ INPUT - Tambah bonus\n📊 DATA - Lihat semua transaksi + chart\n🤖 AI - Tanya apapun\n📥 EXPORT - Simpan CSV/XLSX/JSON atau kirim WA\n🗑️ RESET - Bersihkan data`;
         } else if (qLower.includes('terbaik') || qLower.includes('tips') || qLower.includes('saran')) {
-          resultMessage = `💡 TIPS PRODUKTIF:\n1️⃣ Input bonus real-time\n2️⃣ Pantau prediksi harian\n3️⃣ Export mingguan dalam XLSX/CSV\n4️⃣ Analisis rata-rata item\n5️⃣ Share laporan via WA`;
-        } else if (qLower.includes('apa') || qLower.includes('bagaimana') || qLower.includes('kenapa')) {
-          resultMessage = `💬 Anda tanya: "${q}"\n\n📊 Bonus hari ini: Rp${tot.toLocaleString('id-ID')} (${todayItems.length} item)\n\nUntuk pertanyaan spesifik tentang bonus, tanya: "total", "prediksi", "bantuan", atau "tips"`;
+          resultMessage = `💡 TIPS PRODUKTIF:\n1️⃣ Input bonus real-time setiap hari\n2️⃣ Pantau target harian & bulanan\n3️⃣ Export mingguan dalam XLSX/CSV\n4️⃣ Analisis rata-rata item\n5️⃣ Share laporan via WA\n6️⃣ Gunakan filter periode untuk analisis`;
+        } else if (qLower.includes('bulan') || qLower.includes('monthly')) {
+          resultMessage = `📅 BONUS BULANAN\n💰 Total: Rp${totals.monthly.toLocaleString('id-ID')}\n📊 Rata-rata/hari: Rp${Math.round(totals.monthly/30).toLocaleString('id-ID')}\n🎯 Target: Rp15.000.000 (${Math.round(totals.monthly/15000000*100)}%)`;
         } else {
-          resultMessage = `💬 Pertanyaan: "${q}"\n\n📊 Info bonus hari ini: Rp${tot.toLocaleString('id-ID')} dari ${todayItems.length} item\n\nTanya "total", "prediksi", "bantuan", atau "tips" untuk info lebih lengkap!`;
+          resultMessage = `💬 Anda tanya: "${q}"\n\n📊 Statistik Bonus:\n💰 Hari Ini: Rp${totals.daily.toLocaleString('id-ID')}\n📅 Bulan Ini: Rp${totals.monthly.toLocaleString('id-ID')}\n🏆 Total Semua: Rp${totals.all.toLocaleString('id-ID')}\n\nTanya "total", "prediksi", "bantuan", atau "tips" untuk info lengkap!`;
         }
-        
-        box.innerHTML += `<div class="p-3 bg-slate-100 text-slate-700 rounded-2xl rounded-tl-none mr-auto text-xs font-bold mb-2 max-w-[80%] whitespace-pre-line"><b>🤖 AI Bonus:</b> ${resultMessage}</div>`;
+        box.innerHTML += `<div class="p-3 bg-slate-100 text-slate-700 rounded-2xl rounded-tl-none mr-auto text-xs font-bold mb-2 max-w-[80%] whitespace-pre-line"><b>🤖 AI:</b> ${resultMessage}</div>`;
         speak(resultMessage);
-        
       } else {
-        // AI General Mode - FIXED
         try {
-          // Show typing indicator
-          const typingId = 'typing-' + Date.now();
-          box.innerHTML += `
-            <div id="${typingId}" class="p-3 bg-gray-800 text-gray-300 rounded-2xl rounded-tl-none mr-auto text-xs mb-2 max-w-[80%]">
-              <span class="flex items-center gap-1">
-                <span class="typing-indicator"></span>
-                <span class="typing-indicator"></span>
-                <span class="typing-indicator"></span>
-                <span class="ml-2">AI sedang berpikir...</span>
-              </span>
-            </div>
-          `;
+          box.innerHTML += `<div class="p-3 text-slate-500 rounded-2xl rounded-tl-none mr-auto text-xs italic mb-2">🔄 Mengirim ke Groq AI melalui GAS...</div>`;
           box.scrollTop = box.scrollHeight;
+          const url = GAS_URL + '?mode=general&prompt=' + encodeURIComponent(q);
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 15000);
           
-          // Try multiple approaches for AI response
-          let aiResponse = null;
+          const response = await fetch(url, { signal: controller.signal });
+          clearTimeout(timeoutId);
           
-          // Approach 1: Direct GAS call with simpler format
-          try {
-            const url = `${GAS_AI_URL}?q=${encodeURIComponent(q)}&mode=ai`;
-            const response = await fetch(url);
-            
-            if (response.ok) {
-              const data = await response.json();
-              // Handle different response formats
-              if (data.message) {
-                aiResponse = data.message;
-              } else if (data.response) {
-                aiResponse = data.response;
-              } else if (data.text) {
-                aiResponse = data.text;
-              } else if (typeof data === 'string') {
-                aiResponse = data;
-              } else if (data.choices && data.choices[0] && data.choices[0].message) {
-                aiResponse = data.choices[0].message.content;
-              }
-            }
-          } catch (gasError) {
-            console.log('GAS approach 1 failed:', gasError);
-          }
+          if (!response.ok) throw new Error('HTTP ' + response.status);
+          const data = await response.json();
+          resultMessage = data.message || data.response || 'Tidak ada response dari AI.';
           
-          // Approach 2: Fallback to mock AI if GAS fails
-          if (!aiResponse) {
-            const mockResponses = [
-              `🤖 Saya adalah AI assistant PinBonus. Anda bertanya: "${q}"\n\nSaat ini fitur AI external sedang maintenance. Gunakan mode Bonus untuk pertanyaan tentang data bonus Anda.`,
-              `💬 Pertanyaan Anda: "${q}"\n\nUntuk saat ini, saya bisa membantu Anda dengan:\n1. Info bonus harian\n2. Prediksi target\n3. Statistik data\n4. Panduan aplikasi\n\nGanti ke mode 💰 Bonus untuk informasi lebih detail.`,
-              `🔧 Fitur AI General sedang dalam perbaikan.\n\nPertanyaan: "${q}"\n\nSementara ini, Anda bisa:\n• Tanya tentang bonus (mode 💰)\n• Export data (tab Data)\n• Lihat chart statistik\n\nTerima kasih atas pengertiannya!`
-            ];
-            aiResponse = mockResponses[Math.floor(Math.random() * mockResponses.length)];
-          }
-          
-          // Remove typing indicator
-          const typingElement = document.getElementById(typingId);
-          if (typingElement) typingElement.remove();
-          
-          // Add AI response
-          box.innerHTML += `<div class="p-3 bg-green-100 text-green-700 rounded-2xl rounded-tl-none mr-auto text-xs font-bold mb-2 max-w-[80%] whitespace-pre-line"><b>🤖 AI Assistant:</b> ${aiResponse}</div>`;
-          speak(aiResponse.substring(0, 200)); // Speak first 200 chars
-          
+          const lastMsg = box.lastElementChild;
+          if (lastMsg && lastMsg.textContent.includes('Mengirim')) lastMsg.remove();
+          box.innerHTML += `<div class="p-3 bg-green-100 text-green-700 rounded-2xl rounded-tl-none mr-auto text-xs font-bold mb-2 max-w-[80%] whitespace-pre-line"><b>🤖 Groq AI via GAS:</b> ${resultMessage}</div>`;
+          speak(resultMessage.substring(0, 200)); // Speak first 200 chars
         } catch (error) {
-          console.error('AI General error:', error);
-          
-          // Remove typing indicator if exists
-          const typingElements = document.querySelectorAll('[id^="typing-"]');
-          typingElements.forEach(el => el.remove());
-          
-          // Show error message
-          resultMessage = `⚠️ Maaf, terjadi kesalahan koneksi AI.\n\nPertanyaan: "${q}"\n\nSementara ini, silakan gunakan mode 💰 Bonus untuk pertanyaan tentang data bonus Anda, atau coba lagi nanti.\n\nError: ${error.message}`;
-          box.innerHTML += `<div class="p-3 bg-red-100 text-red-600 rounded-2xl rounded-tl-none mr-auto text-xs font-bold mb-2 max-w-[80%] whitespace-pre-line"><b>🤖 AI Assistant:</b> ${resultMessage}</div>`;
+          const lastMsg = box.lastElementChild;
+          if (lastMsg && lastMsg.textContent.includes('Mengirim')) lastMsg.remove();
+          const fallback = `⚠️ Error koneksi AI Groq/GAS:\n${error.message}\n\n💡 Gunakan dulu mode 💰 Bonus untuk fitur lokal.`;
+          box.innerHTML += `<div class="p-3 bg-red-100 text-red-600 rounded-2xl rounded-tl-none mr-auto text-xs font-bold mb-2 max-w-[80%] whitespace-pre-line">${fallback}</div>`;
+          speak("Error koneksi AI Groq");
         }
       }
-      
       btn.disabled = false;
       icon.className = "fa fa-paper-plane";
       box.scrollTop = box.scrollHeight;
     };
 
+    // UI FUNCTIONS
     window.switchTab = (t) => {
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       document.getElementById('view' + t.charAt(0).toUpperCase() + t.slice(1)).classList.add('active');
@@ -942,49 +1122,51 @@
     };
 
     window.logout = () => {
-      if (LOGIN_MODE === "google") {
+      if (LOGIN_MODE === "google" && auth) {
         auth.signOut().then(() => {
           localStorage.clear();
           location.reload();
         });
       } else {
         localStorage.removeItem("pinbonus_mode");
+        localStorage.removeItem("pinbonus_uid");
         location.reload();
       }
     };
 
+    // DATA MANAGEMENT
     window.resetAllData = async () => {
-      const confirmation = prompt("Ketik RESET untuk menghapus semua data:");
-      if (confirmation === "RESET") {
-        if (LOGIN_MODE === "google") {
+      if (prompt("Ketik RESET:") === "RESET") {
+        if (LOGIN_MODE === "google" && db) {
           try {
             await db.collection("users").doc(userUID).set({ bonus: [] }, { merge: true });
-            showToast("Semua data di cloud telah dihapus", "success");
           } catch (error) {
-            showToast("Error menghapus data cloud", "error");
+            console.error("Error resetting Firestore:", error);
           }
-        } else {
-          cart = [];
-          localStorage.setItem("pinbonus_data_" + userUID, JSON.stringify(cart));
-          showToast("Semua data lokal telah dihapus", "success");
         }
+        cart = [];
+        localStorage.setItem("pinbonus_data_" + userUID, JSON.stringify(cart));
         render();
+        showToast("Data berhasil dihapus!", "success");
         speak("Data bersih.");
       }
     };
 
+    // EXPORT FUNCTIONS - UPDATED FOR PERIOD SUPPORT
     window.exportCSV = () => {
-      const today = new Date().toLocaleDateString('id-ID');
-      const todayData = cart.filter(i => i.date === today);
-      if (todayData.length === 0) {
-        showToast("Tidak ada data hari ini", "error");
+      const filteredData = filterDataByPeriod(cart, currentPeriod);
+      if (filteredData.length === 0) {
+        showToast(`Tidak ada data untuk periode ini`, "error");
         return;
       }
 
-      const total = todayData.reduce((a, b) => a + (Number(b.price) || 0), 0);
+      const periodLabel = currentPeriod === 'today' ? getTodayIndo() : 
+                         currentPeriod === 'month' ? 'Bulan_' + getCurrentMonthYear().month + '_' + getCurrentMonthYear().year : 
+                         'Semua_Waktu';
+      const total = filteredData.reduce((a, b) => a + (Number(b.price) || 0), 0);
 
       let csv = 'Nama,Nominal,Order,Waktu,Tanggal\n';
-      todayData.forEach(i => {
+      filteredData.forEach(i => {
         csv += `"${i.name}",${i.price},"${i.order}","${i.time}","${i.date}"\n`;
       });
       csv += `\nTOTAL,${total},,,\n`;
@@ -993,22 +1175,24 @@
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `pinbonus_${today}.csv`;
+      a.download = `pinbonus_${periodLabel}_csv.csv`;
       a.click();
       showToast("CSV berhasil di-export!", "success");
     };
 
     window.exportXLSX = () => {
-      const today = new Date().toLocaleDateString('id-ID');
-      const todayData = cart.filter(i => i.date === today);
-      if (todayData.length === 0) {
-        showToast("Tidak ada data hari ini", "error");
+      const filteredData = filterDataByPeriod(cart, currentPeriod);
+      if (filteredData.length === 0) {
+        showToast(`Tidak ada data untuk periode ini`, "error");
         return;
       }
 
-      const total = todayData.reduce((a, b) => a + (Number(b.price) || 0), 0);
+      const periodLabel = currentPeriod === 'today' ? getTodayIndo() : 
+                         currentPeriod === 'month' ? 'Bulan_' + getCurrentMonthYear().month + '_' + getCurrentMonthYear().year : 
+                         'Semua_Waktu';
+      const total = filteredData.reduce((a, b) => a + (Number(b.price) || 0), 0);
 
-      const rows = todayData.map(i => ({
+      const rows = filteredData.map(i => ({
         Nama: i.name,
         Nominal: i.price,
         Order: i.order,
@@ -1025,54 +1209,62 @@
 
       const ws = XLSX.utils.json_to_sheet(rows);
       const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Hari Ini");
-      XLSX.writeFile(wb, `pinbonus_${today}.xlsx`);
+      XLSX.utils.book_append_sheet(wb, ws, "Data Bonus");
+
+      XLSX.writeFile(wb, `pinbonus_${periodLabel}.xlsx`);
       showToast("XLSX berhasil di-export!", "success");
     };
 
     window.exportJSON = () => {
-      const today = new Date().toLocaleDateString('id-ID');
-      const todayData = cart.filter(i => i.date === today);
-      if (todayData.length === 0) {
-        showToast("Tidak ada data hari ini", "error");
+      const filteredData = filterDataByPeriod(cart, currentPeriod);
+      if (filteredData.length === 0) {
+        showToast(`Tidak ada data untuk periode ini`, "error");
         return;
       }
 
-      const total = todayData.reduce((a, b) => a + (Number(b.price) || 0), 0);
+      const periodLabel = currentPeriod === 'today' ? getTodayIndo() : 
+                         currentPeriod === 'month' ? 'Bulan_' + getCurrentMonthYear().month + '_' + getCurrentMonthYear().year : 
+                         'Semua_Waktu';
+      const total = filteredData.reduce((a, b) => a + (Number(b.price) || 0), 0);
 
       const payload = {
-        tanggal: today,
+        periode: currentPeriod,
+        label: periodLabel,
         total: total,
-        items: todayData
+        jumlah_data: filteredData.length,
+        items: filteredData
       };
 
       const blob = new Blob([JSON.stringify(payload, null, 2)], {type: 'application/json'});
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `pinbonus_${today}.json`;
+      a.download = `pinbonus_${periodLabel}.json`;
       a.click();
       showToast("JSON berhasil di-export!", "success");
     };
 
     window.exportWA = () => {
-      const today = new Date().toLocaleDateString('id-ID');
-      const todayData = cart.filter(i => i.date === today);
-      if (todayData.length === 0) {
-        showToast("Tidak ada data hari ini", "error");
+      const filteredData = filterDataByPeriod(cart, currentPeriod);
+      if (filteredData.length === 0) {
+        showToast(`Tidak ada data untuk periode ini`, "error");
         return;
       }
 
-      const total = todayData.reduce((a, b) => a + (Number(b.price) || 0), 0);
+      const periodLabel = currentPeriod === 'today' ? 'Hari Ini' : 
+                         currentPeriod === 'month' ? 'Bulan Ini' : 
+                         'Semua Waktu';
+      const total = filteredData.reduce((a, b) => a + (Number(b.price) || 0), 0);
 
       const lines = [];
-      lines.push(`📅 Laporan Bonus ${today}`);
+      lines.push(`📅 Laporan Bonus ${periodLabel}`);
       lines.push('------------------------');
-      todayData.forEach((i, idx) => {
-        lines.push(`${idx+1}. ${i.name} - Rp${(i.price||0).toLocaleString('id-ID')} (${i.time})`);
+      filteredData.forEach((i, idx) => {
+        lines.push(`${idx+1}. ${i.name} - Rp${(i.price||0).toLocaleString('id-ID')} (${i.date} ${i.time})`);
       });
       lines.push('------------------------');
       lines.push(`TOTAL: Rp${total.toLocaleString('id-ID')}`);
+      lines.push(`JUMLAH: ${filteredData.length} transaksi`);
       const text = lines.join('\n');
 
       const url = 'https://wa.me/?text=' + encodeURIComponent(text);
@@ -1080,15 +1272,44 @@
       showToast("Teks laporan siap dikirim via WA", "success");
     };
 
-    // Service Worker untuk PWA
+    // INITIALIZATION
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize Firebase
+      const firebaseAvailable = initFirebase();
+      
+      if (!firebaseAvailable) {
+        // Hide Google login button if Firebase fails
+        document.getElementById('btnGoogle').style.display = 'none';
+        document.getElementById('loginMsg').innerHTML = 
+          '⚠️ Firebase tidak tersedia. Gunakan <b>Mode Tamu</b>.';
+        document.getElementById('loginMsg').classList.remove('hidden');
+      }
+      
+      // Setup history filter listener
+      const historyFilter = document.getElementById('historyFilter');
+      if (historyFilter) historyFilter.onchange = renderHistory;
+      
+      // Auto login guest mode if no active session
+      setTimeout(() => {
+        const mode = localStorage.getItem("pinbonus_mode");
+        const savedUID = localStorage.getItem("pinbonus_uid");
+        
+        if (mode === "guest" && savedUID && !appInitialized) {
+          LOGIN_MODE = "guest";
+          userUID = savedUID;
+          enterApp();
+        }
+      }, 1000);
+    });
+
+    // SERVICE WORKER
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').then(() => {
-          console.log('Service Worker registered');
-        }).catch(err => {
-          console.log('Service Worker registration failed:', err);
-        });
-      });
+      try {
+        const swCode = `self.addEventListener('install',e=>{e.waitUntil(caches.open('pinbonus-v36').then(c=>c.addAll(['/'])))});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))})`;
+        const blob = new Blob([swCode], {type:'application/javascript'});
+        const swUrl = URL.createObjectURL(blob);
+        navigator.serviceWorker.register(swUrl);
+      } catch(e) {}
     }
   </script>
 </body>
