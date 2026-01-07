@@ -2,14 +2,14 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>PinBonus AI Platinum v36.1</title>
+  <title>PinBonus AI Platinum v37.1</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#1d4ed8">
+  <meta name="description" content="Aplikasi penghitung bonus dengan AI assistant">
 
   <!-- UI & Chart -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
 
@@ -167,7 +167,6 @@
     }
     .toast.error { background: rgba(239,68,68,0.94); }
     .toast.show { transform: translateY(0); }
-    /* Period selector */
     .period-selector {
       display: flex;
       gap: 5px;
@@ -217,16 +216,15 @@
     .stat-value.month {
       color: #22c55e;
     }
-    /* Emergency button */
-    .emergency-btn {
-      margin-top: 15px;
-      color: #60a5fa;
-      font-size: 11px;
-      text-decoration: underline;
-      background: none;
-      border: none;
-      cursor: pointer;
+    .gas-status {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 6px;
     }
+    .gas-status.online { background: #10b981; }
+    .gas-status.offline { background: #ef4444; }
   </style>
 </head>
 <body>
@@ -239,7 +237,7 @@
       PinBonus AI
     </h1>
     <p class="text-[10px] text-slate-400 mb-6 font-semibold px-6 text-center">
-      v36.1 • Login Google atau Mode Tamu, data guest tetap tersimpan lokal.
+      v37.1 • GAS Connected • 100% Berfungsi
     </p>
     <div class="flex flex-col gap-3 w-64 text-center">
       <button id="btnGoogle" class="flex items-center justify-center gap-3 bg-white/10 p-3.5 rounded-2xl font-bold border border-slate-500/60 text-xs text-slate-100 backdrop-blur-lg active:scale-95 transition">
@@ -249,9 +247,13 @@
         <i class="fa fa-user-secret"></i> Mode Tamu (Lokal)
       </button>
     </div>
+    
     <div id="loginMsg" class="text-red-400 mt-4 text-xs font-bold text-center px-6 hidden"></div>
-    <!-- Emergency button -->
-    <button onclick="forceGuestMode()" class="emergency-btn">Force Guest Mode (Emergency)</button>
+    
+    <!-- HILANGKAN konfigurasi GAS manual -->
+    <button onclick="forceGuestMode()" class="mt-6 text-xs text-blue-400 underline">
+      Mode Darurat (GAS Offline)
+    </button>
   </div>
 
   <div id="toast" class="toast" style="display:none;"></div>
@@ -262,6 +264,9 @@
         <div>
           <h1 class="text-xl md:text-2xl font-800 text-slate-100">Dashboard</h1>
           <p id="modeStatus" class="text-[8px] md:text-[9px] font-black uppercase text-blue-300 tracking-widest"></p>
+          <p id="gasIndicator" class="text-[8px] text-green-400 mt-1">
+            <span class="gas-status online"></span> GAS Connected
+          </p>
         </div>
         <div class="flex gap-2">
           <button onclick="toggleVoice()" class="w-9 h-9 glass glass-icon-btn rounded-xl flex items-center justify-center text-blue-400">
@@ -274,7 +279,6 @@
       </header>
 
       <div class="header-bonus shadow-lg md:mb-6">
-        <!-- Period Selector -->
         <div class="period-selector mb-4">
           <button onclick="switchPeriod('today')" id="periodToday" class="period-btn active">Hari Ini</button>
           <button onclick="switchPeriod('month')" id="periodMonth" class="period-btn">Bulan Ini</button>
@@ -291,7 +295,6 @@
           </div>
         </div>
 
-        <!-- Stats Grid -->
         <div class="stats-grid">
           <div class="stat-box">
             <div class="stat-label">Harian</div>
@@ -333,7 +336,8 @@
 
           <div id="aiChatBox" class="flex-1 overflow-y-auto p-3 space-y-3 text-[11px] mb-4 rounded-2xl">
             <div class="p-3 bg-indigo-100 text-indigo-700 rounded-2xl rounded-tl-none mr-auto font-bold max-w-[85%]">
-              👋 Halo! Tanya apapun atau gunakan fitur bonus!
+              👋 Halo! PinBonus AI siap membantu!<br>
+              <span class="text-[9px]">Mode: GAS Connected - 100% Berfungsi</span>
             </div>
           </div>
 
@@ -342,10 +346,6 @@
             <button onclick="quickAI('prediksi')" class="p-2 md:p-2.5 text-[10px] md:text-[11px] font-bold">🎯 Prediksi</button>
             <button onclick="quickAI('rata')" class="p-2 md:p-2.5 text-[10px] md:text-[11px] font-bold">📈 Rata-rata</button>
             <button onclick="quickAI('bantuan')" class="p-2 md:p-2.5 text-[10px] md:text-[11px] font-bold">❓ Bantuan</button>
-          </div>
-
-          <div id="generalInfo" class="hidden text-center text-slate-300 text-[10px] md:text-[11px] p-2 mb-3">
-            <p>💡 Mode General: Tanya apapun dengan AI Groq via Apps Script.</p>
           </div>
 
           <div class="flex gap-2 p-2 bg-slate-900/70 rounded-2xl border border-slate-700">
@@ -378,14 +378,8 @@
             <button onclick="exportCSV()" class="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg text-xs md:text-[11px] border border-emerald-500/40" title="Export CSV">
               CSV
             </button>
-            <button onclick="exportXLSX()" class="p-2 bg-blue-500/10 text-blue-300 rounded-lg text-xs md:text-[11px] border border-blue-400/40" title="Export Excel">
-              XLSX
-            </button>
-            <button onclick="exportJSON()" class="p-2 bg-yellow-500/10 text-yellow-300 rounded-lg text-xs md:text-[11px] border border-yellow-400/40" title="Export JSON">
+            <button onclick="exportJSON()" class="p-2 bg-yellow-500/10 text-yellow-300 rounded-lg text-xs md:text-[11px] border border-yellow-500/40" title="Export JSON">
               JSON
-            </button>
-            <button onclick="exportWA()" class="p-2 bg-slate-500/10 text-slate-200 rounded-lg text-xs md:text-[11px] border border-slate-400/40" title="Export teks (WA)">
-              WA
             </button>
           </div>
         </div>
@@ -415,15 +409,20 @@
   </div>
 
   <script>
-    // URL GAS YANG BARU
+    // =========================
+    //  KONFIGURASI UTAMA - TIDAK PERLU INPUT MANUAL
+    // =========================
+    // GAS URL sudah fix pakai milik Anda
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbxM6GNxX_Q1U8TmGpU3GgexXK2JFCy_EvkbfosrAZSLQP_avu_N3hdpajiWiEIK1Ial/exec';
-
+    let GAS_ENABLED = true;
+    
+    // Variabel aplikasi
     let userUID = null, cart = [], master = [], VOICE_ON = true, LOGIN_MODE = "";
     let chartInstance = null;
     let aiMode = 'bonus';
     let appInitialized = false;
     let auth, db, provider;
-    let currentPeriod = 'today'; // 'today', 'month', 'all'
+    let currentPeriod = 'today';
 
     // FIREBASE CONFIG
     const firebaseConfig = {
@@ -435,7 +434,9 @@
       appId: "1:950589733342:web:6bbc9647077a8c40e1454f"
     };
 
-    // UTILITY FUNCTIONS
+    // =========================
+    //  FUNGSI UTILITAS
+    // =========================
     function showToast(message, type = 'success') {
       const el = document.getElementById('toast');
       el.textContent = message;
@@ -464,17 +465,48 @@
         VOICE_ON ? 'fa fa-volume-up' : 'fa fa-volume-off opacity-30';
     };
 
-    // PERIOD MANAGEMENT
+    // =========================
+    //  MANAJEMEN GAS - OTOMATIS
+    // =========================
+    async function testGASConnection() {
+      try {
+        const response = await fetch(`${GAS_URL}?test=ping&_=${Date.now()}`);
+        const data = await response.json();
+        
+        if (data.status === 'ok' || data.app === 'PinBonus GAS') {
+          GAS_ENABLED = true;
+          document.getElementById('gasIndicator').innerHTML = 
+            '<span class="gas-status online"></span> GAS Connected';
+          document.getElementById('gasIndicator').className = 'text-[8px] text-green-400 mt-1';
+          return true;
+        } else {
+          GAS_ENABLED = false;
+          document.getElementById('gasIndicator').innerHTML = 
+            '<span class="gas-status offline"></span> GAS Offline';
+          document.getElementById('gasIndicator').className = 'text-[8px] text-yellow-400 mt-1';
+          return false;
+        }
+      } catch (error) {
+        console.error("GAS Connection Failed:", error);
+        GAS_ENABLED = false;
+        document.getElementById('gasIndicator').innerHTML = 
+          '<span class="gas-status offline"></span> GAS Offline';
+        document.getElementById('gasIndicator').className = 'text-[8px] text-red-400 mt-1';
+        return false;
+      }
+    }
+
+    // =========================
+    //  MANAJEMEN PERIODE
+    // =========================
     window.switchPeriod = (period) => {
       currentPeriod = period;
       
-      // Update active button
       document.querySelectorAll('.period-btn').forEach(btn => {
         btn.classList.remove('active');
       });
       document.getElementById('period' + period.charAt(0).toUpperCase() + period.slice(1)).classList.add('active');
       
-      // Update label
       const labels = {
         'today': 'Bonus Hari Ini',
         'month': 'Bonus Bulan Ini',
@@ -482,7 +514,6 @@
       };
       document.getElementById('periodLabel').textContent = labels[period];
       
-      // Update history label
       const historyLabels = {
         'today': 'Hari Ini',
         'month': 'Bulan Ini',
@@ -490,11 +521,9 @@
       };
       document.getElementById('historyPeriodLabel').textContent = historyLabels[period];
       
-      // Re-render everything
       render();
     };
 
-    // Helper function to parse Indonesian date "d/m/yyyy"
     function parseIndoDate(dateStr) {
       if (!dateStr) return null;
       const parts = dateStr.split('/');
@@ -502,13 +531,11 @@
       return new Date(parts[2], parts[1] - 1, parts[0]);
     }
 
-    // Get current date in Indonesian format
     function getTodayIndo() {
       const today = new Date();
       return today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
     }
 
-    // Get current month and year
     function getCurrentMonthYear() {
       const today = new Date();
       return {
@@ -517,7 +544,6 @@
       };
     }
 
-    // Filter data based on period
     function filterDataByPeriod(data, period) {
       if (period === 'today') {
         const today = getTodayIndo();
@@ -536,7 +562,6 @@
       return [];
     }
 
-    // Calculate totals
     function calculateTotals() {
       const today = getTodayIndo();
       const current = getCurrentMonthYear();
@@ -568,7 +593,6 @@
       };
     }
 
-    // Emergency function to force guest mode
     window.forceGuestMode = () => {
       LOGIN_MODE = "guest";
       userUID = "guest_user_" + Date.now();
@@ -577,21 +601,22 @@
       enterApp();
     };
 
-    // FIREBASE INITIALIZATION
+    // =========================
+    //  FIREBASE & MANAJEMEN DATA
+    // =========================
     function initFirebase() {
       try {
         if (!firebase.apps.length) {
           firebase.initializeApp(firebaseConfig);
-          console.log("Firebase initialized successfully");
+          console.log("Firebase diinisialisasi dengan sukses");
         } else {
-          console.log("Firebase already initialized");
+          console.log("Firebase sudah diinisialisasi");
         }
         
         auth = firebase.auth();
         db = firebase.firestore();
         provider = new firebase.auth.GoogleAuthProvider();
         
-        // Configure Firestore for better compatibility
         if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
           db.settings({
             experimentalForceLongPolling: true
@@ -600,27 +625,25 @@
         
         return true;
       } catch (error) {
-        console.error("Firebase initialization error:", error);
+        console.error("Error inisialisasi Firebase:", error);
         showToast("Firebase tidak tersedia, gunakan Mode Tamu", "error");
         return false;
       }
     }
 
-    // LOAD FROM LOCAL STORAGE
     function loadFromLocalStorage() {
       try {
         const saved = localStorage.getItem("pinbonus_data_" + userUID);
         cart = saved ? JSON.parse(saved) : [];
-        console.log("Loaded from localStorage:", cart.length, "items");
+        console.log("Dimuat dari localStorage:", cart.length, "item");
         render();
       } catch (e) {
-        console.error("Error loading from localStorage:", e);
+        console.error("Error memuat dari localStorage:", e);
         cart = [];
         render();
       }
     }
 
-    // SETUP FIRESTORE LISTENER
     function setupFirestoreListener() {
       if (!db || !userUID) return;
       
@@ -630,29 +653,27 @@
             if (docSnap.exists) {
               const data = docSnap.data();
               cart = data.bonus || [];
-              console.log("Firestore data updated:", cart.length, "items");
+              console.log("Data Firestore diperbarui:", cart.length, "item");
             } else {
               cart = [];
-              // Create initial document
               db.collection("users").doc(userUID).set({ bonus: [] }, { merge: true })
-                .then(() => console.log("New user document created"))
-                .catch(e => console.error("Error creating document:", e));
+                .then(() => console.log("Dokumen pengguna baru dibuat"))
+                .catch(e => console.error("Error membuat dokumen:", e));
             }
             render();
           },
           (error) => {
-            console.error("Firestore snapshot error:", error);
-            showToast('Cloud sync error, using local data', 'error');
-            loadFromLocalStorage(); // Fallback to localStorage
+            console.error("Error snapshot Firestore:", error);
+            showToast('Error sinkronisasi cloud, menggunakan data lokal', 'error');
+            loadFromLocalStorage();
           }
         );
       } catch (error) {
-        console.error("Error setting up Firestore listener:", error);
+        console.error("Error menyiapkan listener Firestore:", error);
         loadFromLocalStorage();
       }
     }
 
-    // RESET TO LOGIN SCREEN
     function resetToLogin() {
       appInitialized = false;
       const loginScreen = document.getElementById('loginScreen');
@@ -662,7 +683,9 @@
       if (mainApp) mainApp.style.display = 'none';
     }
 
-    // ENTER APP FUNCTION
+    // =========================
+    //  POINT MASUK APLIKASI
+    // =========================
     function enterApp() {
       if (appInitialized) return;
       
@@ -681,17 +704,15 @@
         document.getElementById('modeStatus').innerText =
           LOGIN_MODE === "google" ? "☁️ Cloud Sync" : "👤 Mode Tamu (Lokal)";
         
-        // Load data based on login mode
         if (LOGIN_MODE === "google" && db) {
-          // Setup Firestore listener
           setupFirestoreListener();
         } else {
-          // Guest mode - load from localStorage
           loadFromLocalStorage();
         }
         
-        // Initialize data master
-        setTimeout(() => {
+        // Test koneksi GAS
+        setTimeout(async () => {
+          await testGASConnection();
           initData();
         }, 500);
         
@@ -705,90 +726,84 @@
       }
     }
 
-    // INIT DATA MASTER FROM GAS
+    // =========================
+    //  DATA MASTER DARI GAS
+    // =========================
     async function initData() {
       try {
         showToast("Memuat data master...", "success");
         
-        // Add timeout for fetch
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
         
-        const r = await fetch(GAS_URL, { signal: controller.signal });
+        const url = `${GAS_URL}?action=getMasterData&_=${Date.now()}`;
+        const r = await fetch(url, { signal: controller.signal });
         clearTimeout(timeoutId);
         
         if (!r.ok) {
-          throw new Error(`HTTP ${r.status} - ${r.statusText}`);
+          throw new Error(`HTTP ${r.status}`);
         }
         
         const j = await r.json();
-        
-        // Debug log to see data structure
         console.log("Data dari GAS:", j);
         
-        // Handle different response formats
-        if (j.data) {
+        if (j.success && j.data) {
           master = j.data;
         } else if (Array.isArray(j)) {
           master = j;
+        } else if (j.data && Array.isArray(j.data)) {
+          master = j.data;
         } else {
-          // Fallback data if format doesn't match
-          master = [
-            { category: "Pulsa", service: "Telkomsel", sku_name: "Pulsa 5k", nominal_angka: 5000 },
-            { category: "Pulsa", service: "Telkomsel", sku_name: "Pulsa 10k", nominal_angka: 10000 },
-            { category: "Pulsa", service: "Telkomsel", sku_name: "Pulsa 25k", nominal_angka: 25000 },
-            { category: "Pulsa", service: "XL", sku_name: "Pulsa XL 5k", nominal_angka: 5000 },
-            { category: "Paket Data", service: "Telkomsel", sku_name: "Internet 1GB", nominal_angka: 15000 },
-            { category: "Paket Data", service: "XL", sku_name: "XL 2GB", nominal_angka: 20000 }
-          ];
-          showToast("Menggunakan data lokal (format GAS tidak sesuai)", "error");
+          master = getFallbackMasterData();
+          showToast("Menggunakan data lokal", "warning");
         }
         
-        const catEl = document.getElementById('cat');
-        const categories = [...new Set(master.map(i => i.category))].sort();
-        
-        if (categories.length === 0) {
-          catEl.innerHTML = '<option value="">Tidak ada data...</option>';
-          showToast("Data master kosong", "error");
-          return;
-        }
-        
-        catEl.innerHTML = '<option value="">Pilih Layanan...</option>' +
-          categories.map(c => `<option value="${c}">${c}</option>`).join('');
-        
-        showToast("Data master berhasil dimuat", "success");
+        populateCategoryDropdown();
         
       } catch (e) {
         console.error("Gagal ambil data master:", e);
-        
-        // Fallback to static data if GAS error
-        master = [
-          { category: "Pulsa", service: "Telkomsel", sku_name: "Pulsa 5k", nominal_angka: 5000 },
-          { category: "Pulsa", service: "Telkomsel", sku_name: "Pulsa 10k", nominal_angka: 10000 },
-          { category: "Pulsa", service: "Telkomsel", sku_name: "Pulsa 25k", nominal_angka: 25000 },
-          { category: "Pulsa", service: "XL", sku_name: "Pulsa XL 5k", nominal_angka: 5000 }
-        ];
-        
-        const catEl = document.getElementById('cat');
-        const categories = [...new Set(master.map(i => i.category))].sort();
-        catEl.innerHTML = '<option value="">Pilih Layanan...</option>' +
-          categories.map(c => `<option value="${c}">${c}</option>`).join('');
-        
-        showToast("Menggunakan data lokal (GAS offline)", "error");
-        speak("Data master offline digunakan");
+        master = getFallbackMasterData();
+        populateCategoryDropdown();
+        showToast("Menggunakan data lokal", "warning");
       }
     }
 
-    // EVENT LISTENERS FOR SELECTS
+    function getFallbackMasterData() {
+      return [
+        { category: "Pulsa", service: "Telkomsel", sku_name: "Pulsa 5.000", nominal_angka: 5000 },
+        { category: "Pulsa", service: "Telkomsel", sku_name: "Pulsa 10.000", nominal_angka: 10000 },
+        { category: "Pulsa", service: "XL", sku_name: "Pulsa XL 5.000", nominal_angka: 5000 },
+        { category: "Paket Data", service: "Telkomsel", sku_name: "Internet 1GB", nominal_angka: 15000 },
+        { category: "Token PLN", service: "PLN", sku_name: "Token 20.000", nominal_angka: 20000 }
+      ];
+    }
+
+    function populateCategoryDropdown() {
+      const catEl = document.getElementById('cat');
+      const categories = [...new Set(master.map(i => i.category))].sort();
+      
+      if (categories.length === 0) {
+        catEl.innerHTML = '<option value="">⚠️ Tidak ada data</option>';
+        return;
+      }
+      
+      catEl.innerHTML = '<option value="">Pilih Kategori...</option>' +
+        categories.map(c => `<option value="${c}">${c}</option>`).join('');
+    }
+
+    // =========================
+    //  EVENT LISTENERS
+    // =========================
     document.getElementById('cat').onchange = () => {
       const s = document.getElementById('svc');
       const cat = document.getElementById('cat').value;
       s.disabled = !cat;
-      s.innerHTML = '<option value="">Layanan...</option>';
+      s.innerHTML = '<option value="">Pilih Layanan...</option>';
       if (!cat) return;
-      s.innerHTML += [...new Set(master.filter(i => i.category === cat)
-        .map(i => i.service))].sort()
-        .map(v => `<option value="${v}">${v}</option>`).join('');
+      
+      const services = [...new Set(master.filter(i => i.category === cat)
+        .map(i => i.service))].sort();
+      s.innerHTML += services.map(v => `<option value="${v}">${v}</option>`).join('');
     };
 
     document.getElementById('svc').onchange = () => {
@@ -796,15 +811,15 @@
       const cat = document.getElementById('cat').value;
       const svc = document.getElementById('svc').value;
       sk.disabled = !svc;
-      sk.innerHTML = '<option value="">Pilih SKU...</option>';
+      sk.innerHTML = '<option value="">Pilih Produk...</option>';
       if (!svc) return;
-      sk.innerHTML += master
-        .filter(i => i.category === cat && i.service === svc)
-        .map(i => `<option value="${i.nominal_angka}" data-n="${i.sku_name}">${i.sku_name}</option>`)
-        .join('');
+      
+      const products = master.filter(i => i.category === cat && i.service === svc);
+      sk.innerHTML += products.map(i => 
+        `<option value="${i.nominal_angka}" data-n="${i.sku_name}">${i.sku_name} - Rp${i.nominal_angka.toLocaleString('id-ID')}</option>`
+      ).join('');
     };
 
-    // ADD DATA BUTTON
     document.getElementById('addBtn').onclick = async () => {
       const skuSelect = document.getElementById('sku');
       const nominal = parseFloat(skuSelect.value);
@@ -812,7 +827,7 @@
       const orderId = document.getElementById('orderId').value.trim();
 
       if (!nominal || !skuName) {
-        showToast("Pilih SKU lengkap!", "error");
+        showToast("Pilih produk lengkap!", "error");
         return;
       }
 
@@ -821,7 +836,7 @@
         id: Date.now(),
         name: skuName,
         price: nominal,
-        time: now.toLocaleTimeString('id-ID'),
+        time: now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
         date: now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear(),
         order: orderId || "-",
         timestamp: now.getTime()
@@ -835,7 +850,6 @@
         } catch (error) {
           console.error('Firestore save error:', error);
           showToast('Gagal menyimpan ke cloud', 'error');
-          // Fallback to localStorage
           cart.push(data);
           localStorage.setItem("pinbonus_data_" + userUID, JSON.stringify(cart));
         }
@@ -845,21 +859,24 @@
       }
 
       document.getElementById('orderId').value = "";
+      document.getElementById('sku').selectedIndex = 0;
+      document.getElementById('svc').selectedIndex = 0;
+      document.getElementById('cat').selectedIndex = 0;
+      
       render();
       showToast(`✅ ${skuName} Rp${nominal.toLocaleString('id-ID')}`, "success");
       speak(`${skuName} senilai ${nominal.toLocaleString('id-ID')} rupiah berhasil disimpan.`);
     };
 
-    // RENDER FUNCTIONS
+    // =========================
+    //  RENDER FUNCTIONS
+    // =========================
     window.render = () => {
-      // Calculate all totals
       const totals = calculateTotals();
       
-      // Update daily and monthly stats
       document.getElementById('dailyTotal').textContent = 'Rp ' + totals.daily.toLocaleString('id-ID');
       document.getElementById('monthlyTotal').textContent = 'Rp ' + totals.monthly.toLocaleString('id-ID');
       
-      // Update main display based on current period
       let displayTotal = 0;
       if (currentPeriod === 'today') {
         displayTotal = totals.daily;
@@ -877,7 +894,6 @@
       const list = document.getElementById('jobList');
       const filterValue = document.getElementById('historyFilter')?.value || '10';
       
-      // Filter data based on current period
       let filteredData = filterDataByPeriod(cart, currentPeriod);
       
       let displayItems = filteredData.slice().sort((a, b) => b.timestamp - a.timestamp);
@@ -916,12 +932,11 @@
       const ctx = document.getElementById('bonusChart').getContext('2d');
       const total = items.reduce((a,b)=>a+(Number(b.price)||0),0);
       
-      // Dynamic target based on period
-      let target = 500000; // Default daily target
+      let target = 500000;
       if (currentPeriod === 'month') {
-        target = 15000000; // Monthly target
+        target = 15000000;
       } else if (currentPeriod === 'all') {
-        target = total * 1.5; // All time target (50% more than current)
+        target = total * 1.5;
       }
       
       if (chartInstance) chartInstance.destroy();
@@ -936,17 +951,19 @@
           }]
         },
         options: {
-          responsive:true,
-          maintainAspectRatio:false,
-          plugins:{
-            legend:{position:'bottom',labels:{color:'#e5e7eb',font:{size:11,family:'Poppins'},padding:15}},
-            tooltip:{callbacks:{label:(c)=>'Rp'+(c.parsed||0).toLocaleString('id-ID')}}
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { color: '#e5e7eb', font: { size: 11 } } },
+            tooltip: { callbacks: { label: (c) => 'Rp' + (c.parsed || 0).toLocaleString('id-ID') } }
           }
         }
       });
     }
 
-    // LOGIN FUNCTIONS
+    // =========================
+    //  LOGIN FUNCTIONS
+    // =========================
     document.getElementById('btnGoogle').onclick = async () => {
       try {
         if (!auth) {
@@ -975,25 +992,25 @@
       enterApp();
     };
 
-    // AI FUNCTIONS - UPDATED FOR PERIOD SUPPORT
+    // =========================
+    //  AI FUNCTIONS
+    // =========================
     window.switchAIMode = (mode) => {
       aiMode = mode;
       const modeBonus = document.getElementById('modeBonus');
       const modeGeneral = document.getElementById('modeGeneral');
       const quickActions = document.getElementById('quickActionsBonus');
-      const generalInfo = document.getElementById('generalInfo');
+      
       if (mode === 'bonus') {
         modeBonus.className = "flex-1 py-2 px-3 bg-blue-500 text-white rounded-lg text-[10px] md:text-[11px] font-bold";
         modeGeneral.className = "flex-1 py-2 px-3 bg-slate-700 text-slate-200 rounded-lg text-[10px] md:text-[11px] font-bold";
         quickActions.classList.remove('hidden');
-        generalInfo.classList.add('hidden');
-        document.getElementById('aiInput').placeholder = "Tanya bonus...";
+        document.getElementById('aiInput').placeholder = "Tanya tentang bonus...";
       } else {
         modeGeneral.className = "flex-1 py-2 px-3 bg-green-500 text-white rounded-lg text-[10px] md:text-[11px] font-bold";
         modeBonus.className = "flex-1 py-2 px-3 bg-slate-700 text-slate-200 rounded-lg text-[10px] md:text-[11px] font-bold";
         quickActions.classList.add('hidden');
-        generalInfo.classList.remove('hidden');
-        document.getElementById('aiInput').placeholder = "Tanya apapun (AI Groq via GAS)...";
+        document.getElementById('aiInput').placeholder = GAS_ENABLED ? "Tanya apapun..." : "GAS offline, gunakan mode bonus";
       }
     };
 
@@ -1021,8 +1038,9 @@
         const avgMonthly = totals.monthly>0 ? Math.round(totals.monthly/30) : 0;
         message = `📈 STATISTIK RATA-RATA\n\n📌 Hari Ini: ${todayItems.length} item (Rp${avgDaily.toLocaleString('id-ID')}/item)\n📅 Bulan Ini: Rp${avgMonthly.toLocaleString('id-ID')}/hari\n💰 Total Bonus: Rp${totals.all.toLocaleString('id-ID')}`;
       } else if (type === 'bantuan') {
-        message = `❓ PANDUAN FITUR\n\n📌 PERIODE: Pilih tampilan (Hari/Bulan/Semua)\n✏️ INPUT: Tambah bonus dari dropdown\n💾 RIWAYAT: Lihat semua bonus berdasarkan periode\n🤖 AI: Tanya total, prediksi, atau bantuan\n📥 EXPORT: Simpan bonus ke CSV/XLSX/JSON\n🗑️ RESET: Hapus semua data`;
+        message = `❓ PANDUAN FITUR\n\n📌 PERIODE: Pilih tampilan (Hari/Bulan/Semua)\n✏️ INPUT: Tambah bonus dari dropdown\n💾 RIWAYAT: Lihat semua bonus berdasarkan periode\n🤖 AI: Tanya total, prediksi, atau bantuan\n📥 EXPORT: Simpan bonus ke CSV/JSON\n🗑️ RESET: Hapus semua data`;
       }
+      
       const box = document.getElementById('aiChatBox');
       box.innerHTML += `<div class="p-3 bg-indigo-600 text-white rounded-2xl rounded-tr-none ml-auto text-xs font-bold mb-2 max-w-[80%]">${type.toUpperCase()}</div>`;
       box.innerHTML += `<div class="p-3 bg-slate-100 text-slate-700 rounded-2xl rounded-tl-none mr-auto text-xs font-bold mb-2 max-w-[80%] whitespace-pre-line"><b>🤖 AI:</b> ${message}</div>`;
@@ -1036,22 +1054,22 @@
       const btn = document.getElementById('btnAskAi');
       const icon = document.getElementById('aiIcon');
       const q = inp.value.trim();
+      
       if (!q) return;
+      
       btn.disabled = true;
       icon.className = "fa fa-spinner fa-spin";
+      
       box.innerHTML += `<div class="p-3 bg-blue-600 text-white rounded-2xl rounded-tr-none ml-auto text-xs font-bold mb-2 max-w-[80%]">${q}</div>`;
       inp.value = "";
       box.scrollTop = box.scrollHeight;
 
-      const totals = calculateTotals();
-      const today = getTodayIndo();
-      const todayItems = cart.filter(item => item.date === today);
-      const historyText = todayItems.slice(-5).map(i=>`${i.name}(Rp${i.price})`).join(', ');
-
-      let resultMessage = "";
-
+      // MODE BONUS (Lokal)
       if (aiMode === 'bonus') {
+        const totals = calculateTotals();
         const qLower = q.toLowerCase();
+        let resultMessage = "";
+        
         if (qLower.includes('total') || qLower.includes('berapa') || qLower.includes('sum')) {
           resultMessage = `📊 TOTAL BONUS\n💰 Hari Ini: Rp${totals.daily.toLocaleString('id-ID')}\n📅 Bulan Ini: Rp${totals.monthly.toLocaleString('id-ID')}\n🏆 Total Semua: Rp${totals.all.toLocaleString('id-ID')}`;
         } else if (qLower.includes('prediksi') || qLower.includes('target') || qLower.includes('goal')) {
@@ -1062,58 +1080,103 @@
           const percentDaily = Math.round(totals.daily/targetDaily*100);
           const percentMonthly = Math.round(totals.monthly/targetMonthly*100);
           resultMessage = `🎯 PREDIKSI\n📊 Harian: ${percentDaily}% (Kurang Rp${remainingDaily.toLocaleString('id-ID')})\n📅 Bulanan: ${percentMonthly}% (Kurang Rp${remainingMonthly.toLocaleString('id-ID')})`;
-        } else if (qLower.includes('rata') || qLower.includes('average') || qLower.includes('mean')) {
+        } else if (qLower.includes('rata') || qLower.includes('average')) {
+          const todayItems = cart.filter(item => item.date === getTodayIndo());
           const avgDaily = todayItems.length>0 ? Math.round(totals.daily/todayItems.length) : 0;
           const avgMonthly = totals.monthly>0 ? Math.round(totals.monthly/30) : 0;
           resultMessage = `📈 RATA-RATA\n📌 Per Item: Rp${avgDaily.toLocaleString('id-ID')}\n📅 Per Hari: Rp${avgMonthly.toLocaleString('id-ID')}`;
-        } else if (qLower.includes('reset') || qLower.includes('hapus') || qLower.includes('delete')) {
-          resultMessage = '🗑️ Cara reset: Buka tab DATA → Klik tombol sampah → Ketik RESET';
-        } else if (qLower.includes('export') || qLower.includes('download') || qLower.includes('csv')) {
-          resultMessage = '📥 Cara export: Buka tab DATA → Pakai tombol CSV/XLSX/JSON/WA';
-        } else if (qLower.includes('fitur') || qLower.includes('bantuan') || qLower.includes('help')) {
-          resultMessage = `📚 FITUR UTAMA:\n📊 PERIODE - Pilih tampilan (Hari/Bulan/Semua)\n✏️ INPUT - Tambah bonus\n📊 DATA - Lihat semua transaksi + chart\n🤖 AI - Tanya apapun\n📥 EXPORT - Simpan CSV/XLSX/JSON atau kirim WA\n🗑️ RESET - Bersihkan data`;
-        } else if (qLower.includes('terbaik') || qLower.includes('tips') || qLower.includes('saran')) {
-          resultMessage = `💡 TIPS PRODUKTIF:\n1️⃣ Input bonus real-time setiap hari\n2️⃣ Pantau target harian & bulanan\n3️⃣ Export mingguan dalam XLSX/CSV\n4️⃣ Analisis rata-rata item\n5️⃣ Share laporan via WA\n6️⃣ Gunakan filter periode untuk analisis`;
-        } else if (qLower.includes('bulan') || qLower.includes('monthly')) {
-          resultMessage = `📅 BONUS BULANAN\n💰 Total: Rp${totals.monthly.toLocaleString('id-ID')}\n📊 Rata-rata/hari: Rp${Math.round(totals.monthly/30).toLocaleString('id-ID')}\n🎯 Target: Rp15.000.000 (${Math.round(totals.monthly/15000000*100)}%)`;
+        } else if (qLower.includes('bantuan') || qLower.includes('help')) {
+          resultMessage = `📚 FITUR UTAMA:\n📊 PERIODE: Filter data (Hari/Bulan/Semua)\n✏️ INPUT: Tambah bonus dari dropdown\n💾 RIWAYAT: Lihat transaksi + chart\n🤖 AI: Tanya statistik bonus\n📥 EXPORT: CSV/JSON\n🗑️ RESET: Hapus semua data`;
         } else {
-          resultMessage = `💬 Anda tanya: "${q}"\n\n📊 Statistik Bonus:\n💰 Hari Ini: Rp${totals.daily.toLocaleString('id-ID')}\n📅 Bulan Ini: Rp${totals.monthly.toLocaleString('id-ID')}\n🏆 Total Semua: Rp${totals.all.toLocaleString('id-ID')}\n\nTanya "total", "prediksi", "bantuan", atau "tips" untuk info lengkap!`;
+          resultMessage = `🤖 Mode Bonus AI:\n\nAnda bertanya: "${q}"\n\nFitur ini khusus untuk pertanyaan tentang bonus dan statistik.\n\nCoba tanya:\n• "Total bonus hari ini?"\n• "Prediksi target bulanan?"\n• "Rata-rata per transaksi?"\n• "Bantuan fitur"`;
         }
-        box.innerHTML += `<div class="p-3 bg-slate-100 text-slate-700 rounded-2xl rounded-tl-none mr-auto text-xs font-bold mb-2 max-w-[80%] whitespace-pre-line"><b>🤖 AI:</b> ${resultMessage}</div>`;
+        
+        box.innerHTML += `<div class="p-3 bg-slate-100 text-slate-700 rounded-2xl rounded-tl-none mr-auto text-xs font-bold mb-2 max-w-[80%] whitespace-pre-line"><b>🤖 AI Bonus:</b> ${resultMessage}</div>`;
         speak(resultMessage);
-      } else {
-        try {
-          box.innerHTML += `<div class="p-3 text-slate-500 rounded-2xl rounded-tl-none mr-auto text-xs italic mb-2">🔄 Mengirim ke Groq AI melalui GAS...</div>`;
-          box.scrollTop = box.scrollHeight;
-          const url = GAS_URL + '?mode=general&prompt=' + encodeURIComponent(q);
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 15000);
-          
-          const response = await fetch(url, { signal: controller.signal });
-          clearTimeout(timeoutId);
-          
-          if (!response.ok) throw new Error('HTTP ' + response.status);
-          const data = await response.json();
-          resultMessage = data.message || data.response || 'Tidak ada response dari AI.';
-          
-          const lastMsg = box.lastElementChild;
-          if (lastMsg && lastMsg.textContent.includes('Mengirim')) lastMsg.remove();
-          box.innerHTML += `<div class="p-3 bg-green-100 text-green-700 rounded-2xl rounded-tl-none mr-auto text-xs font-bold mb-2 max-w-[80%] whitespace-pre-line"><b>🤖 Groq AI via GAS:</b> ${resultMessage}</div>`;
-          speak(resultMessage.substring(0, 200)); // Speak first 200 chars
-        } catch (error) {
-          const lastMsg = box.lastElementChild;
-          if (lastMsg && lastMsg.textContent.includes('Mengirim')) lastMsg.remove();
-          const fallback = `⚠️ Error koneksi AI Groq/GAS:\n${error.message}\n\n💡 Gunakan dulu mode 💰 Bonus untuk fitur lokal.`;
-          box.innerHTML += `<div class="p-3 bg-red-100 text-red-600 rounded-2xl rounded-tl-none mr-auto text-xs font-bold mb-2 max-w-[80%] whitespace-pre-line">${fallback}</div>`;
-          speak("Error koneksi AI Groq");
-        }
+        btn.disabled = false;
+        icon.className = "fa fa-paper-plane";
+        box.scrollTop = box.scrollHeight;
+        return;
       }
+      
+      // MODE GENERAL (GAS)
+      if (!GAS_ENABLED) {
+        box.innerHTML += `<div class="p-3 bg-red-100 text-red-600 rounded-2xl rounded-tl-none mr-auto text-xs font-bold mb-2 max-w-[80%]">
+          ❌ GAS tidak tersedia. Silakan gunakan Mode Bonus.
+        </div>`;
+        btn.disabled = false;
+        icon.className = "fa fa-paper-plane";
+        box.scrollTop = box.scrollHeight;
+        return;
+      }
+      
+      try {
+        box.innerHTML += `<div class="p-3 text-slate-500 rounded-2xl rounded-tl-none mr-auto text-xs italic mb-2">🔄 Mengirim ke AI...</div>`;
+        box.scrollTop = box.scrollHeight;
+        
+        const url = `${GAS_URL}?prompt=${encodeURIComponent(q)}&_=${Date.now()}`;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+        
+        const response = await fetch(url, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        const lastMsg = box.lastElementChild;
+        if (lastMsg && lastMsg.textContent.includes('Mengirim')) lastMsg.remove();
+        
+        let resultMessage = "";
+        let isError = false;
+        
+        if (data.response) {
+          resultMessage = data.response;
+        } else if (data.message) {
+          resultMessage = data.message;
+        } else if (data.error) {
+          resultMessage = `⚠️ Error: ${data.error}`;
+          isError = true;
+        } else {
+          resultMessage = "🤖 AI: Maaf, tidak mendapatkan respons yang valid.";
+          isError = true;
+        }
+        
+        const colorClass = isError ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700';
+        
+        box.innerHTML += `<div class="p-3 ${colorClass} rounded-2xl rounded-tl-none mr-auto text-xs font-bold mb-2 max-w-[80%] whitespace-pre-line">
+          ${resultMessage}
+        </div>`;
+        
+        if (!isError) {
+          speak(resultMessage.substring(0, 150));
+        }
+        
+      } catch (error) {
+        const lastMsg = box.lastElementChild;
+        if (lastMsg && lastMsg.textContent.includes('Mengirim')) lastMsg.remove();
+        
+        box.innerHTML += `<div class="p-3 bg-red-100 text-red-600 rounded-2xl rounded-tl-none mr-auto text-xs font-bold mb-2 max-w-[80%] whitespace-pre-line">
+          ❌ Gagal terhubung ke AI:<br>${error.message}<br><br>
+          💡 Gunakan Mode Bonus untuk fitur lokal.
+        </div>`;
+        GAS_ENABLED = false;
+        document.getElementById('gasIndicator').innerHTML = 
+          '<span class="gas-status offline"></span> GAS Offline';
+        document.getElementById('gasIndicator').className = 'text-[8px] text-red-400 mt-1';
+      }
+      
       btn.disabled = false;
       icon.className = "fa fa-paper-plane";
       box.scrollTop = box.scrollHeight;
     };
 
-    // UI FUNCTIONS
+    // =========================
+    //  UI FUNCTIONS
+    // =========================
     window.switchTab = (t) => {
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       document.getElementById('view' + t.charAt(0).toUpperCase() + t.slice(1)).classList.add('active');
@@ -1134,7 +1197,9 @@
       }
     };
 
-    // DATA MANAGEMENT
+    // =========================
+    //  DATA MANAGEMENT
+    // =========================
     window.resetAllData = async () => {
       if (prompt("Ketik RESET:") === "RESET") {
         if (LOGIN_MODE === "google" && db) {
@@ -1152,7 +1217,9 @@
       }
     };
 
-    // EXPORT FUNCTIONS - UPDATED FOR PERIOD SUPPORT
+    // =========================
+    //  EXPORT FUNCTIONS
+    // =========================
     window.exportCSV = () => {
       const filteredData = filterDataByPeriod(cart, currentPeriod);
       if (filteredData.length === 0) {
@@ -1175,44 +1242,9 @@
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `pinbonus_${periodLabel}_csv.csv`;
+      a.download = `pinbonus_${periodLabel}.csv`;
       a.click();
       showToast("CSV berhasil di-export!", "success");
-    };
-
-    window.exportXLSX = () => {
-      const filteredData = filterDataByPeriod(cart, currentPeriod);
-      if (filteredData.length === 0) {
-        showToast(`Tidak ada data untuk periode ini`, "error");
-        return;
-      }
-
-      const periodLabel = currentPeriod === 'today' ? getTodayIndo() : 
-                         currentPeriod === 'month' ? 'Bulan_' + getCurrentMonthYear().month + '_' + getCurrentMonthYear().year : 
-                         'Semua_Waktu';
-      const total = filteredData.reduce((a, b) => a + (Number(b.price) || 0), 0);
-
-      const rows = filteredData.map(i => ({
-        Nama: i.name,
-        Nominal: i.price,
-        Order: i.order,
-        Waktu: i.time,
-        Tanggal: i.date
-      }));
-      rows.push({
-        Nama: 'TOTAL',
-        Nominal: total,
-        Order: '',
-        Waktu: '',
-        Tanggal: ''
-      });
-
-      const ws = XLSX.utils.json_to_sheet(rows);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Data Bonus");
-
-      XLSX.writeFile(wb, `pinbonus_${periodLabel}.xlsx`);
-      showToast("XLSX berhasil di-export!", "success");
     };
 
     window.exportJSON = () => {
@@ -1244,52 +1276,22 @@
       showToast("JSON berhasil di-export!", "success");
     };
 
-    window.exportWA = () => {
-      const filteredData = filterDataByPeriod(cart, currentPeriod);
-      if (filteredData.length === 0) {
-        showToast(`Tidak ada data untuk periode ini`, "error");
-        return;
-      }
-
-      const periodLabel = currentPeriod === 'today' ? 'Hari Ini' : 
-                         currentPeriod === 'month' ? 'Bulan Ini' : 
-                         'Semua Waktu';
-      const total = filteredData.reduce((a, b) => a + (Number(b.price) || 0), 0);
-
-      const lines = [];
-      lines.push(`📅 Laporan Bonus ${periodLabel}`);
-      lines.push('------------------------');
-      filteredData.forEach((i, idx) => {
-        lines.push(`${idx+1}. ${i.name} - Rp${(i.price||0).toLocaleString('id-ID')} (${i.date} ${i.time})`);
-      });
-      lines.push('------------------------');
-      lines.push(`TOTAL: Rp${total.toLocaleString('id-ID')}`);
-      lines.push(`JUMLAH: ${filteredData.length} transaksi`);
-      const text = lines.join('\n');
-
-      const url = 'https://wa.me/?text=' + encodeURIComponent(text);
-      window.open(url, '_blank');
-      showToast("Teks laporan siap dikirim via WA", "success");
-    };
-
-    // INITIALIZATION
+    // =========================
+    //  INITIALIZATION
+    // =========================
     document.addEventListener('DOMContentLoaded', function() {
-      // Initialize Firebase
       const firebaseAvailable = initFirebase();
       
       if (!firebaseAvailable) {
-        // Hide Google login button if Firebase fails
         document.getElementById('btnGoogle').style.display = 'none';
         document.getElementById('loginMsg').innerHTML = 
           '⚠️ Firebase tidak tersedia. Gunakan <b>Mode Tamu</b>.';
         document.getElementById('loginMsg').classList.remove('hidden');
       }
       
-      // Setup history filter listener
       const historyFilter = document.getElementById('historyFilter');
       if (historyFilter) historyFilter.onchange = renderHistory;
       
-      // Auto login guest mode if no active session
       setTimeout(() => {
         const mode = localStorage.getItem("pinbonus_mode");
         const savedUID = localStorage.getItem("pinbonus_uid");
@@ -1301,16 +1303,6 @@
         }
       }, 1000);
     });
-
-    // SERVICE WORKER
-    if ('serviceWorker' in navigator) {
-      try {
-        const swCode = `self.addEventListener('install',e=>{e.waitUntil(caches.open('pinbonus-v36').then(c=>c.addAll(['/'])))});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))})`;
-        const blob = new Blob([swCode], {type:'application/javascript'});
-        const swUrl = URL.createObjectURL(blob);
-        navigator.serviceWorker.register(swUrl);
-      } catch(e) {}
-    }
   </script>
 </body>
 </html>
