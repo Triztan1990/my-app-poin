@@ -225,6 +225,14 @@
     }
     .gas-status.online { background: #10b981; }
     .gas-status.offline { background: #ef4444; }
+    .mic-pulse {
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
   </style>
 </head>
 <body>
@@ -237,7 +245,7 @@
       PinBonus AI
     </h1>
     <p class="text-[10px] text-slate-400 mb-6 font-semibold px-6 text-center">
-      v37.1 • GAS Connected • 100% Berfungsi
+      v37.1 • Voice-to-Text • 100% Berfungsi
     </p>
     <div class="flex flex-col gap-3 w-64 text-center">
       <button id="btnGoogle" class="flex items-center justify-center gap-3 bg-white/10 p-3.5 rounded-2xl font-bold border border-slate-500/60 text-xs text-slate-100 backdrop-blur-lg active:scale-95 transition">
@@ -250,7 +258,6 @@
     
     <div id="loginMsg" class="text-red-400 mt-4 text-xs font-bold text-center px-6 hidden"></div>
     
-    <!-- HILANGKAN konfigurasi GAS manual -->
     <button onclick="forceGuestMode()" class="mt-6 text-xs text-blue-400 underline">
       Mode Darurat (GAS Offline)
     </button>
@@ -337,7 +344,7 @@
           <div id="aiChatBox" class="flex-1 overflow-y-auto p-3 space-y-3 text-[11px] mb-4 rounded-2xl">
             <div class="p-3 bg-indigo-100 text-indigo-700 rounded-2xl rounded-tl-none mr-auto font-bold max-w-[85%]">
               👋 Halo! PinBonus AI siap membantu!<br>
-              <span class="text-[9px]">Mode: GAS Connected - 100% Berfungsi</span>
+              <span class="text-[9px]">Tekan 🎤 untuk bicara, tekan ✏️ untuk tulis</span>
             </div>
           </div>
 
@@ -350,10 +357,14 @@
 
           <div class="flex gap-2 p-2 bg-slate-900/70 rounded-2xl border border-slate-700">
             <input type="text" id="aiInput" placeholder="Tanya sesuatu..." class="flex-1 bg-transparent p-2 text-xs md:text-[11px] font-bold outline-none">
+            <button id="btnVoice" onclick="toggleVoiceRecognition()" class="w-10 h-10 md:w-11 md:h-11 text-white rounded-xl shadow-lg flex items-center justify-center hover:bg-purple-700 transition-all" title="Voice Input">
+              <i id="voiceIconAi" class="fa fa-microphone"></i>
+            </button>
             <button id="btnAskAi" onclick="askAI()" class="w-10 h-10 md:w-11 md:h-11 text-white rounded-xl shadow-lg flex items-center justify-center hover:bg-indigo-700 transition-all">
               <i id="aiIcon" class="fa fa-paper-plane"></i>
             </button>
           </div>
+          <p class="text-[8px] text-slate-400 mt-2 text-center">Tekan dan tahan tombol 🎤 untuk bicara</p>
         </div>
       </div>
 
@@ -410,9 +421,8 @@
 
   <script>
     // =========================
-    //  KONFIGURASI UTAMA - TIDAK PERLU INPUT MANUAL
+    //  KONFIGURASI UTAMA
     // =========================
-    // GAS URL sudah fix pakai milik Anda
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbxM6GNxX_Q1U8TmGpU3GgexXK2JFCy_EvkbfosrAZSLQP_avu_N3hdpajiWiEIK1Ial/exec';
     let GAS_ENABLED = true;
     
@@ -423,6 +433,11 @@
     let appInitialized = false;
     let auth, db, provider;
     let currentPeriod = 'today';
+
+    // Voice Recognition Variables
+    let isListening = false;
+    let recognition = null;
+    let speechTimeout = null;
 
     // FIREBASE CONFIG
     const firebaseConfig = {
@@ -464,6 +479,92 @@
       document.getElementById('voiceIcon').className =
         VOICE_ON ? 'fa fa-volume-up' : 'fa fa-volume-off opacity-30';
     };
+
+    // =========================
+    //  VOICE-TO-TEXT FUNCTIONS
+    // =========================
+    function initVoiceRecognition() {
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        showToast('Voice recognition tidak didukung di browser ini', 'error');
+        document.getElementById('btnVoice').style.display = 'none';
+        return false;
+      }
+      
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'id-ID'; // Bahasa Indonesia
+      recognition.maxAlternatives = 1;
+      
+      recognition.onstart = function() {
+        isListening = true;
+        document.getElementById('voiceIconAi').className = 'fa fa-microphone-slash';
+        document.getElementById('btnVoice').classList.add('mic-pulse', 'bg-red-500');
+        showToast('🎤 Mendengarkan... Bicaralah sekarang', 'success');
+      };
+      
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('aiInput').value = transcript;
+        
+        // Auto-send jika mengandung kata kunci
+        const lowerTranscript = transcript.toLowerCase();
+        if (lowerTranscript.includes('kirim') || lowerTranscript.includes('cari') || 
+            lowerTranscript.includes('tanya') || lowerTranscript.includes('berapa')) {
+          setTimeout(() => askAI(), 500);
+        }
+      };
+      
+      recognition.onerror = function(event) {
+        console.error('Voice recognition error:', event.error);
+        if (event.error === 'not-allowed') {
+          showToast('Izin mikrofon ditolak. Izinkan akses mikrofon di browser.', 'error');
+        } else if (event.error === 'no-speech') {
+          showToast('Tidak ada suara yang terdeteksi', 'warning');
+        }
+        stopVoiceRecognition();
+      };
+      
+      recognition.onend = function() {
+        stopVoiceRecognition();
+      };
+      
+      return true;
+    }
+
+    window.toggleVoiceRecognition = function() {
+      if (!recognition && !initVoiceRecognition()) {
+        return;
+      }
+      
+      if (isListening) {
+        recognition.stop();
+      } else {
+        try {
+          recognition.start();
+          // Auto stop setelah 10 detik
+          clearTimeout(speechTimeout);
+          speechTimeout = setTimeout(() => {
+            if (isListening) {
+              recognition.stop();
+              showToast('Waktu bicara habis', 'warning');
+            }
+          }, 10000);
+        } catch (error) {
+          console.error('Error starting voice recognition:', error);
+          showToast('Gagal mengakses mikrofon', 'error');
+        }
+      }
+    };
+
+    function stopVoiceRecognition() {
+      isListening = false;
+      document.getElementById('voiceIconAi').className = 'fa fa-microphone';
+      document.getElementById('btnVoice').classList.remove('mic-pulse', 'bg-red-500');
+      clearTimeout(speechTimeout);
+    }
 
     // =========================
     //  MANAJEMEN GAS - OTOMATIS
@@ -1291,6 +1392,12 @@
       
       const historyFilter = document.getElementById('historyFilter');
       if (historyFilter) historyFilter.onchange = renderHistory;
+      
+      // Check browser support for voice recognition
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        document.getElementById('btnVoice').innerHTML = '<i class="fa fa-microphone-slash opacity-30"></i>';
+        document.getElementById('btnVoice').title = 'Voice tidak didukung di browser ini';
+      }
       
       setTimeout(() => {
         const mode = localStorage.getItem("pinbonus_mode");
