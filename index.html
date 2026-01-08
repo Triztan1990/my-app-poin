@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>PinBonus AI Platinum v38.1</title>
+  <title>PinBonus AI Platinum v38.2</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#1d4ed8">
   <meta name="description" content="Aplikasi penghitung bonus dengan AI OpenRouter">
@@ -11,7 +11,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
 
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -23,16 +23,8 @@
       --bg1: #020617;
       --bg2: #0f172a;
       --accent: #38bdf8;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
     }
-    
-    * { 
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-    
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       padding: 0;
@@ -45,8 +37,6 @@
       color: #e5e7eb;
       min-height: 100vh;
     }
-    
-    /* Glass Effect */
     .glass {
       background:
         radial-gradient(circle at top left, rgba(56,189,248,0.10), transparent 55%),
@@ -56,137 +46,256 @@
       backdrop-filter: blur(22px);
       -webkit-backdrop-filter: blur(22px);
     }
-    
     .tab-content { display: none; }
-    .tab-content.active { 
-      display: block;
-      animation: fadeIn 0.3s ease;
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* Login Screen */
+    .tab-content.active { display: block; }
     #loginScreen {
       position: fixed;
       inset: 0;
-      z-index: 9999;
+      z-index: 50;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       background:
-        radial-gradient(circle at top, rgba(56,189,248,0.25), transparent 55%),
-        radial-gradient(circle at bottom, rgba(37,99,235,0.30), transparent 55%),
-        linear-gradient(135deg, #020617, #0f172a);
+        radial-gradient(circle at top, rgba(56,189,248,0.20), transparent 55%),
+        radial-gradient(circle at bottom, rgba(37,99,235,0.25), transparent 55%),
+        #020617;
     }
-    
     #mainApp { display: none; }
     
-    /* Header Bonus */
+    /* PERBAIKAN: Ukuran box pencapaian diperkecil */
     .header-bonus {
       background:
         radial-gradient(circle at top right, rgba(56,189,248,0.35), transparent 55%),
         linear-gradient(135deg, #1d4ed8, #0ea5e9);
       color: white;
-      border-radius: 1.8rem;
-      padding: 20px;
-      margin-bottom: 20px;
+      border-radius: 1.5rem; /* Diperkecil dari 1.8rem */
+      padding: 15px; /* Diperkecil dari 20px */
+      margin-bottom: 15px; /* Diperkecil dari 20px */
       position: relative;
       overflow: hidden;
     }
-    
-    /* Navigation */
+    .header-bonus::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(248,250,252,0.26), transparent 60%);
+      opacity: 0.4;
+      pointer-events: none;
+    }
     .nav-active {
       background: rgba(15,23,42,0.92);
       color: var(--accent) !important;
       font-weight: 800;
     }
+    #aiChatBox::-webkit-scrollbar { width: 4px; }
+    #aiChatBox::-webkit-scrollbar-thumb {
+      background: rgba(148,163,184,0.85);
+      border-radius: 10px;
+    }
     
-    /* Custom Toast */
-    .custom-toast {
+    /* ===== PERBAIKAN UTAMA: DROPDOWN VISIBILITAS ===== */
+    select,
+    input[type="text"] {
+      background-color: #1e293b !important;
+      color: #ffffff !important;
+      border: 2px solid #38bdf8 !important;
+      border-radius: 12px !important;
+      padding: 14px 20px !important;
+      font-size: 14px !important;
+      font-weight: 600 !important;
+      margin-bottom: 12px !important;
+      width: 100% !important;
+      -webkit-appearance: none !important;
+      -moz-appearance: none !important;
+      appearance: none !important;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23ffffff' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") !important;
+      background-repeat: no-repeat !important;
+      background-position: right 20px center !important;
+      background-size: 16px !important;
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2) !important;
+      transition: all 0.3s ease !important;
+    }
+    
+    select:focus,
+    input[type="text"]:focus {
+      outline: 2px solid rgba(56,189,248,0.75) !important;
+      box-shadow: 0 0 0 3px rgba(56,189,248,0.3) !important;
+      border-color: #0ea5e9 !important;
+      transform: translateY(-1px) !important;
+    }
+    
+    select option {
+      background-color: #0f172a !important;
+      color: #ffffff !important;
+      font-weight: 600 !important;
+      padding: 12px !important;
+      font-size: 14px !important;
+    }
+    
+    select option[value=""] {
+      color: #94a3b8 !important;
+      font-style: italic !important;
+    }
+    
+    select:disabled {
+      background-color: #334155 !important;
+      border-color: #64748b !important;
+      color: #94a3b8 !important;
+      opacity: 0.7 !important;
+      cursor: not-allowed !important;
+    }
+    
+    /* Style khusus untuk form di tab Input */
+    #viewInput select,
+    #viewInput input[type="text"] {
+      padding: 16px 24px !important;
+      font-size: 15px !important;
+      margin-bottom: 15px !important;
+    }
+    
+    /* Placeholder styling */
+    ::placeholder {
+      color: #94a3b8 !important;
+      opacity: 0.8 !important;
+    }
+    
+    nav.glass {
+      background:
+        radial-gradient(circle at top, rgba(56,189,248,0.22), transparent 60%),
+        rgba(15,23,42,0.90);
+      border-top: 1px solid rgba(148,163,184,0.35);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+    }
+    .glass-icon-btn {
+      background: rgba(15,23,42,0.85);
+      border: 1px solid rgba(148,163,184,0.40);
+      box-shadow: 0 14px 32px rgba(15,23,42,0.95);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+    .primary-btn {
+      background:
+        radial-gradient(circle at top left, rgba(248,250,252,0.24), transparent 55%),
+        linear-gradient(135deg, #2563eb, #06b6d4);
+      box-shadow: 0 20px 45px rgba(37,99,235,0.75);
+      border-radius: 1.2rem;
+      border: 1px solid rgba(191,219,254,0.5);
+    }
+    #viewAi .glass {
+      background:
+        radial-gradient(circle at top, rgba(56,189,248,0.14), transparent 60%),
+        rgba(15,23,42,0.86);
+      border: 1px solid rgba(148,163,184,0.4);
+    }
+    #aiChatBox {
+      background:
+        radial-gradient(circle at top left, rgba(56,189,248,0.10), transparent 60%),
+        linear-gradient(to bottom, rgba(15,23,42,0.96), rgba(15,23,42,0.9));
+      border: 1px solid rgba(51,65,85,0.7);
+    }
+    #chartContainer {
+      height: 200px; /* Diperkecil dari 220px */
+      margin-bottom: 12px; /* Diperkecil dari 16px */
+    }
+    .toast {
       position: fixed;
       top: 80px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-100px);
+      left: 16px;
+      right: 16px;
       z-index: 10000;
-      padding: 12px 20px;
+      padding: 12px 14px;
       border-radius: 14px;
-      font-weight: 700;
-      font-size: 14px;
+      font-weight: 800;
+      font-size: 13px;
       text-align: center;
-      color: white;
-      background: rgba(16,185,129,0.95);
+      color: #fff;
+      background: rgba(16,185,129,0.94);
       box-shadow: 0 18px 45px rgba(15,23,42,0.9);
       backdrop-filter: blur(18px);
-      transition: transform 0.3s ease;
-      min-width: 300px;
-      max-width: 90%;
-      display: none;
+      transform: translateY(-150px);
+      transition: transform 0.25s ease;
+    }
+    .toast.error { background: rgba(239,68,68,0.94); }
+    .toast.show { transform: translateY(0); }
+    
+    /* PERBAIKAN: Ukuran period-selector diperkecil */
+    .period-selector {
+      display: flex;
+      gap: 4px; /* Diperkecil dari 5px */
+      margin-bottom: 8px; /* Diperkecil dari 10px */
+    }
+    .period-btn {
+      padding: 5px 10px; /* Diperkecil dari 6px 12px */
+      border-radius: 8px; /* Diperkecil dari 10px */
+      font-size: 9px; /* Diperkecil dari 10px */
+      font-weight: 800;
+      background: rgba(15,23,42,0.7);
+      border: 1px solid rgba(148,163,184,0.3);
+      color: #e5e7eb;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .period-btn.active {
+      background: rgba(56,189,248,0.3);
+      border-color: rgba(56,189,248,0.6);
+      color: #38bdf8;
     }
     
-    .custom-toast.show {
-      display: block;
-      transform: translateX(-50%) translateY(0);
-    }
-    
-    .custom-toast.error { background: rgba(239,68,68,0.95); }
-    .custom-toast.warning { background: rgba(245,158,11,0.95); }
-    .custom-toast.info { background: rgba(59,130,246,0.95); }
-    
-    /* Stats Grid */
+    /* PERBAIKAN: Ukuran stats-grid diperkecil */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-top: 15px;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px; /* Diperkecil dari 10px */
+      margin-top: 12px; /* Diperkecil dari 15px */
     }
-    
     .stat-box {
       background: rgba(15,23,42,0.6);
-      border-radius: 12px;
-      padding: 12px;
+      border-radius: 10px; /* Diperkecil dari 12px */
+      padding: 10px; /* Diperkecil dari 12px */
       border: 1px solid rgba(148,163,184,0.2);
     }
-    
     .stat-label {
-      font-size: 9px;
+      font-size: 8px; /* Diperkecil dari 9px */
       color: #94a3b8;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-    
     .stat-value {
-      font-size: 16px;
+      font-size: 14px; /* Diperkecil dari 16px */
       font-weight: 800;
       color: #38bdf8;
-      margin-top: 5px;
+      margin-top: 3px; /* Diperkecil dari 5px */
     }
-    
-    .stat-value.month { color: #22c55e; }
-    
-    /* Progress Bar */
-    .progress-bar {
-      width: 100%;
+    .stat-value.month {
+      color: #22c55e;
+    }
+    .gas-status {
+      display: inline-block;
+      width: 8px;
       height: 8px;
-      background: rgba(15,23,42,0.5);
-      border-radius: 10px;
-      overflow: hidden;
-      margin: 10px 0;
+      border-radius: 50%;
+      margin-right: 6px;
     }
-    
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #38bdf8, #0ea5e9);
-      border-radius: 10px;
-      transition: width 0.5s ease;
-      width: 0%;
+    .gas-status.online { background: #10b981; }
+    .gas-status.offline { background: #ef4444; }
+    .mic-pulse {
+      animation: pulse 1.5s infinite;
     }
-    
-    /* AI Mode Selector */
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+    .model-badge {
+      font-size: 8px;
+      background: rgba(56,189,248,0.2);
+      padding: 2px 6px;
+      border-radius: 10px;
+      margin-left: 5px;
+    }
     .ai-mode-selector {
       display: flex;
       gap: 2px;
@@ -195,101 +304,55 @@
       background: rgba(15,23,42,0.5);
       border-radius: 12px;
     }
-    
     .ai-mode-btn {
       flex: 1;
-      padding: 10px 12px;
+      padding: 8px 12px;
       border-radius: 10px;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 800;
       text-align: center;
       cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
+      transition: all 0.2s;
     }
-    
     .ai-mode-btn.active {
       background: rgba(56,189,248,0.3);
       border: 1px solid rgba(56,189,248,0.6);
       color: #38bdf8;
     }
-    
-    /* History Items */
-    .history-item {
-      background: rgba(15,23,42,0.7);
-      border-left: 4px solid #38bdf8;
-      border-radius: 12px;
-      padding: 15px;
-      margin-bottom: 10px;
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-    
-    .history-item:hover {
-      background: rgba(15,23,42,0.9);
-    }
-    
-    /* Loading Animation */
-    .loading-spinner {
-      width: 40px;
-      height: 40px;
-      border: 3px solid rgba(56,189,248,0.3);
-      border-top-color: #38bdf8;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
   </style>
 </head>
 <body>
 
-  <!-- Login Screen -->
   <div id="loginScreen">
-    <div class="relative">
-      <div class="w-20 h-20 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-3xl mb-6 flex items-center justify-center animate-bounce shadow-2xl">
-        <i class="fa fa-bolt text-white text-4xl"></i>
-        <div class="absolute -top-2 -right-2 w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center text-xs font-bold">
-          v38.1
-        </div>
-      </div>
+    <div class="w-16 h-16 bg-blue-700 rounded-3xl mb-6 flex items-center justify-center animate-bounce shadow-xl">
+      <i class="fa fa-cloud text-white text-3xl"></i>
     </div>
-    
-    <h1 class="text-3xl font-800 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2 tracking-tighter text-center">
-      PinBonus AI Platinum
+    <h1 class="text-3xl font-800 text-slate-100 mb-5 tracking-tighter text-center">
+      PinBonus AI
     </h1>
     <p class="text-[10px] text-slate-400 mb-6 font-semibold px-6 text-center">
-      v38.1 • Fixed Toast Error • Enhanced Performance
+      v38.2 • OpenRouter AI • Voice-to-Text
     </p>
-    
-    <div class="flex flex-col gap-3 w-72 text-center">
-      <button id="btnGoogle" class="flex items-center justify-center gap-3 bg-white/10 p-4 rounded-2xl font-bold border border-slate-500/60 text-sm text-slate-100 backdrop-blur-lg active:scale-95 transition-all duration-300 hover:bg-white/20">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5"> Login Google
+    <div class="flex flex-col gap-3 w-64 text-center">
+      <button id="btnGoogle" class="flex items-center justify-center gap-3 bg-white/10 p-3.5 rounded-2xl font-bold border border-slate-500/60 text-xs text-slate-100 backdrop-blur-lg active:scale-95 transition">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-4 h-4"> Login Google
       </button>
-      <button id="btnGuest" class="flex items-center justify-center gap-3 glass text-white p-4 rounded-2xl font-bold text-sm active:scale-95 transition-all duration-300 hover:bg-white/10">
+      <button id="btnGuest" class="flex items-center justify-center gap-3 glass glass-icon-btn text-white p-3.5 rounded-2xl font-bold text-xs active:scale-95 transition">
         <i class="fa fa-user-secret"></i> Mode Tamu (Lokal)
       </button>
     </div>
     
     <div id="loginMsg" class="text-red-400 mt-4 text-xs font-bold text-center px-6 hidden"></div>
     
-    <button onclick="forceGuestMode()" class="mt-6 text-xs text-blue-400 hover:text-blue-300 transition">
+    <button onclick="forceGuestMode()" class="mt-6 text-xs text-blue-400 underline">
       Mode Darurat (GAS Offline)
     </button>
   </div>
 
-  <!-- Custom Toast -->
-  <div id="customToast" class="custom-toast"></div>
+  <div id="toast" class="toast" style="display:none;"></div>
 
-  <!-- Main App -->
   <div id="mainApp">
     <div class="max-w-md md:max-w-2xl mx-auto p-4 pb-28 md:p-8 md:pb-32 md:pt-10">
-      <!-- Header -->
       <header class="flex justify-between items-center mb-4 p-2 md:mb-6 md:p-0">
         <div>
           <h1 class="text-xl md:text-2xl font-800 text-slate-100">Dashboard</h1>
@@ -299,16 +362,16 @@
           </p>
         </div>
         <div class="flex gap-2">
-          <button onclick="toggleVoice()" class="w-9 h-9 glass rounded-xl flex items-center justify-center text-blue-400">
+          <button onclick="toggleVoice()" class="w-9 h-9 glass glass-icon-btn rounded-xl flex items-center justify-center text-blue-400">
             <i id="voiceIcon" class="fa fa-volume-up"></i>
           </button>
-          <button onclick="logout()" class="w-9 h-9 glass rounded-xl flex items-center justify-center text-red-400">
+          <button onclick="logout()" class="w-9 h-9 glass glass-icon-btn rounded-xl flex items-center justify-center text-red-400">
             <i class="fa fa-sign-out"></i>
           </button>
         </div>
       </header>
 
-      <!-- Stats Summary -->
+      <!-- PERBAIKAN: Header bonus dengan ukuran lebih kompak -->
       <div class="header-bonus shadow-lg md:mb-6">
         <div class="period-selector mb-4">
           <button onclick="switchPeriod('today')" id="periodToday" class="period-btn active">Hari Ini</button>
@@ -319,13 +382,14 @@
         <div class="flex justify-between items-center">
           <div>
             <p id="periodLabel" class="text-[10px] md:text-[11px] font-black opacity-80 uppercase tracking-widest">Bonus Hari Ini</p>
-            <p class="text-3xl md:text-4xl font-900 tracking-tighter">Rp <span id="totalDisplay">0</span></p>
+            <p class="text-2xl md:text-3xl font-900 tracking-tighter">Rp <span id="totalDisplay">0</span></p>
           </div>
-          <div class="w-12 h-12 md:w-14 md:h-14 bg-white/20 rounded-2xl flex items-center justify-center text-2xl md:text-3xl">
+          <div class="w-10 h-10 md:w-12 md:h-12 bg-white/20 rounded-2xl flex items-center justify-center text-xl md:text-2xl">
             <i class="fa fa-money text-white"></i>
           </div>
         </div>
 
+        <!-- Stats grid yang lebih kompak -->
         <div class="stats-grid">
           <div class="stat-box">
             <div class="stat-label">Harian</div>
@@ -335,31 +399,23 @@
             <div class="stat-label">Bulanan</div>
             <div class="stat-value month" id="monthlyTotal">Rp 0</div>
           </div>
-          <div class="stat-box">
-            <div class="stat-label">Transaksi</div>
-            <div class="stat-value" id="transactionCount">0</div>
-          </div>
-        </div>
-        
-        <!-- Progress Bar -->
-        <div class="mt-4">
-          <div class="flex justify-between text-[9px] font-bold mb-1">
-            <span>Progress Target Harian</span>
-            <span id="progressPercent">0%</span>
-          </div>
-          <div class="progress-bar">
-            <div id="progressFill" class="progress-fill"></div>
-          </div>
         </div>
       </div>
 
-      <!-- INPUT TAB -->
+      <!-- INPUT -->
       <div id="viewInput" class="tab-content active">
-        <div class="glass rounded-[2rem] p-6 md:p-7 border border-slate-700/60">
+        <div class="glass rounded-[1.8rem] p-6 md:p-7 border border-slate-700/60">
           <div class="space-y-3 md:space-y-4">
-            <select id="cat" class="w-full p-4 md:p-4.5 rounded-2xl text-xs md:text-[11px] font-bold"></select>
-            <select id="svc" class="w-full p-4 md:p-4.5 rounded-2xl text-xs md:text-[11px] font-bold" disabled></select>
-            <select id="sku" class="w-full p-4 md:p-4.5 rounded-2xl text-xs md:text-[11px] font-bold" disabled></select>
+            <!-- PERBAIKAN: Dropdown sekarang terlihat jelas -->
+            <select id="cat" class="w-full p-4 md:p-4.5 rounded-2xl text-xs md:text-[11px] font-bold">
+              <option value="">Pilih Kategori...</option>
+            </select>
+            <select id="svc" class="w-full p-4 md:p-4.5 rounded-2xl text-xs md:text-[11px] font-bold" disabled>
+              <option value="">Pilih Layanan...</option>
+            </select>
+            <select id="sku" class="w-full p-4 md:p-4.5 rounded-2xl text-xs md:text-[11px] font-bold" disabled>
+              <option value="">Pilih Produk...</option>
+            </select>
             <input type="text" id="orderId" placeholder="ID Order..." class="w-full p-4 md:p-4.5 rounded-2xl text-xs md:text-[11px] font-bold">
           </div>
           <button id="addBtn" class="primary-btn w-full text-white py-4 md:py-4.5 rounded-2xl font-800 mt-5 active:scale-95 transition-all">
@@ -368,9 +424,9 @@
         </div>
       </div>
 
-      <!-- AI TAB -->
+      <!-- AI -->
       <div id="viewAi" class="tab-content">
-        <div class="glass rounded-[2rem] p-4 md:p-5 flex flex-col h-[400px] md:h-[430px] border border-slate-700/60">
+        <div class="glass rounded-[1.8rem] p-4 md:p-5 flex flex-col h-[380px] md:h-[400px] border border-slate-700/60">
           <!-- AI MODE SELECTOR -->
           <div class="ai-mode-selector mb-4">
             <button onclick="switchAIMode('bonus')" id="modeBonus" class="ai-mode-btn active">
@@ -384,7 +440,7 @@
           <!-- CHAT BOX -->
           <div id="aiChatBox" class="flex-1 overflow-y-auto p-3 space-y-3 text-[11px] mb-4 rounded-2xl">
             <div class="p-3 bg-indigo-100 text-indigo-700 rounded-2xl rounded-tl-none mr-auto font-bold max-w-[85%]">
-              👋 Halo! PinBonus AI Platinum v38.1 siap membantu!<br>
+              👋 Halo! PinBonus AI siap membantu!<br>
               <span class="text-[9px]">Pilih mode di atas • Voice-to-Text aktif</span>
             </div>
           </div>
@@ -395,6 +451,42 @@
             <button onclick="quickAI('prediksi')" class="p-2 md:p-2.5 text-[10px] md:text-[11px] font-bold">🎯 Prediksi</button>
             <button onclick="quickAI('rata')" class="p-2 md:p-2.5 text-[10px] md:text-[11px] font-bold">📈 Rata-rata</button>
             <button onclick="quickAI('bantuan')" class="p-2 md:p-2.5 text-[10px] md:text-[11px] font-bold">❓ Bantuan</button>
+          </div>
+
+          <!-- OPENROUTER SETTINGS -->
+          <div id="openrouterSettings" class="hidden">
+            <!-- AI Model Selector -->
+            <div class="flex gap-2 mb-3 md:mb-4 p-2 bg-slate-900/50 rounded-xl">
+              <select id="aiModel" class="flex-1 p-2 bg-slate-900 rounded-lg text-[10px] md:text-[11px] font-bold text-slate-100">
+                <option value="gpt-3.5-turbo">GPT-3.5 Turbo (Cepat)</option>
+                <option value="gpt-4">GPT-4 (Akurat)</option>
+                <option value="claude-3-haiku">Claude 3 Haiku</option>
+                <option value="meta-llama/llama-3-70b-instruct">Llama 3 70B</option>
+                <option value="google/gemini-pro">Gemini Pro</option>
+              </select>
+              <button onclick="toggleAdvancedSettings()" class="w-9 h-9 glass glass-icon-btn rounded-lg flex items-center justify-center text-yellow-400" title="Advanced Settings">
+                <i class="fa fa-sliders"></i>
+              </button>
+            </div>
+
+            <!-- Advanced Settings -->
+            <div id="advancedSettings" class="hidden glass p-3 mb-3 rounded-xl border border-yellow-500/30">
+              <div class="grid grid-cols-2 gap-2 mb-2">
+                <div>
+                  <label class="text-[9px] text-slate-300 block mb-1">Temperature</label>
+                  <input type="range" id="temperature" min="0" max="1" step="0.1" value="0.7" class="w-full">
+                  <span id="tempValue" class="text-[8px] text-slate-400">0.7</span>
+                </div>
+                <div>
+                  <label class="text-[9px] text-slate-300 block mb-1">Max Tokens</label>
+                  <input type="range" id="maxTokens" min="100" max="2000" step="100" value="500" class="w-full">
+                  <span id="tokensValue" class="text-[8px] text-slate-400">500</span>
+                </div>
+              </div>
+              <div class="text-center">
+                <button onclick="saveAISettings()" class="text-[9px] bg-blue-600 px-3 py-1 rounded-lg">Save Settings</button>
+              </div>
+            </div>
           </div>
 
           <!-- INPUT AREA -->
@@ -411,7 +503,7 @@
         </div>
       </div>
 
-      <!-- HISTORY TAB -->
+      <!-- HISTORY -->
       <div id="viewHistory" class="tab-content">
         <div class="flex justify-between items-center mb-4 md:mb-5 px-2">
           <div>
@@ -445,7 +537,6 @@
         <ul id="jobList" class="space-y-2 mt-2"></ul>
       </div>
 
-      <!-- Bottom Navigation -->
       <nav class="fixed bottom-0 left-0 right-0 h-20 glass rounded-t-[2.5rem] flex justify-around items-center px-6 z-50">
         <button onclick="switchTab('input')" id="navIn" class="nav-btn nav-active flex flex-col items-center opacity-80 text-slate-100">
           <i class="fa fa-pencil-square-o text-xl md:text-2xl"></i>
@@ -465,7 +556,7 @@
 
   <script>
     // =========================
-    //  KONFIGURASI UTAMA
+    //  KONFIGURASI UTAMA - OPENROUTER GAS
     // =========================
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbxM6GNxX_Q1U8TmGpU3GgexXK2JFCy_EvkbfosrAZSLQP_avu_N3hdpajiWiEIK1Ial/exec';
     let GAS_ENABLED = true;
@@ -475,13 +566,13 @@
       model: 'gpt-3.5-turbo',
       temperature: 0.7,
       max_tokens: 500,
-      context: "Kamu adalah asisten AI untuk aplikasi PinBonus Platinum v38.1. Jawab dalam Bahasa Indonesia yang natural."
+      context: "Kamu adalah asisten AI untuk aplikasi PinBonus. Aplikasi ini menghitung bonus harian/bulanan dari transaksi. Format tanggal: DD/MM/YYYY. Jawab dalam Bahasa Indonesia yang natural."
     };
     
     // Variabel aplikasi
     let userUID = null, cart = [], master = [], VOICE_ON = true, LOGIN_MODE = "";
     let chartInstance = null;
-    let aiMode = 'bonus';
+    let aiMode = 'bonus'; // Default ke Bonus AI
     let appInitialized = false;
     let auth, db, provider;
     let currentPeriod = 'today';
@@ -490,13 +581,6 @@
     let isListening = false;
     let recognition = null;
     let speechTimeout = null;
-
-    // Settings
-    let settings = {
-      targetDaily: 500000,
-      targetMonthly: 15000000,
-      voiceResponses: true
-    };
 
     // FIREBASE CONFIG
     const firebaseConfig = {
@@ -509,63 +593,46 @@
     };
 
     // =========================
-    //  FUNGSI UTILITAS - DIPERBAIKI
+    //  FUNGSI UTILITAS
     // =========================
-    function showCustomToast(message, type = 'success') {
-      let toast = document.getElementById('customToast');
+    function showToast(message, type = 'success') {
+      const el = document.getElementById('toast');
+      if (!el) return;
       
-      // Pastikan elemen toast ada
-      if (!toast) {
-        console.warn('Toast element not found, creating dynamically...');
-        toast = document.createElement('div');
-        toast.id = 'customToast';
-        toast.className = 'custom-toast';
-        document.body.appendChild(toast);
-      }
-      
-      toast.textContent = message;
-      toast.className = `custom-toast ${type}`;
-      
-      // Tampilkan toast
+      el.textContent = message;
+      el.classList.remove('error');
+      if (type === 'error') el.classList.add('error');
+      el.style.display = 'block';
+      requestAnimationFrame(() => el.classList.add('show'));
       setTimeout(() => {
-        toast.classList.add('show');
-      }, 10);
-      
-      // Sembunyikan setelah 3 detik
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 3000);
+        el.classList.remove('show');
+        setTimeout(() => { el.style.display = 'none'; }, 250);
+      }, 2500);
     }
 
-    function speak(text) {
-      if (!VOICE_ON || !settings.voiceResponses) return;
-      
-      try {
-        window.speechSynthesis.cancel();
-        const msg = new SpeechSynthesisUtterance(text);
-        msg.lang = 'id-ID';
-        msg.rate = 1.0;
-        window.speechSynthesis.speak(msg);
-      } catch (e) {
-        console.warn('Text-to-speech error:', e);
-      }
-    }
+    window.speak = (t) => {
+      if (!VOICE_ON) return;
+      window.speechSynthesis.cancel();
+      const msg = new SpeechSynthesisUtterance(t);
+      msg.lang = 'id-ID';
+      msg.rate = 1.0;
+      window.speechSynthesis.speak(msg);
+    };
 
-    function toggleVoice() {
+    window.toggleVoice = () => {
       VOICE_ON = !VOICE_ON;
-      const icon = document.getElementById('voiceIcon');
-      if (icon) {
-        icon.className = VOICE_ON ? 'fa fa-volume-up' : 'fa fa-volume-off opacity-30';
+      const voiceIcon = document.getElementById('voiceIcon');
+      if (voiceIcon) {
+        voiceIcon.className = VOICE_ON ? 'fa fa-volume-up' : 'fa fa-volume-off opacity-30';
       }
-      showCustomToast(VOICE_ON ? 'Suara diaktifkan' : 'Suara dimatikan', VOICE_ON ? 'success' : 'warning');
-    }
+    };
 
     // =========================
     //  VOICE-TO-TEXT FUNCTIONS
     // =========================
     function initVoiceRecognition() {
       if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-        showCustomToast('Voice recognition tidak didukung di browser ini', 'error');
+        showToast('Voice recognition tidak didukung di browser ini', 'error');
         const btnVoice = document.getElementById('btnVoice');
         if (btnVoice) btnVoice.style.display = 'none';
         return false;
@@ -584,8 +651,8 @@
         const voiceIconAi = document.getElementById('voiceIconAi');
         const btnVoice = document.getElementById('btnVoice');
         if (voiceIconAi) voiceIconAi.className = 'fa fa-microphone-slash';
-        if (btnVoice) btnVoice.classList.add('mic-pulse');
-        showCustomToast('🎤 Mendengarkan... Bicaralah sekarang', 'success');
+        if (btnVoice) btnVoice.classList.add('mic-pulse', 'bg-red-500');
+        showToast('🎤 Mendengarkan... Bicaralah sekarang', 'success');
       };
       
       recognition.onresult = function(event) {
@@ -605,7 +672,7 @@
       recognition.onerror = function(event) {
         console.error('Voice recognition error:', event.error);
         if (event.error === 'not-allowed') {
-          showCustomToast('Izin mikrofon ditolak. Izinkan akses mikrofon di browser.', 'error');
+          showToast('Izin mikrofon ditolak. Izinkan akses mikrofon di browser.', 'error');
         }
         stopVoiceRecognition();
       };
@@ -617,7 +684,7 @@
       return true;
     }
 
-    function toggleVoiceRecognition() {
+    window.toggleVoiceRecognition = function() {
       if (!recognition && !initVoiceRecognition()) {
         return;
       }
@@ -631,23 +698,123 @@
           speechTimeout = setTimeout(() => {
             if (isListening) {
               recognition.stop();
-              showCustomToast('Waktu bicara habis', 'warning');
+              showToast('Waktu bicara habis', 'warning');
             }
           }, 10000);
         } catch (error) {
           console.error('Error starting voice recognition:', error);
-          showCustomToast('Gagal mengakses mikrofon', 'error');
+          showToast('Gagal mengakses mikrofon', 'error');
         }
       }
-    }
+    };
 
     function stopVoiceRecognition() {
       isListening = false;
       const voiceIconAi = document.getElementById('voiceIconAi');
       const btnVoice = document.getElementById('btnVoice');
       if (voiceIconAi) voiceIconAi.className = 'fa fa-microphone';
-      if (btnVoice) btnVoice.classList.remove('mic-pulse');
+      if (btnVoice) btnVoice.classList.remove('mic-pulse', 'bg-red-500');
       clearTimeout(speechTimeout);
+    }
+
+    // =========================
+    //  AI SETTINGS MANAGEMENT
+    // =========================
+    function loadAISettings() {
+      const saved = localStorage.getItem('pinbonus_ai_settings');
+      if (saved) {
+        aiSettings = JSON.parse(saved);
+        const aiModel = document.getElementById('aiModel');
+        const temperature = document.getElementById('temperature');
+        const maxTokens = document.getElementById('maxTokens');
+        const tempValue = document.getElementById('tempValue');
+        const tokensValue = document.getElementById('tokensValue');
+        
+        if (aiModel) aiModel.value = aiSettings.model;
+        if (temperature) temperature.value = aiSettings.temperature;
+        if (maxTokens) maxTokens.value = aiSettings.max_tokens;
+        if (tempValue) tempValue.textContent = aiSettings.temperature;
+        if (tokensValue) tokensValue.textContent = aiSettings.max_tokens;
+      }
+    }
+
+    function saveAISettings() {
+      const aiModel = document.getElementById('aiModel');
+      const temperature = document.getElementById('temperature');
+      const maxTokens = document.getElementById('maxTokens');
+      
+      if (aiModel) aiSettings.model = aiModel.value;
+      if (temperature) aiSettings.temperature = parseFloat(temperature.value);
+      if (maxTokens) aiSettings.max_tokens = parseInt(maxTokens.value);
+      
+      localStorage.setItem('pinbonus_ai_settings', JSON.stringify(aiSettings));
+      showToast('AI settings saved!', 'success');
+      
+      const advancedSettings = document.getElementById('advancedSettings');
+      if (advancedSettings) advancedSettings.classList.add('hidden');
+    }
+
+    window.toggleAdvancedSettings = function() {
+      const settingsEl = document.getElementById('advancedSettings');
+      if (settingsEl) settingsEl.classList.toggle('hidden');
+    }
+
+    // Update slider values
+    const temperatureSlider = document.getElementById('temperature');
+    const maxTokensSlider = document.getElementById('maxTokens');
+    
+    if (temperatureSlider) {
+      temperatureSlider.addEventListener('input', function() {
+        const tempValue = document.getElementById('tempValue');
+        if (tempValue) tempValue.textContent = this.value;
+      });
+    }
+    
+    if (maxTokensSlider) {
+      maxTokensSlider.addEventListener('input', function() {
+        const tokensValue = document.getElementById('tokensValue');
+        if (tokensValue) tokensValue.textContent = this.value;
+      });
+    }
+
+    // =========================
+    //  OPENROUTER GAS MANAGEMENT
+    // =========================
+    async function testGASConnection() {
+      try {
+        const response = await fetch(`${GAS_URL}?test=ping&_=${Date.now()}`);
+        const data = await response.json();
+        
+        if (data.status === 'ok' || data.app === 'PinBonus GAS' || data.message) {
+          GAS_ENABLED = true;
+          const gasIndicator = document.getElementById('gasIndicator');
+          if (gasIndicator) {
+            gasIndicator.innerHTML = 
+              '<span class="gas-status online"></span> OpenRouter AI Connected';
+            gasIndicator.className = 'text-[8px] text-green-400 mt-1';
+          }
+          return true;
+        } else {
+          GAS_ENABLED = false;
+          const gasIndicator = document.getElementById('gasIndicator');
+          if (gasIndicator) {
+            gasIndicator.innerHTML = 
+              '<span class="gas-status offline"></span> GAS Offline';
+            gasIndicator.className = 'text-[8px] text-yellow-400 mt-1';
+          }
+          return false;
+        }
+      } catch (error) {
+        console.error("GAS Connection Failed:", error);
+        GAS_ENABLED = false;
+        const gasIndicator = document.getElementById('gasIndicator');
+        if (gasIndicator) {
+          gasIndicator.innerHTML = 
+            '<span class="gas-status offline"></span> GAS Offline';
+          gasIndicator.className = 'text-[8px] text-red-400 mt-1';
+        }
+        return false;
+      }
     }
 
     // =========================
@@ -656,28 +823,28 @@
     window.switchPeriod = (period) => {
       currentPeriod = period;
       
-      // Update button states
       document.querySelectorAll('.period-btn').forEach(btn => {
         btn.classList.remove('active');
       });
       
-      const periodId = 'period' + period.charAt(0).toUpperCase() + period.slice(1);
-      const periodBtn = document.getElementById(periodId);
+      const periodBtn = document.getElementById('period' + period.charAt(0).toUpperCase() + period.slice(1));
       if (periodBtn) periodBtn.classList.add('active');
       
-      // Update labels
       const labels = {
-        'today': { main: 'Bonus Hari Ini', history: 'Hari Ini' },
-        'month': { main: 'Bonus Bulan Ini', history: 'Bulan Ini' },
-        'all': { main: 'Total Semua Bonus', history: 'Semua Waktu' }
+        'today': 'Bonus Hari Ini',
+        'month': 'Bonus Bulan Ini',
+        'all': 'Total Semua Bonus'
       };
-      
-      const periodLabels = labels[period] || labels.today;
       const periodLabel = document.getElementById('periodLabel');
-      const historyPeriodLabel = document.getElementById('historyPeriodLabel');
+      if (periodLabel) periodLabel.textContent = labels[period];
       
-      if (periodLabel) periodLabel.textContent = periodLabels.main;
-      if (historyPeriodLabel) historyPeriodLabel.textContent = periodLabels.history;
+      const historyLabels = {
+        'today': 'Hari Ini',
+        'month': 'Bulan Ini',
+        'all': 'Semua Waktu'
+      };
+      const historyPeriodLabel = document.getElementById('historyPeriodLabel');
+      if (historyPeriodLabel) historyPeriodLabel.textContent = historyLabels[period];
       
       render();
     };
@@ -727,12 +894,10 @@
       let dailyTotal = 0;
       let monthlyTotal = 0;
       let allTimeTotal = 0;
-      let transactionCount = 0;
       
       cart.forEach(item => {
         const amount = Number(item.price) || 0;
         allTimeTotal += amount;
-        transactionCount++;
         
         if (item.date === today) {
           dailyTotal += amount;
@@ -749,28 +914,44 @@
       return {
         daily: dailyTotal,
         monthly: monthlyTotal,
-        all: allTimeTotal,
-        count: transactionCount
+        all: allTimeTotal
       };
     }
 
+    window.forceGuestMode = () => {
+      LOGIN_MODE = "guest";
+      userUID = "guest_user_" + Date.now();
+      localStorage.setItem("pinbonus_mode", "guest");
+      localStorage.setItem("pinbonus_uid", userUID);
+      enterApp();
+    };
+
     // =========================
-    //  FIREBASE & DATA MANAGEMENT
+    //  FIREBASE & MANAJEMEN DATA
     // =========================
     function initFirebase() {
       try {
         if (!firebase.apps.length) {
           firebase.initializeApp(firebaseConfig);
+          console.log("Firebase diinisialisasi dengan sukses");
+        } else {
+          console.log("Firebase sudah diinisialisasi");
         }
         
         auth = firebase.auth();
         db = firebase.firestore();
         provider = new firebase.auth.GoogleAuthProvider();
         
+        if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+          db.settings({
+            experimentalForceLongPolling: true
+          });
+        }
+        
         return true;
       } catch (error) {
         console.error("Error inisialisasi Firebase:", error);
-        showCustomToast("Firebase tidak tersedia, gunakan Mode Tamu", "error");
+        showToast("Firebase tidak tersedia, gunakan Mode Tamu", "error");
         return false;
       }
     }
@@ -779,19 +960,12 @@
       try {
         const saved = localStorage.getItem("pinbonus_data_" + userUID);
         cart = saved ? JSON.parse(saved) : [];
+        console.log("Dimuat dari localStorage:", cart.length, "item");
         render();
       } catch (e) {
         console.error("Error memuat dari localStorage:", e);
         cart = [];
         render();
-      }
-    }
-
-    function saveToLocalStorage() {
-      try {
-        localStorage.setItem("pinbonus_data_" + userUID, JSON.stringify(cart));
-      } catch (e) {
-        console.error("Error menyimpan ke localStorage:", e);
       }
     }
 
@@ -804,15 +978,18 @@
             if (docSnap.exists) {
               const data = docSnap.data();
               cart = data.bonus || [];
+              console.log("Data Firestore diperbarui:", cart.length, "item");
             } else {
               cart = [];
-              db.collection("users").doc(userUID).set({ bonus: [] }, { merge: true });
+              db.collection("users").doc(userUID).set({ bonus: [] }, { merge: true })
+                .then(() => console.log("Dokumen pengguna baru dibuat"))
+                .catch(e => console.error("Error membuat dokumen:", e));
             }
             render();
           },
           (error) => {
             console.error("Error snapshot Firestore:", error);
-            showCustomToast('Error sinkronisasi cloud, menggunakan data lokal', 'error');
+            showToast('Error sinkronisasi cloud, menggunakan data lokal', 'error');
             loadFromLocalStorage();
           }
         );
@@ -823,7 +1000,7 @@
     }
 
     // =========================
-    //  APLIKASI ENTRY POINT
+    //  POINT MASUK APLIKASI
     // =========================
     function enterApp() {
       if (appInitialized) return;
@@ -840,53 +1017,70 @@
         mainApp.style.display = 'block';
         appInitialized = true;
         
-        // Update mode status
         const modeStatus = document.getElementById('modeStatus');
         if (modeStatus) {
-          modeStatus.innerText = LOGIN_MODE === "google" ? "☁️ Cloud Sync" : "👤 Mode Tamu (Lokal)";
+          modeStatus.innerText =
+            LOGIN_MODE === "google" ? "☁️ Cloud Sync" : "👤 Mode Tamu (Lokal)";
         }
         
-        // Load data based on login mode
         if (LOGIN_MODE === "google" && db) {
           setupFirestoreListener();
         } else {
           loadFromLocalStorage();
         }
         
-        // Load settings
-        loadSettings();
+        // Load AI settings
+        loadAISettings();
         
-        // Initialize data
-        initData();
+        // Initialize AI mode
+        switchAIMode(aiMode);
         
-        // Test GAS connection
-        testGASConnection();
+        // Test koneksi GAS
+        setTimeout(async () => {
+          await testGASConnection();
+          initData();
+        }, 500);
         
-        showCustomToast('Aplikasi siap digunakan!', 'success');
-        speak("Dashboard PinBonus Platinum siap digunakan");
+        showToast('Aplikasi siap digunakan • Bonus AI Active', 'success');
+        speak("Dashboard PinBonus siap digunakan");
         
       } catch (error) {
         console.error('❌ Error in enterApp:', error);
-        showCustomToast('Error masuk aplikasi: ' + error.message, 'error');
+        showToast('Error masuk aplikasi: ' + error.message, 'error');
         resetToLogin();
       }
     }
 
     // =========================
-    //  DATA MASTER
+    //  DATA MASTER DARI GAS
     // =========================
     async function initData() {
       try {
-        if (GAS_ENABLED) {
-          const response = await fetch(`${GAS_URL}?action=getMasterData&_=${Date.now()}`);
-          if (response.ok) {
-            const data = await response.json();
-            master = data.data || data || [];
-          } else {
-            master = getFallbackMasterData();
-          }
+        showToast("Memuat data master...", "success");
+        
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        
+        const url = `${GAS_URL}?action=getMasterData&_=${Date.now()}`;
+        const r = await fetch(url, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        
+        if (!r.ok) {
+          throw new Error(`HTTP ${r.status}`);
+        }
+        
+        const j = await r.json();
+        console.log("Data dari GAS:", j);
+        
+        if (j.success && j.data) {
+          master = j.data;
+        } else if (Array.isArray(j)) {
+          master = j;
+        } else if (j.data && Array.isArray(j.data)) {
+          master = j.data;
         } else {
           master = getFallbackMasterData();
+          showToast("Menggunakan data lokal", "warning");
         }
         
         populateCategoryDropdown();
@@ -895,6 +1089,7 @@
         console.error("Gagal ambil data master:", e);
         master = getFallbackMasterData();
         populateCategoryDropdown();
+        showToast("Menggunakan data lokal", "warning");
       }
     }
 
@@ -926,192 +1121,111 @@
     // =========================
     //  EVENT LISTENERS
     // =========================
-    document.addEventListener('DOMContentLoaded', function() {
-      // Initialize Firebase
-      const firebaseAvailable = initFirebase();
+    document.getElementById('cat').onchange = () => {
+      const s = document.getElementById('svc');
+      const cat = document.getElementById('cat').value;
       
-      if (!firebaseAvailable) {
-        const btnGoogle = document.getElementById('btnGoogle');
-        const loginMsg = document.getElementById('loginMsg');
-        if (btnGoogle) btnGoogle.style.display = 'none';
-        if (loginMsg) {
-          loginMsg.innerHTML = '⚠️ Firebase tidak tersedia. Gunakan <b>Mode Tamu</b>.';
-          loginMsg.classList.remove('hidden');
-        }
+      if (s) {
+        s.disabled = !cat;
+        s.innerHTML = '<option value="">Pilih Layanan...</option>';
       }
       
-      // Setup category dropdown listeners
-      const catEl = document.getElementById('cat');
-      const svcEl = document.getElementById('svc');
-      const skuEl = document.getElementById('sku');
+      if (!cat) return;
       
-      if (catEl) {
-        catEl.onchange = () => {
-          const cat = catEl.value;
-          if (svcEl) {
-            svcEl.disabled = !cat;
-            svcEl.innerHTML = '<option value="">Pilih Layanan...</option>';
-            if (!cat) return;
-            
-            const services = [...new Set(master.filter(i => i.category === cat)
-              .map(i => i.service))].sort();
-            svcEl.innerHTML += services.map(v => `<option value="${v}">${v}</option>`).join('');
-          }
-        };
-      }
+      const services = [...new Set(master.filter(i => i.category === cat)
+        .map(i => i.service))].sort();
       
-      if (svcEl) {
-        svcEl.onchange = () => {
-          const cat = catEl ? catEl.value : '';
-          const svc = svcEl.value;
-          if (skuEl) {
-            skuEl.disabled = !svc;
-            skuEl.innerHTML = '<option value="">Pilih Produk...</option>';
-            if (!svc) return;
-            
-            const products = master.filter(i => i.category === cat && i.service === svc);
-            skuEl.innerHTML += products.map(i => 
-              `<option value="${i.nominal_angka}" data-n="${i.sku_name}">${i.sku_name} - Rp${i.nominal_angka.toLocaleString('id-ID')}</option>`
-            ).join('');
-          }
-        };
-      }
-      
-      // Add transaction button
-      const addBtn = document.getElementById('addBtn');
-      if (addBtn) {
-        addBtn.onclick = async () => {
-          const skuSelect = document.getElementById('sku');
-          const nominal = parseFloat(skuSelect.value);
-          const skuName = skuSelect.options[skuSelect.selectedIndex]?.getAttribute('data-n');
-          const orderId = document.getElementById('orderId')?.value.trim() || "";
-
-          if (!nominal || !skuName) {
-            showCustomToast("Pilih produk lengkap!", "error");
-            return;
-          }
-
-          const now = new Date();
-          const data = {
-            id: Date.now(),
-            name: skuName,
-            price: nominal,
-            time: now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
-            date: now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear(),
-            order: orderId || "-",
-            timestamp: now.getTime()
-          };
-
-          if (LOGIN_MODE === "google" && db) {
-            try {
-              await db.collection("users").doc(userUID).set({
-                bonus: firebase.firestore.FieldValue.arrayUnion(data)
-              }, { merge: true });
-            } catch (error) {
-              console.error('Firestore save error:', error);
-              showCustomToast('Gagal menyimpan ke cloud', 'error');
-              cart.push(data);
-              saveToLocalStorage();
-            }
-          } else {
-            cart.push(data);
-            saveToLocalStorage();
-          }
-
-          // Reset form
-          const orderIdInput = document.getElementById('orderId');
-          if (orderIdInput) orderIdInput.value = "";
-          if (skuEl) skuEl.selectedIndex = 0;
-          if (svcEl) svcEl.selectedIndex = 0;
-          if (catEl) catEl.selectedIndex = 0;
-          
-          render();
-          showCustomToast(`✅ ${skuName} Rp${nominal.toLocaleString('id-ID')}`, "success");
-          speak(`${skuName} senilai ${nominal.toLocaleString('id-ID')} rupiah berhasil disimpan.`);
-        };
-      }
-      
-      // History filter
-      const historyFilter = document.getElementById('historyFilter');
-      if (historyFilter) {
-        historyFilter.onchange = renderHistory;
-      }
-      
-      // Check existing session
-      const mode = localStorage.getItem("pinbonus_mode");
-      const savedUID = localStorage.getItem("pinbonus_uid");
-      
-      if (mode === "guest" && savedUID && !appInitialized) {
-        LOGIN_MODE = "guest";
-        userUID = savedUID;
-        setTimeout(() => enterApp(), 1000);
-      }
-    });
-
-    // =========================
-    //  LOGIN FUNCTIONS
-    // =========================
-    document.getElementById('btnGoogle').onclick = async () => {
-      try {
-        if (!auth) {
-          showCustomToast("Firebase tidak tersedia", "error");
-          return;
-        }
-        const result = await auth.signInWithPopup(provider);
-        userUID = result.user.uid;
-        LOGIN_MODE = "google";
-        localStorage.setItem("pinbonus_mode", "google");
-        localStorage.setItem("pinbonus_uid", userUID);
-        enterApp();
-      } catch (error) {
-        console.error('Google login error:', error);
-        const loginMsg = document.getElementById('loginMsg');
-        if (loginMsg) {
-          loginMsg.textContent = '❌ ' + error.message;
-          loginMsg.classList.remove('hidden');
-        }
-        showCustomToast('Login Google gagal', 'error');
+      if (s) {
+        s.innerHTML += services.map(v => `<option value="${v}">${v}</option>`).join('');
       }
     };
 
-    document.getElementById('btnGuest').onclick = () => {
-      LOGIN_MODE = "guest";
-      userUID = "guest_user_" + Date.now();
-      localStorage.setItem("pinbonus_mode", "guest");
-      localStorage.setItem("pinbonus_uid", userUID);
-      enterApp();
+    document.getElementById('svc').onchange = () => {
+      const sk = document.getElementById('sku');
+      const cat = document.getElementById('cat').value;
+      const svc = document.getElementById('svc').value;
+      
+      if (sk) {
+        sk.disabled = !svc;
+        sk.innerHTML = '<option value="">Pilih Produk...</option>';
+      }
+      
+      if (!svc) return;
+      
+      const products = master.filter(i => i.category === cat && i.service === svc);
+      
+      if (sk) {
+        sk.innerHTML += products.map(i => 
+          `<option value="${i.nominal_angka}" data-n="${i.sku_name}">${i.sku_name} - Rp${i.nominal_angka.toLocaleString('id-ID')}</option>`
+        ).join('');
+      }
     };
 
-    window.forceGuestMode = () => {
-      LOGIN_MODE = "guest";
-      userUID = "guest_user_" + Date.now();
-      localStorage.setItem("pinbonus_mode", "guest");
-      localStorage.setItem("pinbonus_uid", userUID);
-      enterApp();
+    document.getElementById('addBtn').onclick = async () => {
+      const skuSelect = document.getElementById('sku');
+      const nominal = parseFloat(skuSelect.value);
+      const skuName = skuSelect.options[skuSelect.selectedIndex]?.getAttribute('data-n');
+      const orderId = document.getElementById('orderId').value.trim();
+
+      if (!nominal || !skuName) {
+        showToast("Pilih produk lengkap!", "error");
+        return;
+      }
+
+      const now = new Date();
+      const data = {
+        id: Date.now(),
+        name: skuName,
+        price: nominal,
+        time: now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+        date: now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear(),
+        order: orderId || "-",
+        timestamp: now.getTime()
+      };
+
+      if (LOGIN_MODE === "google" && db) {
+        try {
+          await db.collection("users").doc(userUID).set({
+            bonus: firebase.firestore.FieldValue.arrayUnion(data)
+          }, { merge: true });
+        } catch (error) {
+          console.error('Firestore save error:', error);
+          showToast('Gagal menyimpan ke cloud', 'error');
+          cart.push(data);
+          localStorage.setItem("pinbonus_data_" + userUID, JSON.stringify(cart));
+        }
+      } else {
+        cart.push(data);
+        localStorage.setItem("pinbonus_data_" + userUID, JSON.stringify(cart));
+      }
+
+      const orderIdInput = document.getElementById('orderId');
+      const skuSelectElement = document.getElementById('sku');
+      const svcSelect = document.getElementById('svc');
+      const catSelect = document.getElementById('cat');
+      
+      if (orderIdInput) orderIdInput.value = "";
+      if (skuSelectElement) skuSelectElement.selectedIndex = 0;
+      if (svcSelect) svcSelect.selectedIndex = 0;
+      if (catSelect) catSelect.selectedIndex = 0;
+      
+      render();
+      showToast(`✅ ${skuName} Rp${nominal.toLocaleString('id-ID')}`, "success");
+      speak(`${skuName} senilai ${nominal.toLocaleString('id-ID')} rupiah berhasil disimpan.`);
     };
 
     // =========================
     //  RENDER FUNCTIONS
     // =========================
     window.render = () => {
-      updateStats();
-      renderHistory();
-      updateProgressBar();
-    };
-
-    function updateStats() {
       const totals = calculateTotals();
-      const filteredData = filterDataByPeriod(cart, currentPeriod);
       
-      // Update display totals
-      const dailyTotalEl = document.getElementById('dailyTotal');
-      const monthlyTotalEl = document.getElementById('monthlyTotal');
-      const transactionCountEl = document.getElementById('transactionCount');
-      const totalDisplayEl = document.getElementById('totalDisplay');
+      const dailyTotal = document.getElementById('dailyTotal');
+      const monthlyTotal = document.getElementById('monthlyTotal');
+      const totalDisplay = document.getElementById('totalDisplay');
       
-      if (dailyTotalEl) dailyTotalEl.textContent = 'Rp ' + totals.daily.toLocaleString('id-ID');
-      if (monthlyTotalEl) monthlyTotalEl.textContent = 'Rp ' + totals.monthly.toLocaleString('id-ID');
-      if (transactionCountEl) transactionCountEl.textContent = filteredData.length;
+      if (dailyTotal) dailyTotal.textContent = 'Rp ' + totals.daily.toLocaleString('id-ID');
+      if (monthlyTotal) monthlyTotal.textContent = 'Rp ' + totals.monthly.toLocaleString('id-ID');
       
       let displayTotal = 0;
       if (currentPeriod === 'today') {
@@ -1122,19 +1236,9 @@
         displayTotal = totals.all;
       }
       
-      if (totalDisplayEl) totalDisplayEl.innerText = displayTotal.toLocaleString('id-ID');
-    }
-
-    function updateProgressBar() {
-      const totals = calculateTotals();
-      const progress = Math.min((totals.daily / settings.targetDaily) * 100, 100);
-      
-      const progressFill = document.getElementById('progressFill');
-      const progressPercent = document.getElementById('progressPercent');
-      
-      if (progressFill) progressFill.style.width = progress + '%';
-      if (progressPercent) progressPercent.textContent = Math.round(progress) + '%';
-    }
+      if (totalDisplay) totalDisplay.innerText = displayTotal.toLocaleString('id-ID');
+      renderHistory();
+    };
 
     window.renderHistory = () => {
       const list = document.getElementById('jobList');
@@ -1151,13 +1255,13 @@
       }
       
       list.innerHTML = displayItems.map(i => `
-        <li class="history-item" onclick="showTransactionDetails(${i.id})">
+        <li class="glass p-4 mb-2 border-l-4 border-blue-500 font-bold text-xs flex justify-between items-start rounded-xl">
           <div class="flex flex-col">
-            <span class="font-bold text-xs">${i.name}</span>
+            <span>${i.name}</span>
             <span class="text-[9px] text-slate-300 font-normal mt-1">${i.date} • ${i.time}</span>
             <span class="text-[9px] text-slate-400 font-normal">Order: ${i.order || "-"}</span>
           </div>
-          <span class="text-blue-300 whitespace-nowrap text-sm font-bold mt-2">Rp${(i.price||0).toLocaleString('id-ID')}</span>
+          <span class="text-blue-300 whitespace-nowrap">Rp${(i.price||0).toLocaleString('id-ID')}</span>
         </li>
       `).join('');
 
@@ -1168,42 +1272,19 @@
       renderBonusChart(displayItems);
     };
 
-    function showTransactionDetails(id) {
-      const transaction = cart.find(item => item.id === id);
-      if (!transaction) return;
-      
-      const details = `
-        📊 Detail Transaksi:
-        
-        🏷️ Produk: ${transaction.name}
-        💰 Jumlah: Rp${transaction.price.toLocaleString('id-ID')}
-        📅 Tanggal: ${transaction.date} ${transaction.time}
-        🆔 Order: ${transaction.order}
-      `;
-      
-      showCustomToast(details, "info");
-      
-      if (settings.voiceResponses) {
-        speak(`Detail transaksi ${transaction.name} sejumlah ${transaction.price.toLocaleString('id-ID')} rupiah.`);
-      }
-    }
-
     function renderBonusChart(items) {
       const container = document.getElementById('chartContainer');
       if (!container) return;
       
       if (!items || items.length < 1) {
         container.classList.add('hidden');
-        if (chartInstance) {
-          chartInstance.destroy();
-          chartInstance = null;
-        }
+        if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
         return;
       }
       
       container.classList.remove('hidden');
       const ctx = document.getElementById('bonusChart').getContext('2d');
-      const total = items.reduce((a,b) => a + (Number(b.price) || 0), 0);
+      const total = items.reduce((a,b)=>a+(Number(b.price)||0),0);
       
       let target = 500000;
       if (currentPeriod === 'month') {
@@ -1213,14 +1294,13 @@
       }
       
       if (chartInstance) chartInstance.destroy();
-      
       chartInstance = new Chart(ctx, {
         type: 'doughnut',
         data: {
           labels: ['Bonus Tercapai', 'Sisa Target'],
           datasets: [{
-            data: [total, Math.max(0, target - total)],
-            backgroundColor: ['#38bdf8', '#475569'],
+            data: [total, Math.max(0, target-total)],
+            backgroundColor: ['#38bdf8','#475569'],
             borderWidth: 0
           }]
         },
@@ -1236,7 +1316,41 @@
     }
 
     // =========================
-    //  AI FUNCTIONS
+    //  LOGIN FUNCTIONS
+    // =========================
+    document.getElementById('btnGoogle').onclick = async () => {
+      try {
+        if (!auth) {
+          showToast("Firebase tidak tersedia", "error");
+          return;
+        }
+        const result = await auth.signInWithPopup(provider);
+        userUID = result.user.uid;
+        LOGIN_MODE = "google";
+        localStorage.setItem("pinbonus_mode", "google");
+        localStorage.setItem("pinbonus_uid", userUID);
+        enterApp();
+      } catch (error) {
+        console.error('Google login error:', error);
+        const loginMsg = document.getElementById('loginMsg');
+        if (loginMsg) {
+          loginMsg.textContent = '❌ ' + error.message;
+          loginMsg.classList.remove('hidden');
+        }
+        showToast('Login Google gagal', 'error');
+      }
+    };
+
+    document.getElementById('btnGuest').onclick = () => {
+      LOGIN_MODE = "guest";
+      userUID = "guest_user_" + Date.now();
+      localStorage.setItem("pinbonus_mode", "guest");
+      localStorage.setItem("pinbonus_uid", userUID);
+      enterApp();
+    };
+
+    // =========================
+    //  AI FUNCTIONS - FIXED
     // =========================
     window.switchAIMode = (mode) => {
       aiMode = mode;
@@ -1244,6 +1358,7 @@
       const modeGeneral = document.getElementById('modeGeneral');
       const quickActions = document.getElementById('quickActionsBonus');
       const openrouterSettings = document.getElementById('openrouterSettings');
+      const aiInput = document.getElementById('aiInput');
       
       // Reset semua tombol
       document.querySelectorAll('.ai-mode-btn').forEach(btn => {
@@ -1255,14 +1370,12 @@
         if (modeBonus) modeBonus.classList.add('active');
         if (quickActions) quickActions.classList.remove('hidden');
         if (openrouterSettings) openrouterSettings.classList.add('hidden');
-        const aiInput = document.getElementById('aiInput');
         if (aiInput) aiInput.placeholder = "Tanya tentang bonus...";
       } else {
         // Mode OpenRouter
         if (modeGeneral) modeGeneral.classList.add('active');
         if (quickActions) quickActions.classList.add('hidden');
         if (openrouterSettings) openrouterSettings.classList.remove('hidden');
-        const aiInput = document.getElementById('aiInput');
         if (aiInput) {
           aiInput.placeholder = GAS_ENABLED ? `Tanya apapun (${aiSettings.model})...` : "GAS offline, gunakan mode bonus";
         }
@@ -1279,8 +1392,8 @@
         const historyText = todayItems.slice(-5).map(i=>`${i.name} Rp${i.price}`).join(' + ') || 'Belum ada';
         message = `📊 STATISTIK BONUS\n\n💰 Hari Ini: Rp${totals.daily.toLocaleString('id-ID')}\n📅 Bulan Ini: Rp${totals.monthly.toLocaleString('id-ID')}\n🏆 Total Semua: Rp${totals.all.toLocaleString('id-ID')}\n\n📝 Riwayat Hari Ini: ${historyText}`;
       } else if (type === 'prediksi') {
-        const targetDaily = settings.targetDaily;
-        const targetMonthly = settings.targetMonthly;
+        const targetDaily = 500000;
+        const targetMonthly = 15000000;
         const remainingDaily = Math.max(0, targetDaily - totals.daily);
         const remainingMonthly = Math.max(0, targetMonthly - totals.monthly);
         const percentDaily = Math.round(totals.daily/targetDaily*100);
@@ -1311,7 +1424,7 @@
       const box = document.getElementById('aiChatBox');
       const btn = document.getElementById('btnAskAi');
       const icon = document.getElementById('aiIcon');
-      const q = inp?.value.trim();
+      const q = inp ? inp.value.trim() : '';
       
       if (!q) return;
       
@@ -1334,8 +1447,8 @@
         if (qLower.includes('total') || qLower.includes('berapa') || qLower.includes('sum')) {
           resultMessage = `📊 TOTAL BONUS\n💰 Hari Ini: Rp${totals.daily.toLocaleString('id-ID')}\n📅 Bulan Ini: Rp${totals.monthly.toLocaleString('id-ID')}\n🏆 Total Semua: Rp${totals.all.toLocaleString('id-ID')}`;
         } else if (qLower.includes('prediksi') || qLower.includes('target') || qLower.includes('goal')) {
-          const targetDaily = settings.targetDaily;
-          const targetMonthly = settings.targetMonthly;
+          const targetDaily = 500000;
+          const targetMonthly = 15000000;
           const remainingDaily = Math.max(0, targetDaily - totals.daily);
           const remainingMonthly = Math.max(0, targetMonthly - totals.monthly);
           const percentDaily = Math.round(totals.daily/targetDaily*100);
@@ -1392,21 +1505,28 @@
         
         const url = `${GAS_URL}?prompt=${encodeURIComponent(context)}&model=${encodeURIComponent(aiSettings.model)}&temperature=${aiSettings.temperature}&max_tokens=${aiSettings.max_tokens}&_=${Date.now()}`;
         
-        const response = await fetch(url, { 
-          signal: AbortSignal.timeout(15000) 
-        });
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+        
+        const response = await fetch(url, { signal: controller.signal });
+        clearTimeout(timeoutId);
         
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
         }
         
         const data = await response.json();
+        console.log("OpenRouter Response:", data);
+        
+        const lastMsg = box ? box.lastElementChild : null;
+        if (lastMsg && lastMsg.textContent.includes('Mengirim')) lastMsg.remove();
         
         let resultMessage = "";
         let isError = false;
         
         if (data.choices && data.choices[0] && data.choices[0].message) {
           resultMessage = data.choices[0].message.content;
+          // Add model badge
           const modelName = data.model || aiSettings.model;
           resultMessage += `\n\n<small class="model-badge">🤖 ${modelName}</small>`;
         } else if (data.response) {
@@ -1429,12 +1549,13 @@
           box.scrollTop = box.scrollHeight;
         }
         
-        if (!isError && settings.voiceResponses) {
+        if (!isError) {
           speak(resultMessage.substring(0, 150));
         }
         
       } catch (error) {
-        console.error('OpenRouter AI error:', error);
+        const lastMsg = box ? box.lastElementChild : null;
+        if (lastMsg && lastMsg.textContent.includes('Mengirim')) lastMsg.remove();
         
         if (box) {
           box.innerHTML += `<div class="p-3 bg-red-100 text-red-600 rounded-2xl rounded-tl-none mr-auto text-xs font-bold mb-2 max-w-[80%] whitespace-pre-line">
@@ -1445,11 +1566,17 @@
         }
         
         GAS_ENABLED = false;
-        updateGasIndicator();
+        const gasIndicator = document.getElementById('gasIndicator');
+        if (gasIndicator) {
+          gasIndicator.innerHTML = 
+            '<span class="gas-status offline"></span> OpenRouter Offline';
+          gasIndicator.className = 'text-[8px] text-red-400 mt-1';
+        }
       }
       
       if (btn) btn.disabled = false;
       if (icon) icon.className = "fa fa-paper-plane";
+      if (box) box.scrollTop = box.scrollHeight;
     };
 
     // =========================
@@ -1492,9 +1619,9 @@
           }
         }
         cart = [];
-        saveToLocalStorage();
+        localStorage.setItem("pinbonus_data_" + userUID, JSON.stringify(cart));
         render();
-        showCustomToast("Data berhasil dihapus!", "success");
+        showToast("Data berhasil dihapus!", "success");
         speak("Data bersih.");
       }
     };
@@ -1505,7 +1632,7 @@
     window.exportCSV = () => {
       const filteredData = filterDataByPeriod(cart, currentPeriod);
       if (filteredData.length === 0) {
-        showCustomToast(`Tidak ada data untuk periode ini`, "error");
+        showToast(`Tidak ada data untuk periode ini`, "error");
         return;
       }
 
@@ -1526,13 +1653,13 @@
       a.href = url;
       a.download = `pinbonus_${periodLabel}.csv`;
       a.click();
-      showCustomToast("CSV berhasil di-export!", "success");
+      showToast("CSV berhasil di-export!", "success");
     };
 
     window.exportJSON = () => {
       const filteredData = filterDataByPeriod(cart, currentPeriod);
       if (filteredData.length === 0) {
-        showCustomToast(`Tidak ada data untuk periode ini`, "error");
+        showToast(`Tidak ada data untuk periode ini`, "error");
         return;
       }
 
@@ -1555,68 +1682,51 @@
       a.href = url;
       a.download = `pinbonus_${periodLabel}.json`;
       a.click();
-      showCustomToast("JSON berhasil di-export!", "success");
+      showToast("JSON berhasil di-export!", "success");
     };
 
     // =========================
-    //  SETTINGS MANAGEMENT
+    //  INITIALIZATION
     // =========================
-    function loadSettings() {
-      const saved = localStorage.getItem('pinbonus_settings');
-      if (saved) {
-        try {
-          settings = JSON.parse(saved);
-        } catch (e) {
-          console.error('Error loading settings:', e);
-        }
-      }
-    }
-
-    function saveSettings() {
-      localStorage.setItem('pinbonus_settings', JSON.stringify(settings));
-    }
-
-    // =========================
-    //  GAS CONNECTION
-    // =========================
-    async function testGASConnection() {
-      try {
-        const response = await fetch(`${GAS_URL}?test=ping&_=${Date.now()}`);
-        const data = await response.json();
-        
-        if (data.status === 'ok' || data.app === 'PinBonus GAS' || data.message) {
-          GAS_ENABLED = true;
-          updateGasIndicator();
-          return true;
-        } else {
-          GAS_ENABLED = false;
-          updateGasIndicator();
-          return false;
-        }
-      } catch (error) {
-        console.error("GAS Connection Failed:", error);
-        GAS_ENABLED = false;
-        updateGasIndicator();
-        return false;
-      }
-    }
-
-    function updateGasIndicator() {
-      const indicator = document.getElementById('gasIndicator');
-      if (!indicator) return;
+    document.addEventListener('DOMContentLoaded', function() {
+      const firebaseAvailable = initFirebase();
       
-      if (GAS_ENABLED) {
-        indicator.innerHTML = '<span class="gas-status online"></span> OpenRouter AI Connected';
-        indicator.className = 'text-[8px] text-green-400 mt-1';
-      } else {
-        indicator.innerHTML = '<span class="gas-status offline"></span> GAS Offline';
-        indicator.className = 'text-[8px] text-yellow-400 mt-1';
+      if (!firebaseAvailable) {
+        const btnGoogle = document.getElementById('btnGoogle');
+        const loginMsg = document.getElementById('loginMsg');
+        if (btnGoogle) btnGoogle.style.display = 'none';
+        if (loginMsg) {
+          loginMsg.innerHTML = 
+            '⚠️ Firebase tidak tersedia. Gunakan <b>Mode Tamu</b>.';
+          loginMsg.classList.remove('hidden');
+        }
       }
-    }
+      
+      const historyFilter = document.getElementById('historyFilter');
+      if (historyFilter) historyFilter.onchange = renderHistory;
+      
+      // Check browser support for voice recognition
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        const btnVoice = document.getElementById('btnVoice');
+        if (btnVoice) {
+          btnVoice.innerHTML = '<i class="fa fa-microphone-slash opacity-30"></i>';
+          btnVoice.title = 'Voice tidak didukung di browser ini';
+        }
+      }
+      
+      // Default to Bonus AI mode
+      setTimeout(() => {
+        const mode = localStorage.getItem("pinbonus_mode");
+        const savedUID = localStorage.getItem("pinbonus_uid");
+        
+        if (mode === "guest" && savedUID && !appInitialized) {
+          LOGIN_MODE = "guest";
+          userUID = savedUID;
+          enterApp();
+        }
+      }, 1000);
+    });
 
-    // =========================
-    //  UTILITY FUNCTIONS
-    // =========================
     function resetToLogin() {
       appInitialized = false;
       const loginScreen = document.getElementById('loginScreen');
@@ -1625,70 +1735,6 @@
       if (loginScreen) loginScreen.style.display = 'flex';
       if (mainApp) mainApp.style.display = 'none';
     }
-
-    // Inisialisasi tambahan
-    window.addEventListener('load', () => {
-      // Tambahkan style untuk gas-status
-      const style = document.createElement('style');
-      style.textContent = `
-        .gas-status {
-          display: inline-block;
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          margin-right: 6px;
-        }
-        .gas-status.online { background: #10b981; }
-        .gas-status.offline { background: #ef4444; }
-        .mic-pulse {
-          animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-          0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-          70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-          100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-        }
-        .model-badge {
-          font-size: 8px;
-          background: rgba(56,189,248,0.2);
-          padding: 2px 6px;
-          border-radius: 10px;
-          margin-left: 5px;
-        }
-        .period-selector {
-          display: flex;
-          gap: 5px;
-          margin-bottom: 10px;
-        }
-        .period-btn {
-          padding: 6px 12px;
-          border-radius: 10px;
-          font-size: 10px;
-          font-weight: 800;
-          background: rgba(15,23,42,0.7);
-          border: 1px solid rgba(148,163,184,0.3);
-          color: #e5e7eb;
-          cursor: pointer;
-          transition: all 0.2s;
-        }
-        .period-btn.active {
-          background: rgba(56,189,248,0.3);
-          border-color: rgba(56,189,248,0.6);
-          color: #38bdf8;
-        }
-        .primary-btn {
-          background:
-            radial-gradient(circle at top left, rgba(248,250,252,0.24), transparent 55%),
-            linear-gradient(135deg, #2563eb, #06b6d4);
-          box-shadow: 0 20px 45px rgba(37,99,235,0.75);
-          border-radius: 1.2rem;
-          border: 1px solid rgba(191,219,254,0.5);
-        }
-      `;
-      document.head.appendChild(style);
-      
-      console.log('PinBonus AI Platinum v38.1 loaded successfully');
-    });
   </script>
 </body>
 </html>
